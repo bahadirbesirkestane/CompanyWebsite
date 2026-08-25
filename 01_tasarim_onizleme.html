@@ -1,0 +1,726 @@
+<title>Çikolata Makineleri — Web Sitesi Tasarım Önizlemesi</title>
+<style>
+  :root {
+    --ink: #1E2732;
+    --ink-soft: #55606B;
+    --paper: #FFFFFF;
+    --paper-raised: #F7F9FB;
+    --paper-sunken: #EDF1F5;
+    --accent: #3E7CB8;
+    --accent-deep: #2C5D8F;
+    --accent-tint: #3E7CB81a;
+    --steel: #7C8791;
+    --steel-soft: #A4ACB4;
+    --line: #1E27321a;
+    --line-strong: #1E273240;
+    --good: #3E8E63;
+    --footer-bg: #16202C;
+    --footer-text: #EDF1F5;
+    --font-display: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+    --font-body: "Segoe UI", "Helvetica Neue", "Noto Sans", Arial, sans-serif;
+    --font-mono: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", ui-monospace, monospace;
+  }
+  /* Bu site kurumsal kimlik kararı olarak tek bir açık (light) temaya
+     bilerek sabitlenmiştir — sistem/tarayıcı koyu tema tercihini yok sayar. */
+  :root[data-theme="dark"], :root[data-theme="light"] {
+    --ink: #1E2732; --ink-soft: #55606B; --paper: #FFFFFF; --paper-raised: #F7F9FB;
+    --paper-sunken: #EDF1F5; --accent: #3E7CB8; --accent-deep: #2C5D8F;
+    --accent-tint: #3E7CB81a; --steel: #7C8791; --steel-soft: #A4ACB4;
+    --line: #1E27321a; --line-strong: #1E273240; --good: #3E8E63;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper-sunken);
+    color: var(--ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-wrap: balance;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .mono {
+    font-family: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  img, svg { display: block; max-width: 100%; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---- review chrome ---- */
+  .tabbar {
+    position: sticky; top: 0; z-index: 40;
+    background: var(--ink); color: var(--paper-raised);
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .tabbar-inner {
+    max-width: 1240px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .tabbar-label {
+    font-family: var(--font-display);
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-deep);
+    flex: 0 0 auto;
+  }
+  :root[data-theme="dark"] .tabbar-label, .tabbar-label { color: var(--accent); }
+  .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tab {
+    background: transparent; border: 1px solid transparent; border-radius: 3px;
+    padding: 7px 14px; font-size: 13.5px; cursor: pointer;
+    font-family: var(--font-display);
+    color: var(--paper-raised); opacity: 0.62; transition: opacity .15s, border-color .15s, background .15s;
+  }
+  .tab:hover { opacity: 0.9; }
+  .tab.active { opacity: 1; border-color: var(--line-strong); background: rgba(255,255,255,0.06); }
+  .tab.active .dot { background: var(--accent); }
+  .note {
+    max-width: 1240px; margin: 0 auto; padding: 10px 24px;
+    font-size: 13px; color: var(--ink-soft); background: var(--paper-sunken);
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  .note strong { color: var(--ink); }
+
+  .stage { }
+  .page-panel { display: none; background: var(--paper); }
+  .page-panel.active { display: block; animation: fade .35s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .page-panel.active { animation: none; } }
+
+  /* ---- shared site header/footer ---- */
+  .site-header {
+    border-bottom: 1px solid var(--line); background: var(--paper);
+    position: sticky; top: 49px; z-index: 10;
+  }
+  .site-header-inner {
+    max-width: 1240px; margin: 0 auto; padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  }
+  .logo { display: flex; align-items: baseline; gap: 8px; }
+  .logo-mark {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 19px; letter-spacing: 0.01em;
+  }
+  .logo-mark span { color: var(--accent); }
+  .logo-sub { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--steel); font-family: var(--font-display); }
+  .nav { display: flex; gap: 28px; align-items: center; }
+  .nav a {
+    text-decoration: none; font-family: var(--font-display);
+    font-size: 13.5px; letter-spacing: 0.03em; color: var(--ink-soft); padding: 4px 0; border-bottom: 2px solid transparent;
+  }
+  .nav a.current, .nav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+  .nav-cta {
+    background: var(--accent); color: var(--paper-raised); border: none; border-radius: 3px;
+    padding: 10px 18px; font-family: var(--font-display); font-size: 13px; letter-spacing: 0.03em;
+    cursor: pointer;
+  }
+
+  .site-footer { background: var(--footer-bg); color: var(--footer-text); margin-top: 64px; }
+  .footer-inner { max-width: 1240px; margin: 0 auto; padding: 56px 24px 28px; }
+  .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 40px; }
+  .footer-grid h4 {
+    font-family: var(--font-display); font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+  }
+  .footer-grid p, .footer-grid a { font-size: 13.5px; color: #EDF1F5ad; line-height: 1.9; text-decoration: none; display: block; }
+  .footer-bottom {
+    margin-top: 40px; padding-top: 20px; border-top: 1px solid #EDF1F524;
+    display: flex; justify-content: space-between; font-size: 12px; color: #EDF1F580; flex-wrap: wrap; gap: 8px;
+  }
+  @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+
+  /* ---- generic building blocks ---- */
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+  .section { padding: 72px 0; }
+  .section-tight { padding: 40px 0; }
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent);
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--accent); }
+  .h-xl { font-size: clamp(30px, 4vw, 46px); line-height: 1.08; }
+  .h-lg { font-size: clamp(24px, 3vw, 32px); line-height: 1.12; }
+  .h-md { font-size: 20px; }
+  .lede { font-size: 17px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
+  .body-p { font-size: 15.5px; line-height: 1.85; color: var(--ink-soft); max-width: 66ch; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; border-radius: 3px; cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 13.5px; letter-spacing: 0.02em; padding: 13px 22px; text-decoration: none; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--accent); color: var(--paper-raised); }
+  .btn-primary:hover { background: var(--accent-deep); }
+  .btn-outline { border-color: var(--line-strong); color: var(--ink); background: transparent; }
+  .btn-outline:hover { border-color: var(--ink); }
+  .btn-ghost { color: var(--accent); padding: 6px 0; font-size: 13.5px; }
+
+  .breadcrumb { font-size: 12.5px; color: var(--steel); display: flex; gap: 6px; align-items: center; font-family: var(--font-display); letter-spacing: 0.01em; }
+  .breadcrumb a { text-decoration: none; color: var(--steel); }
+  .breadcrumb a:hover { color: var(--accent); }
+  .breadcrumb .current { color: var(--ink); }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stat { padding: 26px 20px; border-left: 1px solid var(--line); }
+  .stat:first-child { border-left: none; }
+  .stat .n { font-size: 28px; font-weight: 700; }
+  .stat .l { font-size: 12px; color: var(--steel); margin-top: 4px; }
+  @media (max-width: 760px) { .stat-row { grid-template-columns: 1fr 1fr; } .stat:nth-child(3) { border-left: none; } }
+
+  /* placeholder art */
+  .ph {
+    position: relative; background:
+      repeating-linear-gradient(135deg, var(--paper-sunken), var(--paper-sunken) 8px, var(--paper-raised) 8px, var(--paper-raised) 16px);
+    border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .ph svg { stroke: var(--steel-soft); }
+  .ph .corner { position: absolute; width: 12px; height: 12px; border: 1.5px solid var(--ink-soft); opacity: .55; }
+  .ph .c-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+  .ph .c-tr { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+  .ph .c-bl { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+  .ph .c-br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+  .ph .tag {
+    position: absolute; bottom: 8px; right: 22px; font-family: "SF Mono", Consolas, monospace;
+    font-size: 9.5px; letter-spacing: 0.08em; color: var(--steel-soft); text-transform: uppercase;
+  }
+
+  /* category grid */
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 32px; }
+  .cat-card { background: var(--paper); padding: 28px 24px; transition: background .15s; text-decoration: none; color: inherit; display: block; }
+  .cat-card:hover { background: var(--paper-raised); }
+  .cat-icon { color: var(--accent); margin-bottom: 18px; }
+  .cat-card h3 { font-size: 16.5px; margin-bottom: 8px; }
+  .cat-card .sub { font-size: 12.5px; color: var(--steel); line-height: 1.6; }
+  .cat-card .count { font-size: 11px; color: var(--accent); margin-top: 14px; font-family: var(--font-display); letter-spacing: .04em; }
+  @media (max-width: 900px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .cat-grid { grid-template-columns: 1fr; } }
+
+  /* product grid */
+  .prod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 32px; }
+  .prod-card { text-decoration: none; color: inherit; display: block; }
+  .prod-card .ph { aspect-ratio: 4/3; margin-bottom: 14px; }
+  .prod-card:hover .ph { border-color: var(--line-strong); }
+  .prod-card h3 { font-size: 15.5px; margin-bottom: 6px; }
+  .prod-card .spec { font-size: 12px; color: var(--steel); }
+  .prod-card .go { font-size: 12.5px; color: var(--accent); margin-top: 10px; font-family: var(--font-display); }
+  .featured-tag {
+    position: absolute; top: 8px; left: 8px; background: var(--accent); color: var(--paper-raised);
+    font-size: 9.5px; letter-spacing: .08em; padding: 4px 8px; text-transform: uppercase; font-family: var(--font-display);
+  }
+  @media (max-width: 900px) { .prod-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .prod-grid { grid-template-columns: 1fr; } }
+
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 28px 0; }
+  .pill {
+    border: 1px solid var(--line-strong); border-radius: 999px; padding: 8px 16px; font-size: 13px;
+    font-family: var(--font-display); cursor: pointer; background: transparent; color: var(--ink-soft);
+  }
+  .pill.active { background: var(--ink); color: var(--paper-raised); border-color: var(--ink); }
+
+  /* detail page */
+  .detail-top { display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; padding: 48px 0; }
+  .gallery .ph.main { aspect-ratio: 4/3; }
+  .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+  .thumbs .ph { aspect-ratio: 1; }
+  .thumbs .ph.sel { border-color: var(--accent); border-width: 2px; }
+  .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0 24px; }
+  .chip {
+    border: 1px solid var(--line); padding: 10px 14px; font-size: 12.5px; min-width: 108px;
+  }
+  .chip .l { color: var(--steel); font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; font-family: var(--font-display); }
+  .chip .v { font-family: "SF Mono", Consolas, monospace; font-size: 14px; margin-top: 3px; }
+  .pdf-row {
+    display: flex; align-items: center; gap: 14px; border: 1px solid var(--line); padding: 14px 16px; margin-bottom: 22px; background: var(--paper-raised);
+  }
+  .pdf-icon {
+    width: 32px; height: 38px; border: 1.5px solid var(--accent); position: relative; flex: 0 0 auto;
+  }
+  .pdf-icon::after { content: "PDF"; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 7px; color: var(--accent); font-family: "SF Mono", monospace; letter-spacing: .02em; }
+  .pdf-meta .fn { font-size: 13.5px; }
+  .pdf-meta .fs { font-size: 11.5px; color: var(--steel); margin-top: 2px; }
+  .pdf-actions { margin-left: auto; display: flex; gap: 8px; }
+  .pdf-actions .btn { padding: 9px 14px; font-size: 12.5px; }
+
+  .spec-wrap { overflow-x: auto; margin-top: 20px; border: 1px solid var(--line); }
+  table.spec { width: 100%; border-collapse: collapse; min-width: 480px; }
+  table.spec tr { border-bottom: 1px solid var(--line); }
+  table.spec tr:last-child { border-bottom: none; }
+  table.spec td { padding: 13px 18px; font-size: 13.5px; }
+  table.spec td:first-child { color: var(--steel); width: 40%; font-family: var(--font-display); font-size: 12.5px; letter-spacing: .02em; }
+  table.spec td:last-child { font-family: "SF Mono", Consolas, monospace; }
+  table.spec tr:nth-child(odd) { background: var(--paper-raised); }
+
+  .tab-strip { display: flex; gap: 28px; border-bottom: 1px solid var(--line); margin-top: 56px; }
+  .tab-strip button {
+    background: none; border: none; padding: 12px 0; font-family: var(--font-display); font-size: 13.5px;
+    color: var(--steel); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer;
+  }
+  .tab-strip button.active { color: var(--ink); border-bottom-color: var(--accent); }
+
+  .catalog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 32px; }
+  .catalog-card { border: 1px solid var(--line); background: var(--paper-raised); }
+  .catalog-card .ph { aspect-ratio: 3/4; border: none; border-bottom: 1px solid var(--line); }
+  .catalog-card .body { padding: 16px 18px 20px; }
+  .catalog-card h3 { font-size: 14.5px; margin-bottom: 6px; }
+  .catalog-card .meta { font-size: 11.5px; color: var(--steel); margin-bottom: 14px; font-family: "SF Mono", Consolas, monospace; }
+  .catalog-card .actions { display: flex; gap: 8px; }
+  .catalog-card .btn { flex: 1; justify-content: center; padding: 9px 10px; font-size: 12px; }
+  @media (max-width: 900px) { .catalog-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .catalog-grid { grid-template-columns: 1fr; } .detail-top { grid-template-columns: 1fr; gap: 32px; } }
+
+  .banner {
+    background: var(--ink); color: var(--paper-raised); padding: 48px 0; margin-top: 0;
+  }
+  .banner-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .banner h3 { font-size: 22px; }
+  .banner p { color: var(--steel-soft); margin-top: 6px; font-size: 14px; }
+  .banner .btns { display: flex; gap: 10px; }
+
+  .hero { padding: 60px 0 0; }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px; align-items: center; }
+  .hero-art { border: 1px solid var(--line); background: var(--paper-raised); aspect-ratio: 5/4; position: relative; padding: 24px; }
+  .hero-cta { display: flex; gap: 12px; margin-top: 30px; flex-wrap: wrap; }
+  @media (max-width: 860px) { .hero-grid { grid-template-columns: 1fr; } }
+
+  /* ---- hero slider ---- */
+  .hero-viewport { position: relative; }
+  .hero-slide { display: none; }
+  .hero-slide.active { display: block; animation: heroFade .6s ease; }
+  @keyframes heroFade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .hero-slide.active { animation: none; } }
+  .hero-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+    width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--line-strong);
+    background: var(--paper); color: var(--ink-soft); display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; transition: opacity .2s, border-color .2s, color .2s; font-size: 16px;
+  }
+  .hero-viewport:hover .hero-arrow, .hero-arrow:focus-visible { opacity: 1; }
+  .hero-arrow.prev { left: -6px; } .hero-arrow.next { right: -6px; }
+  .hero-arrow:hover { border-color: var(--accent); color: var(--accent); }
+  .hero-dots { display: flex; gap: 8px; margin-top: 34px; }
+  .hero-dot { width: 26px; height: 3px; border-radius: 2px; background: var(--line-strong); border: none; cursor: pointer; padding: 0; transition: background .2s; }
+  .hero-dot.active { background: var(--accent); }
+
+  /* ---- reference logo marquee ---- */
+  .marquee-wrap {
+    margin-top: 28px; overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper-raised);
+  }
+  .marquee-track { display: flex; align-items: center; width: max-content; gap: 64px; padding: 26px 32px; animation: marquee 32s linear infinite; }
+  .marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .marquee-track { animation: none; } }
+  .ref-logo {
+    display: flex; align-items: center; gap: 9px; color: var(--steel); font-family: var(--font-display);
+    font-weight: 600; font-size: 14px; letter-spacing: .03em; white-space: nowrap; opacity: .78;
+  }
+  .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+</style>
+
+<nav class="tabbar" role="tablist" aria-label="Sayfa önizleme">
+  <div class="tabbar-inner">
+    <span class="tabbar-label">Sayfa Önizleme</span>
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-target="home" role="tab" aria-selected="true">Anasayfa</button>
+      <button class="tab" data-target="machines" role="tab" aria-selected="false">Makinelerimiz</button>
+      <button class="tab" data-target="category" role="tab" aria-selected="false">Kategori Sayfası</button>
+      <button class="tab" data-target="detail" role="tab" aria-selected="false">Makine Detayı</button>
+      <button class="tab" data-target="catalogs" role="tab" aria-selected="false">Kataloglar</button>
+    </div>
+  </div>
+</nav>
+<p class="note">Bu, geliştirmeye başlamadan önce onay için hazırlanmış <strong>statik tasarım önizlemesi</strong>dir. Metinler, görseller ve ürün isimleri yer tutucudur — yapı ve hiyerarşiyi değerlendirmek içindir. Üstteki sekmelerden sayfalar arasında geçiş yapabilirsiniz.</p>
+
+<main class="stage">
+
+<!-- ============ HOME ============ -->
+<section class="page-panel active" id="home">
+  <header class="site-header"><div class="site-header-inner">
+    <div class="logo"><span class="logo-mark">ÇİKOLATA <span>MAKİNE</span></span><span class="logo-sub">/ Logo Alanı</span></div>
+    <nav class="nav">
+      <a href="#" class="current">Anasayfa</a><a href="#">Kurumsal</a><a href="#">Makinelerimiz</a><a href="#">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a>
+      <button class="nav-cta">Teklif İste</button>
+    </nav>
+  </div></header>
+
+  <div class="hero"><div class="wrap">
+    <div class="hero-viewport">
+      <button class="hero-arrow prev" aria-label="Önceki slayt">‹</button>
+      <button class="hero-arrow next" aria-label="Sonraki slayt">›</button>
+
+      <div class="hero-slide active" data-hero-slide="0"><div class="hero-grid">
+        <div>
+          <div class="eyebrow">Endüstriyel Çikolata Üretim Sistemleri</div>
+          <h1 class="h-xl">Temperlemeden ambalaja,<br>komple çikolata üretim hatları.</h1>
+          <p class="lede" style="margin-top:18px;">Sürekli ve kesikli temperleme, kaplama, kalıplama ve soğutma sistemlerini tek çatı altında tasarlıyor, üretiyor ve anahtar teslim kuruyoruz.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#">Makineleri İncele</a>
+            <a class="btn btn-outline" href="#">Kataloğu İndir</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 240 190" width="100%" height="100%" fill="none" stroke="currentColor" style="color:var(--ink-soft)">
+            <circle cx="95" cy="95" r="58" stroke-width="1.2" opacity=".5"/>
+            <circle cx="95" cy="95" r="40" stroke-width="1.6"/>
+            <circle cx="95" cy="95" r="6" fill="var(--accent)" stroke="none"/>
+            <path d="M95 55 A40 40 0 0 1 135 95" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/>
+            <rect x="168" y="60" width="44" height="70" rx="1" stroke-width="1.4"/>
+            <line x1="168" y1="78" x2="212" y2="78" stroke-width="1"/>
+            <line x1="176" y1="92" x2="204" y2="92" stroke-width="1" opacity=".6"/>
+            <line x1="176" y1="102" x2="204" y2="102" stroke-width="1" opacity=".6"/>
+            <line x1="153" y1="95" x2="167" y2="95" stroke-width="1.2" stroke-dasharray="2 3"/>
+            <g stroke-width="1" opacity=".45">
+              <path d="M14 14 h10 M14 14 v10"/><path d="M226 14 h-10 M226 14 v10"/>
+              <path d="M14 176 h10 M14 176 v-10"/><path d="M226 176 h-10 M226 176 v-10"/>
+            </g>
+            <text x="14" y="168" font-family="SF Mono, Consolas, monospace" font-size="7" fill="var(--steel)" stroke="none" letter-spacing="1">CT-450 / TEMPERLEME ÜNİTESİ</text>
+          </svg>
+        </div>
+      </div></div>
+
+      <div class="hero-slide" data-hero-slide="1"><div class="hero-grid">
+        <div>
+          <div class="eyebrow">Global Kurulum Deneyimi</div>
+          <h1 class="h-xl">27 yıllık mühendislik tecrübesi,<br>40'tan fazla ülkede sahada.</h1>
+          <p class="lede" style="margin-top:18px;">Avrupa'dan Orta Doğu'ya, Kuzey Afrika'dan Güneydoğu Asya'ya kurulu hatlarımızla üreticilerin yanındayız.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#">Referanslarımızı İnceleyin</a>
+            <a class="btn btn-outline" href="#">Bize Ulaşın</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 240 190" width="100%" height="100%" fill="none" stroke="currentColor" style="color:var(--ink-soft)">
+            <g stroke-width="1" opacity=".5">
+              <line x1="120" y1="95" x2="40" y2="40"/><line x1="120" y1="95" x2="200" y2="35"/>
+              <line x1="120" y1="95" x2="35" y2="150"/><line x1="120" y1="95" x2="205" y2="150"/>
+              <line x1="120" y1="95" x2="120" y2="22"/>
+            </g>
+            <circle cx="120" cy="95" r="6" fill="var(--accent)" stroke="none"/>
+            <circle cx="40" cy="40" r="4"/><circle cx="200" cy="35" r="4"/><circle cx="35" cy="150" r="4"/><circle cx="205" cy="150" r="4"/><circle cx="120" cy="22" r="4"/>
+            <g stroke-width="1" opacity=".45">
+              <path d="M14 14 h10 M14 14 v10"/><path d="M226 14 h-10 M226 14 v10"/>
+              <path d="M14 176 h10 M14 176 v-10"/><path d="M226 176 h-10 M226 176 v-10"/>
+            </g>
+            <text x="14" y="168" font-family="SF Mono, Consolas, monospace" font-size="7" fill="var(--steel)" stroke="none" letter-spacing="1">40+ ÜLKE / GLOBAL KURULUM AĞI</text>
+          </svg>
+        </div>
+      </div></div>
+
+      <div class="hero-slide" data-hero-slide="2"><div class="hero-grid">
+        <div>
+          <div class="eyebrow">Komple Hat Çözümleri</div>
+          <h1 class="h-xl">Fikirden anahtar teslim<br>üretim hattına.</h1>
+          <p class="lede" style="margin-top:18px;">Proje tasarımından devreye almaya kadar temperleme, kaplama, kalıplama, soğutma ve ambalajlamayı tek hat olarak kuruyoruz.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#">Projelerimizi Gör</a>
+            <a class="btn btn-outline" href="#">Teklif İste</a>
+          </div>
+        </div>
+        <div class="hero-art">
+          <svg viewBox="0 0 240 190" width="100%" height="100%" fill="none" stroke="currentColor" style="color:var(--ink-soft)">
+            <g stroke-width="1.3">
+              <rect x="8" y="83" width="32" height="24" rx="1"/>
+              <rect x="56" y="83" width="32" height="24" rx="1"/>
+              <rect x="104" y="83" width="32" height="24" rx="1" stroke="var(--accent)"/>
+              <rect x="152" y="83" width="32" height="24" rx="1"/>
+              <rect x="200" y="83" width="32" height="24" rx="1"/>
+            </g>
+            <g stroke-width="1.1" opacity=".7">
+              <path d="M40 95 h14"/><path d="M50 91 l4 4 l-4 4"/>
+              <path d="M88 95 h14"/><path d="M98 91 l4 4 l-4 4"/>
+              <path d="M136 95 h14"/><path d="M146 91 l4 4 l-4 4"/>
+              <path d="M184 95 h14"/><path d="M194 91 l4 4 l-4 4"/>
+            </g>
+            <g stroke-width="1" opacity=".45">
+              <path d="M14 14 h10 M14 14 v10"/><path d="M226 14 h-10 M226 14 v10"/>
+              <path d="M14 176 h10 M14 176 v-10"/><path d="M226 176 h-10 M226 176 v-10"/>
+            </g>
+            <text x="8" y="130" font-family="SF Mono, Consolas, monospace" font-size="6.5" fill="var(--steel)" stroke="none" letter-spacing=".5">TEMPER · KAPLAMA · KALIPLAMA · SOĞUTMA · AMBALAJ</text>
+          </svg>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="hero-dots" role="tablist" aria-label="Slayt seçimi">
+      <button class="hero-dot active" data-hero-dot="0" aria-label="1. slayt"></button>
+      <button class="hero-dot" data-hero-dot="1" aria-label="2. slayt"></button>
+      <button class="hero-dot" data-hero-dot="2" aria-label="3. slayt"></button>
+    </div>
+  </div></div>
+
+  <div class="wrap" style="margin-top:56px;">
+    <div class="stat-row">
+      <div class="stat"><div class="n mono">27+</div><div class="l">Yıl Sektör Tecrübesi</div></div>
+      <div class="stat"><div class="n mono">40+</div><div class="l">Ülkeye İhracat</div></div>
+      <div class="stat"><div class="n mono">500+</div><div class="l">Kurulu Üretim Hattı</div></div>
+      <div class="stat"><div class="n mono">ISO 9001</div><div class="l">Kalite Yönetim Sertifikası</div></div>
+    </div>
+  </div>
+
+  <div class="wrap section">
+    <div class="eyebrow">Makinelerimiz</div>
+    <h2 class="h-lg">Kategoriye göre keşfedin</h2>
+    <div class="cat-grid">
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2.2"/></svg></div>
+        <h3>Temperleme Makineleri</h3><div class="sub">Sürekli ve kesikli (batch) temperleme üniteleri</div><div class="count">8 ÜRÜN</div>
+      </a>
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="19" width="26" height="8"/><path d="M4 15 q7 -6 13 0 t13 0" stroke-width="1.6"/></svg></div>
+        <h3>Kaplama (Enrobing) Hatları</h3><div class="sub">Tam ve yarım kaplama üretim hatları</div><div class="count">5 ÜRÜN</div>
+      </a>
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="9" height="9" rx="1"/><rect x="21" y="4" width="9" height="9" rx="1"/><rect x="4" y="21" width="9" height="9" rx="1"/><rect x="21" y="21" width="9" height="9" rx="1"/></svg></div>
+        <h3>Kalıplama Sistemleri</h3><div class="sub">Tablet, bar ve pralin kalıplama</div><div class="count">11 ÜRÜN</div>
+      </a>
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="10" width="30" height="14"/><path d="M9 10 l5 14 M18 10 l5 14" stroke-width="1.6"/></svg></div>
+        <h3>Soğutma Tünelleri</h3><div class="sub">Modüler çok bölgeli soğutma hatları</div><div class="count">4 ÜRÜN</div>
+      </a>
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="9" y="4" width="16" height="24" rx="7"/><line x1="9" y1="14" x2="25" y2="14" stroke-width="1.2"/></svg></div>
+        <h3>Depolama &amp; Tank Sistemleri</h3><div class="sub">Sıvı çikolata tank ve pompa üniteleri</div><div class="count">6 ÜRÜN</div>
+      </a>
+      <a class="cat-card" href="#">
+        <div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="27" r="3"/><circle cx="17" cy="8" r="3"/><circle cx="28" cy="27" r="3"/><path d="M8.5 25 L15 10 M19 10 L25.5 25" stroke-width="1.2"/></svg></div>
+        <h3>Komple Üretim Hatları</h3><div class="sub">Anahtar teslim entegre çözümler</div><div class="count">Proje Bazlı</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="wrap section-tight">
+    <div class="eyebrow">Vitrin</div>
+    <h2 class="h-lg">Öne Çıkan Makineler</h2>
+    <div class="prod-grid">
+      <a class="prod-card" href="#"><div class="ph" style="position:relative;"><span class="featured-tag">Öne Çıkan</span><svg width="40" height="40" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div>
+        <h3>Sürekli Temperleme Makinesi CT-450</h3><div class="spec mono">450 kg/saat · 7.5 kW</div><div class="go">İncele →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="40" height="40" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="19" width="26" height="8"/><path d="M4 15 q7 -6 13 0 t13 0" stroke-width="1.4"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div>
+        <h3>Enrobing Kaplama Hattı EL-800</h3><div class="spec mono">800 mm hat genişliği</div><div class="go">İncele →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="40" height="40" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="4" y="4" width="9" height="9" rx="1"/><rect x="21" y="4" width="9" height="9" rx="1"/><rect x="4" y="21" width="9" height="9" rx="1"/><rect x="21" y="21" width="9" height="9" rx="1"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div>
+        <h3>Tablet Kalıplama Sistemi MX-200</h3><div class="spec mono">200 kalıp/dakika</div><div class="go">İncele →</div></a>
+    </div>
+  </div>
+
+  <div class="section-tight" style="padding-bottom:0;">
+    <div class="wrap"><div class="eyebrow">Referanslarımız</div><h2 class="h-md">Sahada Güvenilen Çözüm Ortağı</h2></div>
+    <div class="marquee-wrap">
+      <div class="marquee-track" id="refMarquee">
+        <span class="ref-logo"><span class="dot"></span>REFERANS 01</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 02</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 03</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 04</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 05</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 06</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 07</span>
+        <span class="ref-logo"><span class="dot"></span>REFERANS 08</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 01</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 02</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 03</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 04</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 05</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 06</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 07</span>
+        <span class="ref-logo" aria-hidden="true"><span class="dot"></span>REFERANS 08</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner"><div class="wrap banner-inner">
+    <div><h3>Tüm ürün gamımızı tek PDF'te inceleyin.</h3><p>Genel katalog · Türkçe / İngilizce · 18.4 MB</p></div>
+    <div class="btns"><a class="btn btn-outline" href="#" style="border-color:var(--paper-raised); color:var(--paper-raised);">Görüntüle</a><a class="btn btn-primary" href="#">Kataloğu İndir</a></div>
+  </div></div>
+
+  <footer class="site-footer"><div class="footer-inner">
+    <div class="footer-grid">
+      <div><div class="logo-mark" style="color:var(--footer-text);margin-bottom:14px;">ÇİKOLATA <span>MAKİNE</span></div><p style="max-width:32ch;">Endüstriyel çikolata üretim ekipmanları tasarım, üretim ve kurulum firması.</p></div>
+      <div><h4>Hızlı Linkler</h4><a href="#">Hakkımızda</a><a href="#">Makinelerimiz</a><a href="#">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a></div>
+      <div><h4>Kategoriler</h4><a href="#">Temperleme</a><a href="#">Kaplama</a><a href="#">Kalıplama</a><a href="#">Soğutma Tünelleri</a><a href="#">Ambalajlama</a></div>
+      <div><h4>İletişim</h4><p>Organize Sanayi Bölgesi<br>34XXX, İstanbul</p><p>+90 212 000 00 00<br>info@firma.com</p></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 Çikolata Makine A.Ş. — Tüm hakları saklıdır.</span><span>Tasarım önizlemesi · Yer tutucu içerik</span></div>
+  </div></footer>
+</section>
+
+<!-- ============ MACHINES (index) ============ -->
+<section class="page-panel" id="machines">
+  <header class="site-header"><div class="site-header-inner">
+    <div class="logo"><span class="logo-mark">ÇİKOLATA <span>MAKİNE</span></span><span class="logo-sub">/ Logo Alanı</span></div>
+    <nav class="nav"><a href="#">Anasayfa</a><a href="#">Kurumsal</a><a href="#" class="current">Makinelerimiz</a><a href="#">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a><button class="nav-cta">Teklif İste</button></nav>
+  </div></header>
+  <div class="wrap section-tight">
+    <div class="breadcrumb"><a href="#">Anasayfa</a><span>/</span><span class="current">Makinelerimiz</span></div>
+    <h1 class="h-lg" style="margin-top:16px;">Makinelerimiz</h1>
+    <p class="body-p" style="margin-top:10px;">Temperlemeden ambalajlamaya, üretim hattınızın her aşaması için mühendislik çözümleri. Kategoriye tıklayarak alt kategori ve ürünleri görüntüleyin.</p>
+    <div class="cat-grid" style="margin-top:36px;">
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2.2"/></svg></div><h3>Temperleme Makineleri</h3><div class="sub">Sürekli Temperleme · Kesikli (Batch) Temperleme</div><div class="count">8 ÜRÜN</div></a>
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="19" width="26" height="8"/><path d="M4 15 q7 -6 13 0 t13 0" stroke-width="1.6"/></svg></div><h3>Kaplama (Enrobing) Hatları</h3><div class="sub">Tam Kaplama · Yarım Kaplama · Dekor Üniteleri</div><div class="count">5 ÜRÜN</div></a>
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="4" width="9" height="9" rx="1"/><rect x="21" y="4" width="9" height="9" rx="1"/><rect x="4" y="21" width="9" height="9" rx="1"/><rect x="21" y="21" width="9" height="9" rx="1"/></svg></div><h3>Kalıplama Sistemleri</h3><div class="sub">Tablet/Bar Kalıplama · Pralin Kalıplama</div><div class="count">11 ÜRÜN</div></a>
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="10" width="30" height="14"/><path d="M9 10 l5 14 M18 10 l5 14" stroke-width="1.6"/></svg></div><h3>Soğutma Tünelleri</h3><div class="sub">Tek Bölgeli · Çok Bölgeli Sistemler</div><div class="count">4 ÜRÜN</div></a>
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="9" y="4" width="16" height="24" rx="7"/><line x1="9" y1="14" x2="25" y2="14" stroke-width="1.2"/></svg></div><h3>Depolama &amp; Tank Sistemleri</h3><div class="sub">Isıtmalı Tanklar · Pompa Üniteleri</div><div class="count">6 ÜRÜN</div></a>
+      <a class="cat-card" href="#"><div class="cat-icon"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="4" y="6" width="26" height="22" rx="1"/><path d="M4 14 h26 M17 6 v22" stroke-width="1.1"/></svg></div><h3>Ambalajlama Makineleri</h3><div class="sub">Flow-Pack · Kutulama Üniteleri</div><div class="count">7 ÜRÜN</div></a>
+    </div>
+  </div>
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-bottom" style="border-top:none;margin-top:0;padding-top:0;"><span>© 2026 Çikolata Makine A.Ş.</span><span>Tasarım önizlemesi</span></div></div></footer>
+</section>
+
+<!-- ============ CATEGORY DETAIL ============ -->
+<section class="page-panel" id="category">
+  <header class="site-header"><div class="site-header-inner">
+    <div class="logo"><span class="logo-mark">ÇİKOLATA <span>MAKİNE</span></span><span class="logo-sub">/ Logo Alanı</span></div>
+    <nav class="nav"><a href="#">Anasayfa</a><a href="#">Kurumsal</a><a href="#" class="current">Makinelerimiz</a><a href="#">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a><button class="nav-cta">Teklif İste</button></nav>
+  </div></header>
+  <div class="wrap section-tight">
+    <div class="breadcrumb"><a href="#">Anasayfa</a><span>/</span><a href="#">Makinelerimiz</a><span>/</span><span class="current">Temperleme Makineleri</span></div>
+    <h1 class="h-lg" style="margin-top:16px;">Temperleme Makineleri</h1>
+    <p class="body-p" style="margin-top:10px;">Kakao yağı kristal yapısını kontrol ederek parlak, kırılgan ve raf ömrü uzun çikolata elde etmenizi sağlayan sürekli ve kesikli temperleme üniteleri.</p>
+    <div class="pill-row">
+      <button class="pill active">Tümü (8)</button>
+      <button class="pill">Sürekli Temperleme (5)</button>
+      <button class="pill">Kesikli (Batch) Temperleme (3)</button>
+    </div>
+    <div class="prod-grid" style="margin-top:8px;">
+      <a class="prod-card" href="#"><div class="ph" style="position:relative;"><span class="featured-tag">Öne Çıkan</span><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Sürekli Temperleme Makinesi CT-450</h3><div class="spec mono">450 kg/saat · 7.5 kW</div><div class="go">Detayları Gör →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Sürekli Temperleme Makinesi CT-800</h3><div class="spec mono">800 kg/saat · 11 kW</div><div class="go">Detayları Gör →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Kesikli Temperleme Makinesi BT-100</h3><div class="spec mono">100 kg/şarj · 3 kW</div><div class="go">Detayları Gör →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Kesikli Temperleme Makinesi BT-250</h3><div class="spec mono">250 kg/şarj · 5.5 kW</div><div class="go">Detayları Gör →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Sürekli Temperleme Makinesi CT-1200</h3><div class="spec mono">1200 kg/saat · 15 kW</div><div class="go">Detayları Gör →</div></a>
+      <a class="prod-card" href="#"><div class="ph"><svg width="38" height="38" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>Mini Temperleme Ünitesi MT-30</h3><div class="spec mono">30 kg/şarj · 1.2 kW</div><div class="go">Detayları Gör →</div></a>
+    </div>
+  </div>
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-bottom" style="border-top:none;margin-top:0;padding-top:0;"><span>© 2026 Çikolata Makine A.Ş.</span><span>Tasarım önizlemesi</span></div></div></footer>
+</section>
+
+<!-- ============ DETAIL ============ -->
+<section class="page-panel" id="detail">
+  <header class="site-header"><div class="site-header-inner">
+    <div class="logo"><span class="logo-mark">ÇİKOLATA <span>MAKİNE</span></span><span class="logo-sub">/ Logo Alanı</span></div>
+    <nav class="nav"><a href="#">Anasayfa</a><a href="#">Kurumsal</a><a href="#" class="current">Makinelerimiz</a><a href="#">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a><button class="nav-cta">Teklif İste</button></nav>
+  </div></header>
+  <div class="wrap" style="padding-top:24px;">
+    <div class="breadcrumb"><a href="#">Anasayfa</a><span>/</span><a href="#">Makinelerimiz</a><span>/</span><a href="#">Temperleme Makineleri</a><span>/</span><span class="current">CT-450</span></div>
+    <div class="detail-top">
+      <div class="gallery">
+        <div class="ph main"><svg width="64" height="64" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="1.6"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Vitrin Görseli</span></div>
+        <div class="thumbs">
+          <div class="ph sel"><span class="tag" style="right:6px;bottom:4px;">1</span></div>
+          <div class="ph"><span class="tag" style="right:6px;bottom:4px;">2</span></div>
+          <div class="ph"><span class="tag" style="right:6px;bottom:4px;">3</span></div>
+          <div class="ph"><span class="tag" style="right:6px;bottom:4px;">4</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">Temperleme Makineleri</div>
+        <h1 class="h-lg">Sürekli Temperleme Makinesi CT-450</h1>
+        <p class="body-p" style="margin-top:12px;">Otomatik kristalizasyon kontrolü ile kesintisiz üretim hatlarına entegre çalışan, PLC dokunmatik panelli sürekli temperleme ünitesi.</p>
+        <div class="chip-row">
+          <div class="chip"><div class="l">Kapasite</div><div class="v">450 kg/saat</div></div>
+          <div class="chip"><div class="l">Güç</div><div class="v">7.5 kW</div></div>
+          <div class="chip"><div class="l">Ağırlık</div><div class="v">680 kg</div></div>
+        </div>
+        <div class="pdf-row">
+          <div class="pdf-icon"></div>
+          <div class="pdf-meta"><div class="fn">CT-450_Teknik_Katalog.pdf</div><div class="fs">2.4 MB · TR/EN</div></div>
+          <div class="pdf-actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div>
+        </div>
+        <a href="#" class="btn btn-primary" style="width:100%; justify-content:center;">Bu Makine İçin Teklif İste</a>
+      </div>
+    </div>
+
+    <div class="tab-strip">
+      <button class="active">Ürün Açıklaması</button>
+      <button>Teknik Özellikler</button>
+      <button>Dokümanlar</button>
+    </div>
+    <div style="padding:28px 0 8px;">
+      <p class="body-p">CT-450, yüksek kapasiteli üretim hatlarında kakao yağı kristal yapısını hassas sıcaklık kontrolüyle stabilize eden, paslanmaz çelik gövdeli bir temperleme ünitesidir. Kesintisiz besleme sistemi sayesinde kaplama ve kalıplama hatlarına doğrudan entegre edilebilir.</p>
+    </div>
+    <div class="spec-wrap">
+      <table class="spec">
+        <tr><td>Kapasite</td><td>450 kg / saat</td></tr>
+        <tr><td>Kurulu Güç</td><td>7.5 kW</td></tr>
+        <tr><td>Ebat (U×D×Y)</td><td>2100 × 950 × 1800 mm</td></tr>
+        <tr><td>Ağırlık</td><td>680 kg</td></tr>
+        <tr><td>Gövde Malzemesi</td><td>AISI 304 Paslanmaz Çelik</td></tr>
+        <tr><td>Kontrol Sistemi</td><td>PLC + Dokunmatik Panel (7")</td></tr>
+        <tr><td>Sıcaklık Hassasiyeti</td><td>± 0.1 °C</td></tr>
+      </table>
+    </div>
+
+    <div class="section-tight">
+      <div class="eyebrow">Benzer Ürünler</div>
+      <h2 class="h-md">Aynı Kategoriden</h2>
+      <div class="prod-grid">
+        <a class="prod-card" href="#"><div class="ph"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>CT-800 Sürekli Temperleme</h3><div class="spec mono">800 kg/saat</div><div class="go">İncele →</div></a>
+        <a class="prod-card" href="#"><div class="ph"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>BT-250 Kesikli Temperleme</h3><div class="spec mono">250 kg/şarj</div><div class="go">İncele →</div></a>
+        <a class="prod-card" href="#"><div class="ph"><svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="17" cy="17" r="12"/><path d="M17 8a9 9 0 0 1 9 9" stroke-width="2"/></svg><div class="corner c-tl"></div><div class="corner c-tr"></div><div class="corner c-bl"></div><div class="corner c-br"></div><span class="tag">Görsel</span></div><h3>MT-30 Mini Ünite</h3><div class="spec mono">30 kg/şarj</div><div class="go">İncele →</div></a>
+      </div>
+    </div>
+  </div>
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-bottom" style="border-top:none;margin-top:0;padding-top:0;"><span>© 2026 Çikolata Makine A.Ş.</span><span>Tasarım önizlemesi</span></div></div></footer>
+</section>
+
+<!-- ============ CATALOGS ============ -->
+<section class="page-panel" id="catalogs">
+  <header class="site-header"><div class="site-header-inner">
+    <div class="logo"><span class="logo-mark">ÇİKOLATA <span>MAKİNE</span></span><span class="logo-sub">/ Logo Alanı</span></div>
+    <nav class="nav"><a href="#">Anasayfa</a><a href="#">Kurumsal</a><a href="#">Makinelerimiz</a><a href="#" class="current">Kataloglar</a><a href="#">Blog</a><a href="#">İletişim</a><button class="nav-cta">Teklif İste</button></nav>
+  </div></header>
+  <div class="wrap section-tight">
+    <div class="breadcrumb"><a href="#">Anasayfa</a><span>/</span><span class="current">Kataloglar</span></div>
+    <h1 class="h-lg" style="margin-top:16px;">Kataloglar</h1>
+    <p class="body-p" style="margin-top:10px;">Genel ürün kataloğumuzu veya kategoriye özel teknik kataloglarımızı görüntüleyin ya da indirin.</p>
+    <div class="catalog-grid">
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Genel Ürün Kataloğu 2026</h3><div class="meta">PDF · 18.4 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Temperleme Makineleri Kataloğu</h3><div class="meta">PDF · 6.1 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Kaplama Hatları Kataloğu</h3><div class="meta">PDF · 5.7 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Kalıplama Sistemleri Kataloğu</h3><div class="meta">PDF · 7.9 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Soğutma Tünelleri Kataloğu</h3><div class="meta">PDF · 3.2 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+      <div class="catalog-card"><div class="ph"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="4" y="2" width="16" height="20" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span class="tag">Kapak</span></div><div class="body"><h3>Ambalajlama Makineleri Kataloğu</h3><div class="meta">PDF · 4.5 MB · TR/EN</div><div class="actions"><button class="btn btn-outline">Görüntüle</button><button class="btn btn-primary">İndir</button></div></div></div>
+    </div>
+  </div>
+  <footer class="site-footer"><div class="footer-inner"><div class="footer-bottom" style="border-top:none;margin-top:0;padding-top:0;"><span>© 2026 Çikolata Makine A.Ş.</span><span>Tasarım önizlemesi</span></div></div></footer>
+</section>
+
+</main>
+
+<script>
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.tab');
+    if (!btn) return;
+    document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+    btn.classList.add('active'); btn.setAttribute('aria-selected', 'true');
+    document.querySelectorAll('.page-panel').forEach(function (p) { p.classList.remove('active'); });
+    document.getElementById(btn.dataset.target).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  });
+
+  (function () {
+    var slides = document.querySelectorAll('.hero-slide');
+    var dots = document.querySelectorAll('.hero-dot');
+    if (!slides.length) return;
+    var i = 0, timer;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function show(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    function start() { if (reduceMotion) return; timer = setInterval(function () { show(i + 1); }, 5500); }
+    function reset() { clearInterval(timer); start(); }
+
+    document.querySelector('.hero-arrow.next').addEventListener('click', function () { show(i + 1); reset(); });
+    document.querySelector('.hero-arrow.prev').addEventListener('click', function () { show(i - 1); reset(); });
+    dots.forEach(function (d, idx) { d.addEventListener('click', function () { show(idx); reset(); }); });
+
+    var viewport = document.querySelector('.hero-viewport');
+    viewport.addEventListener('mouseenter', function () { clearInterval(timer); });
+    viewport.addEventListener('mouseleave', start);
+    start();
+  })();
+</script>
