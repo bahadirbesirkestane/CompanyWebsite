@@ -1,0 +1,141 @@
+# Çikolata Makine — WordPress Teması
+
+Onaylanan tasarım önizlemesinin ([01_tasarim_onizleme.html](../01_tasarim_onizleme.html)) birebir çalışan WordPress temaya dönüştürülmüş hâli. Hiyerarşik makine kategorileri, PDF katalog yönetimi ve tüm içerikler admin panelinden (wp-admin) yönetilir.
+
+## Gereksinimler
+
+- WordPress 6.x, PHP 7.4+, MySQL/MariaDB (herhangi bir Linux paylaşımlı hosting yeterli)
+- **Advanced Custom Fields** eklentisi — **ücretsiz sürüm yeterlidir**, PRO gerekmez. (Bu tema bilerek sadece ücretsiz sürümdeki alan tiplerini kullanır: Tekrarlayan Alan/Repeater ve Galeri PRO'ya özel olduğu için kullanılmamıştır — hero slaytları ve teknik özellikler gibi değişken listeler, sabit sayıda grup alanı veya satır satır metin ile çözülmüştür. Bu tema tüm özel alanları PHP içinde otomatik tanımlar, ACF arayüzünden ayrıca alan oluşturmanıza gerek yoktur.)
+- **Contact Form 7** — İletişim sayfasındaki form için gereklidir (tema, formu otomatik olarak İletişim sayfasına yerleştirir — bkz. aşağıdaki "İletişim Formu & Harita" bölümü).
+
+## Kurulum
+
+1. `cikolata-makine` klasörünü zip'leyip **Görünüm → Temalar → Yeni Ekle → Tema Yükle** ile yükleyin (ya da FTP ile `/wp-content/themes/` altına kopyalayın), sonra **Etkinleştir**.
+2. **Eklentiler → Yeni Ekle**: "Advanced Custom Fields" (ücretsiz sürüm) ve **"Contact Form 7"** eklentilerini kurup etkinleştirin. Contact Form 7 etkinleştirildiğinde otomatik olarak "Contact form 1" adında bir form oluşur — bu formu **silmeyin/adını değiştirmeyin**, tema İletişim sayfasına bu formu (slug: `iletisim-formu`) otomatik yerleştirir (bkz. aşağıdaki "İletişim Formu & Harita" bölümü). Formun alanlarını (Ad Soyad, Firma, E-posta, Telefon, Mesaj) ve gönderim ayarlarını dilerseniz Contact Form 7 admin ekranından özelleştirebilirsiniz.
+3. **Ayarlar → Kalıcı Bağlantılar** sayfasını açıp tekrar **Kaydet**'e basın (kategori/katalog url yapılarını tazeler).
+4. **Sayfalar → Yeni Ekle** ile şu sayfaları oluşturun:
+   - "Anasayfa" (front page olarak atanacak)
+   - "Ürünler" (istediğiniz başka bir başlık da olur, örn. "Makinelerimiz") — **slug mutlaka `urunler` olmalı** (şablon otomatik eşleşir; sadece görünen BAŞLIK değil, slug/adres de değişirse bu sayfa şablonu ve site genelindeki linkler kırılır — başlığı istediğiniz kadar değiştirebilirsiniz, sadece slug'a dokunmayın)
+   - "İletişim" — slug `iletisim`
+   - "Kurumsal", "Hakkımızda" vb. istediğiniz diğer sayfalar
+5. **Ayarlar → Okuma**: Anasayfa gösterimini "Sabit bir sayfa" yapıp "Anasayfa" sayfasını seçin.
+6. "Anasayfa" sayfasını düzenlerken sağdaki **Anasayfa Ayarları** kutusunu doldurun: **Slayt 1/2/3** (her biri üst etiket, başlık, açıklama, görsel, 2 buton — başlık boş bırakılan slayt sitede hiç görünmez, en az Slayt 1'i doldurun), **İstatistik 1-4**, Katalog Banner metni/PDF'i.
+7. **Görünüm → Menüler**: Bir menü oluşturup **"Üst Menü (Header)"** konumuna atayın (Anasayfa, Kurumsal, Ürünler, Kataloglar, Blog, İletişim). İsteğe bağlı olarak "Footer — Hızlı Linkler" ve "Footer — Kategoriler" konumlarını da doldurun. Bir üst menü öğesini fare ile bir üst öğenin biraz altına/sağına sürükleyerek bırakırsanız (WordPress'in standart girintileme yöntemi), o öğe alt sayfa/alt kategori olarak eklenir ve mobil hamburger menüde üst öğenin altında girintili görünür.
+8. **Ürünler → Kategoriler**: Kategori/alt kategori ağacınızı oluşturun (yapı karmaşıklaşmasın diye **en fazla 2 seviye** — kategori → alt kategori — önerilir). Her kategoriye isterseniz bir **Kategori İkonu** yükleyin. Bir kategoride ürün yoksa (kendi içinde veya alt kategorilerinde) kart üzerinde sayı satırı hiç görünmez — "Proje Bazlı" gibi bir yer tutucu metin yoktur.
+9. **Ürünler → Yeni Ekle**: Her makine için:
+   - Öne Çıkan Görsel (vitrin kapak — bu, detay sayfasındaki galerinin de ilk fotoğrafıdır)
+   - Kategori, Kısa Özet (ürün kartlarında başlığın altında görünen tek satır)
+   - **Kısa Açıklama** (detay sayfasında galerinin yanında görünen paragraf)
+   - **Ek Görsel 1-8** (galeri — istediğiniz kadarını doldurun, hepsi zorunlu değil). 2'den fazla fotoğraf eklerseniz ana görselin üzerinde otomatik olarak ileri/geri okları çıkar.
+   - **Teknik Özellikler**: her satıra "Özellik Adı: Değer" (örn. "Kapasite: 450 kg/saat"). **İlk 3 satır**, detay sayfasında galerinin yanında küçük kart olarak da gösterilir (bkz. aşağıdaki not) — kart başlıklarını/değerlerini değiştirmek için sadece bu satırları düzenlemeniz yeterli, ayrı bir alan yoktur.
+   - PDF Katalog, opsiyonel YouTube video linki — girildiğinde ürün sayfasında "Dokümanlar"/"Video" sekmeleri otomatik açılır. Varsayılan açılan sekme "Ürün Açıklaması"dır.
+   - **CTA Butonu Metni** (opsiyonel) — boş bırakılırsa "Bu Makine İçin Teklif İste" butonu o makinede hiç görünmez. Bir metin girerseniz buton görünür; **CTA Linki** de girerseniz oraya, girmezseniz sitedeki WhatsApp numarasına (o da yoksa İletişim sayfasına) yönlendirir.
+
+   > **"Kapasite / Kurulu Güç / Ebat" kartları nereden geliyor?** Bunlar ayrı bir alan değildir — doğrudan yukarıdaki **Teknik Özellikler** kutusunun ilk 3 satırından otomatik oluşur. "Kapasite" yerine "Çalışma Sıcaklığı" gibi farklı bir başlık göstermek isterseniz o satırı düzenlemeniz yeterli; makineden makineye tamamen farklı olabilir. 3'ten az satır girerseniz daha az kart görünür, hiç satır girmezseniz bu kart alanı da "Teknik Özellikler" sekmesi de hiç görünmez.
+10. **Kataloglar → Yeni Ekle**: Genel/kategori bazlı PDF kataloglarınızı ekleyin (öne çıkan görsel = kapak, ACF'ten PDF dosyasını yükleyin).
+11. **Referanslar → Yeni Ekle**: Müşteri/referans firma adı + logo (öne çıkan görsel) — anasayfadaki kayan şeritte otomatik görünür. Hiç referans eklenmezse o bölüm sayfada hiç görünmez.
+12. **Genel Ayarlar** (sol menüde): telefon, e-posta, adres, sosyal linkler — footer'da otomatik görünür.
+13. **Görünüm → Özelleştir → Site Kimliği**: logonuzu yükleyin.
+
+## İletişim Formu & Harita
+
+İletişim sayfası, kodda sabit değil — tema bunu **otomatik olarak** ekler, siz sadece iki yeri doldurursunuz:
+
+- **Form**: Contact Form 7 ile gelen (veya siz düzenlediğiniz) `iletisim-formu` slug'lı form, İletişim sayfasının ALTINA otomatik yerleştirilir. Formu görünüme/alanlara müdahale etmek isterseniz Contact Form 7 → Formlar'dan düzenleyin — sayfa içeriğine ayrıca shortcode eklemenize gerek YOKTUR (elle eklerseniz iki form birden görünür, eklemeyin).
+- **Harita**: **Görünüm → Özelleştir → İletişim & WhatsApp → "Google Haritalar Yerleştirme (Embed) URL'si"** alanına, Google Haritalar'da adresinizi bulup **Paylaş → Harita Yerleştir** sekmesinden aldığınız `src="..."` adresini yapıştırın (API anahtarı gerekmez, ücretsizdir). **Bu alan boşken harita hiç görünmez** — yanlış/örnek bir konum asla otomatik gösterilmez, formun altında sadece boş yer kalır (form tek sütun olarak genişler).
+- **Form e-postası nereye gider?** Görünüm → Özelleştir → İletişim & WhatsApp → **E-posta** alanına girdiğiniz adrese (tüm dillerdeki formlar için ortak, tek kaynak). Bu alan boşsa formun kendi varsayılan ayarındaki (site yönetici e-postası) adrese gider.
+- **Çoklu dil**: Form, "Ürünler"/"İletişim" sayfaları gibi Polylang ile çevrilebilir işaretlenmiştir. Yeni bir dilde form eklemek için Contact Form 7 → Formlar'da `iletisim-formu`nun yanındaki **"+ Çeviri Ekle"** ile yeni dilde bir form oluşturup alan etiketlerini (Ad Soyad, Firma Adı, vb.) o dile çevirin — tema otomatik olarak geçerli ziyaretçi diline uygun formu gösterir, ekstra kod/ayar gerekmez.
+
+## Yükleme Boyutu Sınırı (PDF/Görsel)
+
+wp-admin → Medya yükleme ekranında gördüğünüz "Maksimum yükleme boyutu" (genelde 2MB), WordPress'in değil **hosting'in PHP ayarının** (`upload_max_filesize`, `post_max_size`) sınırıdır — bu tema kodundan değiştirilemez, hosting tarafında yükseltilmesi gerekir:
+
+- **cPanel'li hosting (çoğu Türk paylaşımlı hosting)**: cPanel → "MultiPHP INI Editor" (veya "Select PHP Version → Options") → `upload_max_filesize` ve `post_max_size` değerlerini örn. `64M` yapıp kaydedin.
+- **cPanel yoksa / yukarıdaki çalışmazsa**: WordPress kurulumunun kök dizinindeki `.htaccess` dosyasının başına şunu eklemeyi deneyin (yalnızca klasik "mod_php" host'larda çalışır, PHP-FPM'de etkisi olmaz):
+  ```
+  php_value upload_max_filesize 64M
+  php_value post_max_size 64M
+  ```
+- **Hiçbiri işe yaramazsa**: hosting desteğine "PHP upload_max_filesize ve post_max_size değerlerini 64M'ye çıkarır mısınız?" diye yazın — bu standart bir istektir, her hosting destek ekibi yapabilir.
+
+(Yerel Docker test ortamında bu zaten `local-dev/uploads.ini` ile 64MB'a çıkarılmış durumda.)
+
+## Dosya Yapısı
+
+```
+cikolata-makine/
+├── style.css                    Tema başlığı
+├── functions.php                Kurulum, enqueue, menüler
+├── header.php / footer.php      Ortak site iskeleti
+├── front-page.php               Anasayfa (hero slider, kategori vitrini, öne çıkanlar, referans şeridi, katalog banner)
+├── page-urunler.php             Ürünler kategori indeksi (slug: urunler — sayfa BAŞLIĞI değiştirilebilir, slug değişemez)
+├── taxonomy-makine_kategori.php Kategori / alt kategori + ürün listesi
+├── single-makine.php            Makine detay sayfası
+├── archive-katalog.php          Kataloglar (PDF) grid sayfası
+├── page.php                     Genel içerik sayfası (Kurumsal, Hakkımızda, İletişim...)
+├── single.php / index.php       Blog yazı detayı / listesi
+├── 404.php                      Sayfa bulunamadı
+├── inc/
+│   ├── cpt-taxonomies.php       makine / katalog / referans post type'ları + makine_kategori taksonomisi
+│   ├── acf-fields.php           Tüm özel alan tanımları (kod tabanlı, ACF arayüzünden bağımsız)
+│   ├── template-tags.php        breadcrumb, kategori/ürün kartı, PDF satırı gibi paylaşılan render fonksiyonları
+│   ├── customizer.php           Görünüm → Özelleştir → "İletişim & WhatsApp" (telefon/adres/WhatsApp/sosyal linkler)
+│   └── strings.php              Ön yüzdeki tüm sabit metinlerin tek sözlüğü (cm__()) — çoklu dil çevirisi buradan akar
+└── assets/
+    ├── css/main.css             Onaylanan tasarımın (beyaz/kırık beyaz + açık mavi, Segoe UI) tüm stilleri
+    └── js/main.js                Hero slider + galeri küçük görsel geçişi
+```
+
+## Çoklu Dil Kurulumu (Türkçe + İngilizce + Rusça + İspanyolca)
+
+Tema, **Polylang (ücretsiz sürüm)** ile çalışacak şekilde baştan hazırlanmıştır. URL yapısı: Türkçe (varsayılan dil) önekssiz kalır (`/urunler/`), diğer diller önek alır (`/en/urunler/`, `/ru/...`, `/es/...`).
+
+### 1) Kurulum sırası (bu sıra önemlidir)
+
+1. **Eklentiler → Yeni Ekle**: "Polylang" kurup etkinleştirin. İlk açılan kurulum sihirbazında Türkçe/İngilizce/Rusça/İspanyolca dillerini ekleyin, **varsayılan dil Türkçe** olarak seçin.
+2. Sihirbazın "mevcut içeriği varsayılan dile ata" adımını mutlaka çalıştırın — bu atlanırsa mevcut makine/kategori/sayfa içerikleriniz dil filtresine takılıp sitede görünmez olur.
+3. **Diller → Ayarlar → Custom Post Types and Taxonomies**: `Ürünler` (makine) ve `Kataloglar` (katalog) post type'larını, `Ürün Kategorileri` (makine_kategori) taksonomisini "çevrilebilir" işaretleyip kaydedin. (`Referanslar` işaretlemeyin — logo/isim dilden bağımsızdır.)
+4. **Diller → Ayarlar → URL sekmesi**: "Anasayfa URL'i sayfa adı/id yerine dil kodunu içersin" seçeneğini **işaretleyin** — bu işaretlenmezse İngilizce/Rusça/İspanyolca anasayfa `/en/` yerine `/en/anasayfa-slug-adi/` gibi yanlış bir adrese yönlenir.
+5. **Ayarlar → Kalıcı Bağlantılar → Kaydet** (rewrite kurallarını tazeler).
+
+### 2) Aynı slug + dil öneki hakkında önemli not
+
+Bu yapıda her sayfa/kategori TÜM dillerde aynı slug'ı kullanır (örn. TR `/urunler/`, EN `/en/urunler/`). **WordPress çekirdeği ve Polylang ücretsiz sürüm, sayfa/terim slug benzersizliğini varsayılan olarak dilden bağımsız kontrol eder** — yani ikinci dilde aynı slug'la bir sayfa/kategori oluşturduğunuzda WordPress bunu otomatik olarak `urunler-2` gibi bir slug'a çevirebilir ve `/en/urunler/` adresi yanlış (Türkçe) içeriğe yönlenebilir.
+
+Bunu önlemek için `functions.php` içine iki özel filtre eklenmiştir (`cm_pll_unique_post_slug`, `cm_pll_unique_term_slug`) — bunlar sayesinde **Polylang'in "+ Çeviri Ekle" ekranından** (bkz. aşağıdaki 4. madde) oluşturduğunuz çeviriler doğru slug'ı otomatik korur. Bu ikisi kod tarafında zaten çözülmüştür, ekstra bir işlem gerekmez — sadece çevirileri mutlaka Polylang'in "+ Çeviri Ekle" ekranından oluşturun, sayfayı/kategoriyi Polylang'in dil seçimi dışında bağımsız/manuel bir yöntemle (örn. içe aktarma aracı) oluşturmayın.
+
+### 3) Menüler
+
+Polylang'de tek menü diller arasında otomatik filtrelenmez — **her dil için AYRI bir menü** oluşturulmalıdır. Konum başına bir dil değil, **dil başına bir menü** vardır:
+
+1. **Görünüm → Menüler → Yeni menü oluştur**: her dil için ayrı bir menü oluşturun (örn. "Ana Menü", "Ana Menü (EN)", "Ana Menü (RU)", "Ana Menü (ES)").
+2. Her menüyü düzenlerken, menü ayarları kutusunda **sadece o dile ait sayfa/kategori/link** ekleyin — örn. "Ana Menü (EN)" içine sadece İngilizce sayfalara/kategorilere giden öğeler eklenmeli, Türkçe bir sayfa asla eklenmemeli.
+3. Menüyü **"Üst Menü (Header)"** konumuna atarken, Polylang menü ekranının üstünde her dil için AYRI bir konum seçici görürsünüz (örn. "Üst Menü (Header) — Türkçe", "— English" gibi) — her dilin menüsünü kendi seçiciyle atayın. "Footer — Hızlı Linkler" için de aynısını yapın (4 dil × 2 konum = en fazla 8 menü). "Footer — Kategoriler" konumu otomatik/dinamik olduğundan menü atamanıza gerek yoktur.
+
+> **Sık yapılan hata — bunu asla yapmayın:** Bir dilin sayfasını/kategorisini, YANLIŞLIKLA başka bir dilin menüsüne eklemek (örn. İngilizce "Home" sayfasını Türkçe menüye sürüklemek). Polylang bunu engellemez, sessizce kabul eder — sonuç, o dilde gezinirken menüde diğer dildeki bir öğenin de görünmesi, ya da menünün beklenmedik şekilde karışık görünmesidir (bu proje sırasında bir kez yaşanmış ve düzeltilmiş bir hatadır).
+>
+> Bunu yakalamak için `functions.php` içine bir **güvenlik kontrolü** eklenmiştir (`cm_check_menu_language_mismatches`): wp-admin'de Panel veya Menüler ekranını her açtığınızda, herhangi bir menüde dili uyuşmayan bir öğe varsa üstte sarı bir uyarı kutusu ("Menü dil uyuşmazlığı bulundu") otomatik çıkar ve hangi menüde hangi öğenin sorunlu olduğunu tam olarak söyler. Böyle bir uyarı görürseniz, belirtilen öğeyi o menüden kaldırıp doğru dildeki menüye taşıyın.
+>
+> **İkinci bir gizli tuzak — WordPress'in "Yeni sayfaları otomatik ekle" özelliği:** Görünüm → Menüler → bir menüyü düzenlerken "Menü Ayarları" altında **"Bu menüye yeni üst-seviye sayfaları otomatik ekle"** adlı bir kutu vardır. Bu işaretliyse, HANGİ dilde olursa olsun (Türkçe, İngilizce, fark etmez) oluşturulan HER yeni sayfa o menüye sessizce eklenir — Polylang bunu engellemez, çünkü bu tamamen WordPress çekirdeğinin özelliğidir. Bu proje sırasında gerçekten yaşanmış bir hatadır: yeni dil sayfaları oluşturulduğunda Türkçe menüye otomatik eklenip menüyü karıştırmıştır. **Bu yüzden bu özellik artık koddan da korunuyor**: yukarıdaki güvenlik kontrolü, dile atanmış menülerden herhangi birinde bu kutu işaretli bulunursa hem sizi uyarır HEM DE otomatik olarak kapatır. Yine de wp-admin'de bu kutuyu elle tekrar işaretlemeyin.
+
+### 4) İçerik çevirisi (elle girilmeli — otomatik çeviri yoktur)
+
+Her makine, kategori, sayfa (Anasayfa, Ürünler, İletişim, Kurumsal...) ve katalog kaydı için:
+
+1. wp-admin'de ilgili içeriğin listesinde veya düzenleme ekranında sağdaki **Diller** kutusunda, çevirmek istediğiniz dilin yanındaki **"+"** ikonuna tıklayın.
+2. Açılan yeni taslakta başlık/açıklama/teknik özellikler gibi tüm alanları o dilde yeniden girin.
+3. Kategori ikonu, makine fotoğrafları gibi **görseller dilden dile otomatik kopyalanmaz** — aynı görseli her dilde ayrıca seçmeniz (veya yeniden yüklemeniz) gerekir.
+4. **Sabit arayüz metinleri** (breadcrumb "Anasayfa", sekme adları "Ürün Açıklaması"/"Teknik Özellikler", buton yazıları, footer başlıkları, 404 mesajı vb.) admin panelinde değil, **Diller → Dize Çevirisi** ekranından çevrilir — "Çikolata Makine Tema" grubu altında tüm bu metinler listelenir, her biri için İngilizce/Rusça/İspanyolca karşılığını girip kaydedin.
+5. Site başlığı/açıklaması (Ayarlar → Genel) da aynı ekrandan ("WordPress" grubu altında) her dilde ayrıca girilmelidir.
+
+Bir dilde henüz çeviri girilmemiş içerik varsa, o dilin ziyaretçisi otomatik olarak Türkçe (varsayılan dil) içeriğini görür — site bozulmaz, sadece o bölüm henüz çevrilmemiş demektir.
+
+### 5) Dil değiştirici ve dillerin görünürlüğü
+
+Header'daki dil değiştirici (TR/EN/RU/ES), bir dilde **hiç içerik yoksa o dili otomatik gizler** (Polylang'in `hide_if_empty` varsayılan davranışı) — örneğin Rusça için henüz hiçbir sayfa/makine çevrilmediyse, dil değiştiricide "ru" hiç görünmez. Bu bir hata değildir; o dilde ilk içeriği (örn. Anasayfa çevirisini) girdiğiniz an dil değiştiricide otomatik belirir.
+
+## Bilinen sınırlamalar / sonraki adımlar
+
+- Gerçek ürün fotoğrafları/PDF'ler yüklendikçe teknik-çizim yer tutucular otomatik kaybolur — ayrıca bir işlem gerekmez.
+- İletişim formu ve harita otomatik gelir, elle shortcode eklemeye gerek yoktur (bkz. yukarıdaki "İletişim Formu & Harita" bölümü). Formdan gelen e-postaların spam'e düşmemesi için canlı hostingde bir SMTP eklentisi (örn. WP Mail SMTP) kurulması önerilir — bkz. `02_HOSTING_KURULUM_REHBERI.md` §2.6.
+- Otomatik/makine çevirisi yoktur — kalite ve doğruluk için tüm çeviriler elle girilir (bkz. yukarıdaki "Çoklu Dil Kurulumu" bölümü).
