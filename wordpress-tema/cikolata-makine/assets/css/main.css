@@ -86,10 +86,13 @@ img, svg { display: block; max-width: 100%; }
 
 /* ---- header ---- */
 .site-header { border-bottom: 1px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 30; transition: box-shadow .25s ease; }
-.site-header-inner { max-width: 1240px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; transition: padding .25s ease; }
-/* Scroll'da küçülme: main.js scrollY > 8px olunca .is-scrolled ekler/kaldırır (bkz. assets/js/main.js) */
+.site-header-inner { max-width: 1240px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+/* Scroll'da sadece gölge belirir: main.js scrollY > 8px olunca .is-scrolled ekler/kaldırır
+   (bkz. assets/js/main.js). ÖNEMLİ: burada padding/yükseklik DEĞİŞTİRİLMEMELİ — header
+   "position: sticky" olduğu için yükseklik değişimi altındaki tüm içeriği anında kaydırır,
+   bu da düşük eşikte (8px) ileri-geri titremeye yol açıyordu (kullanıcı ekran kaydıyla
+   bildirdi). Gölge, layout'u etkilemeyen tek güvenli "scroll'da fark edilir" sinyali. */
 .site-header.is-scrolled { box-shadow: 0 2px 16px rgba(31,27,23,.08); }
-.site-header.is-scrolled .site-header-inner { padding-top: 11px; padding-bottom: 11px; }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: 0 0 auto; min-width: 0; }
 .logo img { max-height: 40px; width: auto; max-width: 100%; }
 .logo-mark { font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: 0.01em; white-space: nowrap; }
@@ -303,7 +306,10 @@ ul.megamenu-flyout {
   position: relative; background: repeating-linear-gradient(135deg, var(--paper-sunken), var(--paper-sunken) 8px, var(--paper-raised) 8px, var(--paper-raised) 16px);
   border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden;
 }
-.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; border: none; }
+/* object-fit: cover — gerçek ürün fotoğrafları birbirinden çok farklı en-boy oranlarında
+   (dikey/yatay/kare); "contain" olsaydı kutuya sığdırılırken kırpılmadan boşluk (letterbox)
+   bırakırdı. "cover" kutuyu kırparak tamamen doldurur, boşluk kalmaz — kullanıcı isteği. */
+.ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: none; }
 .ph:has(img) { background: var(--paper-raised); } /* gerçek fotoğraf varken çapraz çizgili yer tutucu deseni gizle */
 .ph svg { stroke: var(--steel-soft); }
 .ph .corner { position: absolute; width: 12px; height: 12px; border: 1.5px solid var(--ink-soft); opacity: .55; }
@@ -335,7 +341,9 @@ ul.megamenu-flyout {
 .prod-card .spec { font-size: 12px; color: var(--steel); }
 .prod-card .go { font-size: 12.5px; color: var(--accent); margin-top: 10px; font-family: var(--font-display); transition: transform .15s ease; display: inline-block; }
 .prod-card:hover .go { transform: translateX(3px); }
-.featured-tag { position: absolute; top: 8px; left: 8px; background: var(--accent); color: #fff; font-size: 9.5px; letter-spacing: .08em; padding: 4px 8px; text-transform: uppercase; font-family: var(--font-display); }
+/* z-index gerekli: cm_render_thumb() bu badge'i <img>'den ÖNCE yazdırıyor, z-index olmadan
+   aynı .ph içindeki mutlak-konumlu <img> (DOM'da sonra geldiği için) badge'in üstünü örtüyordu. */
+.featured-tag { position: absolute; top: 8px; left: 8px; z-index: 2; background: var(--accent); color: #fff; font-size: 9.5px; letter-spacing: .08em; padding: 4px 8px; text-transform: uppercase; font-family: var(--font-display); }
 @media (max-width: 900px) { .prod-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .prod-grid { grid-template-columns: 1fr; } }
 
