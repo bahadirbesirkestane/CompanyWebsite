@@ -510,11 +510,16 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .ref-logo:hover img { filter: grayscale(0); opacity: 1; }
 .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
 
-/* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ---- */
-.page-banner { height: 240px; overflow: hidden; background: var(--paper-raised); }
-.page-banner--small { height: 140px; }
+/* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ----
+   Yükseklik, ana sayfa hero'suyla (clamp(420px, 56vw, 640px)) aynı ölçek mantığıyla,
+   ama ondan biraz daha ölçülü — kurumsal sitelerde iç sayfa banner'larının tipik
+   oranı (viewport genişliğinin ~%35-40'ı, alt/üst sınırlarla). Sabit küçük bir piksel
+   değeri yerine clamp() kullanmak, geniş ekranlarda banner'ın "kısa bir şerit" gibi
+   değil gerçek bir bölüm gibi hissettirmesini sağlar. */
+.page-banner { height: clamp(320px, 38vw, 480px); overflow: hidden; background: var(--paper-raised); }
+.page-banner--small { height: clamp(220px, 26vw, 340px); }
 .page-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-@media (max-width: 640px) { .page-banner { height: 160px; } .page-banner--small { height: 110px; } }
+@media (max-width: 640px) { .page-banner { height: clamp(220px, 55vw, 340px); } .page-banner--small { height: clamp(170px, 42vw, 260px); } }
 
 /* ---- generic content page ---- */
 .page-content { padding-top: 48px; padding-bottom: 72px; }

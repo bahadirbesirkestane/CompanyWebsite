@@ -17,12 +17,17 @@ if ( ! function_exists( 'acf_add_local_field_group' ) ) {
 }
 
 /**
- * "Ek Görsel" (ek_gorsel_1..8) seçim penceresinin kapsamını, tek bir post'un
- * kendi post_parent'ından, AYNI ürünün TR/EN/RU/ES çeviri grubunun TAMAMINA genişletir.
- * Neden: kullanıcı dil başına ayrı fotoğraf YÜKLEMİYOR, bir kez yüklediği fotoğrafı
- * tüm dillerde tekrar seçmek istiyor — ama diğer ÜRÜNLERİN görselleri hâlâ görünmemeli.
- * PDF alanlarına (pdf_katalog, pdf_dosya) kasıtlı olarak UYGULANMIYOR — kataloglar dil
- * başına gerçekten ayrı dosyalar, paylaşılmaması gerekiyor (bkz. field tanımları).
+ * "Ek Görsel" (ek_gorsel_1..8) VE ürüne özel "PDF Katalog" (pdf_katalog) seçim
+ * penceresinin kapsamını, tek bir post'un kendi post_parent'ından, AYNI ürünün
+ * TR/EN/RU/ES çeviri grubunun TAMAMINA genişletir. Neden: kullanıcı dil başına ayrı
+ * fotoğraf/PDF YÜKLEMİYOR, bir kez yüklediğini tüm dillerde tekrar seçmek istiyor —
+ * ama diğer ÜRÜNLERİN dosyaları hâlâ görünmemeli.
+ *
+ * "Kataloglar" (katalog CPT) içerik tipinin KENDİ pdf_dosya alanına KASITLI OLARAK
+ * uygulanmıyor — genel kataloglar dil başına gerçekten ayrı, çevrilmiş dosyalar
+ * (kullanıcı bunu ayrıca belirtti: "katalog konusunda ayrı dillerde seçim yapmam
+ * benim için önemli"). Sadece ÜRÜNE ÖZEL teknik PDF (pdf_katalog) genellikle aynı
+ * dosyanın tüm dillerde tekrar kullanıldığı bir alan.
  *
  * NOT (düzeltme): "acf/fields/image/query" diye bir filtre YOK — ACF'in medya modalı
  * asıl WordPress çekirdeğinin "query-attachments" AJAX uç noktasını kullanıyor ve
@@ -36,7 +41,8 @@ function cm_acf_scope_gallery_query_to_translation_group( $query ) {
 
 	$cm_field_key = sanitize_text_field( wp_unslash( $_REQUEST['query']['_acfuploader'] ) );
 	$cm_field     = function_exists( 'acf_get_field' ) ? acf_get_field( $cm_field_key ) : false;
-	if ( ! $cm_field || strpos( $cm_field['name'], 'ek_gorsel_' ) !== 0 ) return $query;
+	$cm_shared    = $cm_field && ( strpos( $cm_field['name'], 'ek_gorsel_' ) === 0 || $cm_field['name'] === 'pdf_katalog' );
+	if ( ! $cm_shared ) return $query;
 	if ( empty( $query['post_parent'] ) ) return $query;
 
 	$post_id = (int) $query['post_parent'];
@@ -117,9 +123,10 @@ add_action( 'acf/init', function () {
 		'type'  => 'file',
 		'return_format' => 'array',
 		'mime_types'    => 'pdf',
-		// Görsellerin aksine PDF'ler dil başına AYRI yüklenir/seçilir (çeviri gerektirir,
-		// paylaşılmaz) — bu yüzden burada sibling-genişletme YOK, sadece bu yazıya
-		// yüklenenlerle sınırlı (diğer ürünlerin/site içeriğinin dosyaları karışmasın diye).
+		// 'uploadedTo' + cm_acf_scope_gallery_query_to_translation_group() (yukarıda):
+		// seçim penceresi bu ürünün TÜM dil kardeşlerine yüklenmiş PDF'leri de gösterir
+		// (kullanıcı genelde tek bir PDF'i tüm dillerde tekrar kullanıyor) — ama diğer
+		// ürünlerin/site içeriğinin dosyaları hâlâ karışmaz.
 		'library' => 'uploadedTo',
 		'instructions'  => 'Bu makineye özel teknik broşür/katalog dosyası. Yüklendiğinde ürün sayfasındaki "Dokümanlar" sekmesinde otomatik görünür.',
 	);
@@ -330,13 +337,23 @@ add_action( 'acf/init', function () {
 
 	acf_add_local_field_group( array(
 		'key'      => 'group_cm_kurumsal',
-		'title'    => 'Kurumsal Sayfası — Uluslararası İletişim',
+		'title'    => 'Uluslararası İletişim',
 		'fields'   => $cm_kurumsal_fields,
+		// Hem Kurumsal HEM İletişim sayfalarında düzenlenebilir (kullanıcı isteği: "istersem
+		// oraya da yazabileyim"). Ön yüzde hangisi gösterilecek: cm_render_intl_contact_section()
+		// çağrıldığı sayfanın KENDİ alanlarını kullanır — page.php'deki İletişim dalı, İletişim
+		// sayfasının kendi intl_kisi_N alanlarında en az bir girdi varsa ONU, yoksa Kurumsal
+		// sayfasınınkini gösterir (bkz. page.php). Yani veri iki yerde AYRI tutulur (ACF alanları
+		// post'a bağlıdır, paylaşılmaz) — admin hangisini dolduracağını kendisi seçer.
 		'location' => array(
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 7 ) ),   // Kurumsal (TR)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 277 ) ), // Corporate (EN)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 278 ) ), // О компании (RU)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 279 ) ), // Corporativo (ES)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 6 ) ),   // İletişim (TR)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 102 ) ), // Contact (EN)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 134 ) ), // Контакты (RU)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 141 ) ), // Contacto (ES)
 		),
 	) );
 

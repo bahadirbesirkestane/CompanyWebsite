@@ -143,11 +143,23 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 			</div>
 		<?php endif;
 
-		// Kullanıcı isteği: Uluslararası İletişim, İletişim sayfasında da BİZİM kendi
-		// iletişimimizin (üstteki kartlar + form/harita) ALTINDA görünsün. Veri Kurumsal
-		// sayfasından geliyor (pll_get_post ile geçerli dile çözülür) — ayrı giriş yok.
-		$cm_kurumsal_id_for_lang = function_exists( 'pll_get_post' ) ? pll_get_post( 7, function_exists( 'pll_current_language' ) ? pll_current_language() : 'tr' ) : 7;
-		cm_render_intl_contact_section( $cm_kurumsal_id_for_lang ?: 7 );
+		// Uluslararası İletişim, İletişim sayfasında da BİZİM kendi iletişimimizin (üstteki
+		// kartlar + form/harita) ALTINDA görünür. Alan grubu artık HEM Kurumsal HEM İletişim
+		// sayfalarında düzenlenebilir (bkz. inc/acf-fields.php group_cm_kurumsal) — admin
+		// isterse doğrudan İletişim sayfasından da girebilsin diye. Öncelik: İletişim
+		// sayfasının KENDİ girdileri varsa onlar kullanılır; hiç girilmemişse Kurumsal
+		// sayfasınınkine (geçerli dile pll_get_post ile çözülerek) düşülür.
+		$cm_iletisim_has_own_intl = false;
+		for ( $cm_i = 1; $cm_i <= 10; $cm_i++ ) {
+			$cm_row = get_field( "intl_kisi_$cm_i", get_the_ID() );
+			if ( $cm_row && ! empty( $cm_row['ulke'] ) ) { $cm_iletisim_has_own_intl = true; break; }
+		}
+		if ( $cm_iletisim_has_own_intl ) {
+			cm_render_intl_contact_section( get_the_ID() );
+		} else {
+			$cm_kurumsal_id_for_lang = function_exists( 'pll_get_post' ) ? pll_get_post( 7, function_exists( 'pll_current_language' ) ? pll_current_language() : 'tr' ) : 7;
+			cm_render_intl_contact_section( $cm_kurumsal_id_for_lang ?: 7 );
+		}
 	endif; ?>
 </div>
 
