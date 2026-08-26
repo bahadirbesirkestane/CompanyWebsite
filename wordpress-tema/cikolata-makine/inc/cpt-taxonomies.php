@@ -94,7 +94,12 @@ function cm_register_post_types() {
 			'menu_name'          => 'Kataloglar',
 		),
 		'public'       => true,
-		'has_archive'  => true,
+		// has_archive=false: "Kataloglar" artık kendi CPT arşivi değil, "urunler" ile AYNI
+		// desende gerçek bir Sayfa (bkz. page-kataloglar.php, page-{slug}.php kuralı) —
+		// bilerek kapatıldı, aksi halde /kataloglar/ adresinde Sayfa ile CPT arşivi
+		// çakışırdı. Katalog kayıtlarının kendisi (yükleme/düzenleme) DEĞİŞMEDİ, hâlâ
+		// aynı şekilde wp-admin -> Kataloglar'dan yönetiliyor.
+		'has_archive'  => false,
 		'rewrite'      => array( 'slug' => 'kataloglar', 'with_front' => false ),
 		'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
 		'menu_icon'    => 'dashicons-media-document',

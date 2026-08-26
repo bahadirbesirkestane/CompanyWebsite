@@ -24,8 +24,6 @@ function cm_pre_get_posts( $query ) {
 		// sıralanır. page-urunler.php ("Tüm Ürünler") da AYNI mantığı kullanır — tutarlı olsun.
 		$query->set( 'orderby', 'menu_order title' );
 		$query->set( 'order', 'ASC' );
-	} elseif ( is_post_type_archive( 'katalog' ) ) {
-		$query->set( 'posts_per_page', 12 );
 	}
 }
 add_action( 'pre_get_posts', 'cm_pre_get_posts' );

@@ -71,7 +71,7 @@ cikolata-makine/
 ├── page-urunler.php             Ürünler kategori indeksi (slug: urunler — sayfa BAŞLIĞI değiştirilebilir, slug değişemez)
 ├── taxonomy-makine_kategori.php Kategori / alt kategori + ürün listesi
 ├── single-makine.php            Makine detay sayfası
-├── archive-katalog.php          Kataloglar (PDF) grid sayfası
+├── page-kataloglar.php          Kataloglar (PDF) grid sayfası (slug: kataloglar — page-urunler.php ile aynı desen)
 ├── page.php                     Genel içerik sayfası (Kurumsal, Hakkımızda, İletişim...)
 ├── single.php / index.php       Blog yazı detayı / listesi
 ├── 404.php                      Sayfa bulunamadı

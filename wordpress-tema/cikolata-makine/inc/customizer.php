@@ -85,21 +85,5 @@ function cm_customize_register( $wp_customize ) {
 		'section' => 'cm_iletisim',
 		'type'    => 'url',
 	) );
-
-	// ---- Kataloglar arşiv sayfası banner'ı ------------------------------------
-	// Kurumsal/İletişim/Kariyer gibi tekil Sayfa'ların aksine "Kataloglar" bir
-	// post type arşivi (bkz. archive-katalog.php) — arkasında düzenlenebilir tek
-	// bir Sayfa yazısı olmadığı için ACF alanı değil, buradaki Customizer ayarı
-	// kullanılıyor (sirket_eposta/harita_gomme_url ile aynı desen).
-	$wp_customize->add_section( 'cm_sayfa_gorselleri', array(
-		'title'    => 'Sayfa Görselleri',
-		'priority' => 35,
-	) );
-	$wp_customize->add_setting( 'kataloglar_banner_gorseli' );
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'kataloglar_banner_gorseli', array(
-		'label'       => 'Kataloglar Sayfası Banner Görseli',
-		'description' => 'Boş bırakılırsa Kataloglar sayfası banner\'sız (şu anki) haliyle görünmeye devam eder.',
-		'section'     => 'cm_sayfa_gorselleri',
-	) ) );
 }
 add_action( 'customize_register', 'cm_customize_register' );
