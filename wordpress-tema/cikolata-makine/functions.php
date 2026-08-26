@@ -12,6 +12,8 @@ require_once CM_THEME_DIR . '/inc/nav-walker.php';
 require_once CM_THEME_DIR . '/inc/customizer.php';
 require_once CM_THEME_DIR . '/inc/strings.php';
 require_once CM_THEME_DIR . '/inc/query.php';
+require_once CM_THEME_DIR . '/inc/admin-makine-list.php';
+require_once CM_THEME_DIR . '/inc/admin-product-order.php';
 
 function cm_theme_setup() {
 	add_theme_support( 'title-tag' );

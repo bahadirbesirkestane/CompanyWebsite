@@ -52,6 +52,12 @@ add_action( 'acf/init', function () {
 			'name'  => "ek_gorsel_$i",
 			'type'  => 'image',
 			'return_format' => 'array',
+			// 'uploadedTo': seçim penceresi SADECE bu ürüne yüklenmiş görselleri gösterir —
+			// medya kütüphanesi büyüdükçe (ürün başına 3-8 görsel × artan ürün sayısı)
+			// karışmasın diye. Not: bu modda "Tüm medyayı göster" geçişi YOK (ACF'in
+			// tasarımı); yanlış ürüne yüklenmiş bir görsel önce Medya Kütüphanesi'nden
+			// (liste görünümü) "Ait olduğu" alanı düzeltilerek taşınmalı.
+			'library' => 'uploadedTo',
 			'instructions'  => $i === 1 ? 'Vitrin kapak görseli için Öne Çıkan Görsel (Featured Image) alanını kullanın. Buradaki alanlar, detay sayfası galerisindeki ek fotoğraflardır — hepsini doldurmak zorunlu değildir. 2 veya daha fazla fotoğraf (vitrin + ek görseller) olduğunda galeri üzerinde otomatik ileri/geri okları çıkar.' : '',
 		);
 	}
