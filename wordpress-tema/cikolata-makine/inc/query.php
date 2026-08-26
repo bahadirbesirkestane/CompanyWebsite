@@ -13,7 +13,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function cm_pre_get_posts( $query ) {
 	if ( is_admin() || ! $query->is_main_query() ) return;
 
-	if ( is_tax( 'makine_kategori' ) ) {
+	if ( is_tax( 'makine_kategori' ) || is_tax( 'urun_ailesi' ) ) {
+		// urun_ailesi zaten sadece "makine" post type'ına kayıtlı (bkz. inc/cpt-taxonomies.php),
+		// ama post_type açıkça belirtilmezse WP_Query'nin varsayılanı "post"tur — taksonomi
+		// arşivi sessizce 0 sonuç döner. Aynı düzeltme ikisi için de geçerli.
 		$query->set( 'post_type', 'makine' );
 		$query->set( 'posts_per_page', 12 );
 	} elseif ( is_post_type_archive( 'katalog' ) ) {

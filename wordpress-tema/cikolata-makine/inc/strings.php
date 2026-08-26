@@ -45,6 +45,8 @@ function cm_strings() {
 			'hero_slayt_suffix'         => '. slayt',
 
 			'urunler_kesfet_baslik'     => 'Kategoriye göre keşfedin',
+			'ne_uretmek_eyebrow'        => 'Son Ürüne Göre',
+			'ne_uretmek_baslik'         => 'Ne üretmek istiyorsunuz?',
 			'vitrin_eyebrow'            => 'Vitrin',
 			'one_cikan_makineler'       => 'Öne Çıkan Makineler',
 			'referanslarimiz'           => 'Referanslarımız',

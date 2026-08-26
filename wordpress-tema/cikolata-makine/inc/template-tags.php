@@ -179,6 +179,22 @@ function cm_product_card( $post_id ) {
 }
 
 /**
+ * "Ürün Ailesi" kartı — get_terms() sonucundaki bir WP_Term'i (urun_ailesi taksonomisi)
+ * cm_category_card() ile AYNI görsel dilde (.cat-card) basar; hiyerarşi/ikon alanı
+ * olmadığı için o kartın basitleştirilmiş hali — ayrı CSS gerektirmez.
+ */
+function cm_urun_ailesi_card( $term ) {
+	?>
+	<a class="cat-card reveal" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
+		<div class="cat-icon"><?php cm_generic_icon( 34 ); ?></div>
+		<h3><?php echo esc_html( $term->name ); ?></h3>
+		<?php if ( $term->description ) : ?><div class="sub"><?php echo esc_html( wp_trim_words( $term->description, 10, '…' ) ); ?></div><?php endif; ?>
+		<?php if ( $term->count ) : ?><div class="count"><?php echo esc_html( $term->count . ' ' . cm__( 'urun_etiketi' ) ); ?></div><?php endif; ?>
+	</a>
+	<?php
+}
+
+/**
  * PDF görüntüle/indir satırı. $file, ACF file alanının (return_format=array) değeridir.
  */
 function cm_pdf_row( $file, $label = null ) {

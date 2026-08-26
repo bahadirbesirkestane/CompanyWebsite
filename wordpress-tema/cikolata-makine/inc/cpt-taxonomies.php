@@ -23,6 +23,32 @@ function cm_register_taxonomies() {
 		'show_in_rest'      => true,
 		'rewrite'           => array( 'slug' => 'urunler/kategori', 'with_front' => false, 'hierarchical' => true ),
 	) );
+
+	// "Ne üretmek istiyorsunuz?" ekseni — makine tipine göre DEĞİL, nihai ürüne göre
+	// (Bar, Praline, Drajee, Damla/Pul…) gezinme sağlayan, hiyerarşik olmayan ikinci
+	// bir taksonomi. Bkz. 03_TASARIM_YENILEME_ONERISI.md Bölüm 5.3. Terimler ve mevcut
+	// ürünlerin etiketlenmesi wp-admin → Ürünler → Ürün Aileleri üzerinden yapılır;
+	// hiç terim/etiketli ürün yokken anasayfadaki ilgili blok "boşsa gizle" ilkesiyle
+	// otomatik gizlenir (bkz. front-page.php).
+	register_taxonomy( 'urun_ailesi', array( 'makine' ), array(
+		'labels' => array(
+			'name'          => 'Ürün Aileleri',
+			'singular_name' => 'Ürün Ailesi',
+			'search_items'  => 'Ürün Ailesi Ara',
+			'all_items'     => 'Tüm Ürün Aileleri',
+			'edit_item'     => 'Ürün Ailesini Düzenle',
+			'update_item'   => 'Ürün Ailesini Güncelle',
+			'add_new_item'  => 'Yeni Ürün Ailesi Ekle',
+			'new_item_name' => 'Yeni Ürün Ailesi Adı',
+			'menu_name'     => 'Ürün Aileleri',
+		),
+		'hierarchical'      => false,
+		'public'            => true,
+		'show_ui'           => true,
+		'show_admin_column' => true,
+		'show_in_rest'      => true,
+		'rewrite'           => array( 'slug' => 'urunler/urun-ailesi', 'with_front' => false ),
+	) );
 }
 add_action( 'init', 'cm_register_taxonomies' );
 
@@ -48,7 +74,7 @@ function cm_register_post_types() {
 		'menu_icon'    => 'dashicons-admin-tools',
 		'menu_position'=> 5,
 		'show_in_rest' => true,
-		'taxonomies'   => array( 'makine_kategori' ),
+		'taxonomies'   => array( 'makine_kategori', 'urun_ailesi' ),
 	) );
 
 	register_post_type( 'katalog', array(

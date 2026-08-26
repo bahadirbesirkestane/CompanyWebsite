@@ -208,9 +208,9 @@ Mevcut sisteme (WordPress klasik tema, ACF ücretsiz, Polylang, `assets/css/main
 - [x] Ürün kartlarında fotoğraf hover-zoom — Faz 1'de zaten uygulanmıştı (`scale(1.045)`)
 
 ### Faz 3 — Daha büyük, isteğe bağlı
-- [ ] "Ne üretmek istiyorsunuz?" ikinci navigasyon ekseni (yeni taksonomi)
-- [ ] Ürün sayfalarına video sekmesi + PDF teknik föy indirimi zenginleştirme (altyapı zaten var, içerik doldurma meselesi)
-- [ ] Referans/vaka çalışması sayfaları ("başarı hikayesi" formatı)
+- [x] "Ne üretmek istiyorsunuz?" ikinci navigasyon ekseni — `urun_ailesi` taksonomisi (`inc/cpt-taxonomies.php`), anasayfa bloğu (`front-page.php`), arşiv şablonu (`taxonomy-urun_ailesi.php`). 4 hazır terim (Bar, Praline, Drajee, Damla/Pul) oluşturuldu; **mevcut 57 ürünün etiketlenmesi bilinçli olarak admin'e bırakıldı** (wp-admin → Ürünler → Ürün Aileleri) — kullanıcı bunu otomatik/tahminî yaptırmamayı tercih etti. Hiç ürün etiketlenmemişken blok "boşsa gizle" ilkesiyle tamamen gizli kalır, canlı olarak doğrulandı.
+- [ ] Ürün sayfalarına video sekmesi + PDF teknik föy indirimi zenginleştirme — **kod altyapısı zaten mevcuttu** (`.tab-strip`, `.video-embed`, `.pdf-row`), yapılacak yeni kod yok; kalan iş sadece gerçek video/PDF içeriğinin ACF alanlarına girilmesi (Faz 0 kapsamına daha yakın).
+- [ ] Referans/vaka çalışması sayfaları ("başarı hikayesi" formatı) — **bilinçli olarak ertelendi**: Ülker/Şölen/Algida/Lactalis gibi gerçek müşteriler için içerik gerektirir, bu içerik kullanıcıdan/gerçek proje verisinden gelmeden şablon veya örnek metin üretilmedi.
 
 ---
 

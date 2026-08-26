@@ -91,6 +91,23 @@ if ( ! is_wp_error( $cm_top_cats ) && $cm_top_cats ) :
 <?php endif; ?>
 
 <?php
+// "Ne üretmek istiyorsunuz?" — makine tipi yerine nihai ürüne göre ikinci gezinme
+// ekseni (bkz. 03_TASARIM_YENILEME_ONERISI.md Bölüm 5.3). hide_empty=true olduğu için
+// admin henüz hiç "Ürün Ailesi" terimi/etiketli ürün girmediyse bu blok TAMAMEN
+// gizli kalır — "boşsa gizle" ilkesi, terim eklenip ürün etiketlenince otomatik belirir.
+$cm_families = get_terms( array( 'taxonomy' => 'urun_ailesi', 'hide_empty' => true ) );
+if ( ! is_wp_error( $cm_families ) && $cm_families ) :
+?>
+<div class="wrap section-tight">
+	<div class="eyebrow reveal"><?php echo esc_html( cm__( 'ne_uretmek_eyebrow' ) ); ?></div>
+	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'ne_uretmek_baslik' ) ); ?></h2>
+	<div class="cat-grid">
+		<?php foreach ( $cm_families as $cm_term ) cm_urun_ailesi_card( $cm_term ); ?>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php
 $cm_featured_q = new WP_Query( array(
 	'post_type'      => 'makine',
 	'posts_per_page' => 3,
