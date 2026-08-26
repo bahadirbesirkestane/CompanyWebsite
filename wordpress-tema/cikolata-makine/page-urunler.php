@@ -17,7 +17,7 @@ $cm_all_products = new WP_Query( array(
 	'post_type'      => 'makine',
 	'posts_per_page' => 12,
 	'paged'          => $cm_paged,
-	'orderby'        => 'title',
+	'orderby'        => 'menu_order title', // admin sırası (bkz. Ürün düzenle -> "Sıra" alanı), eşitse başlığa göre
 	'order'          => 'ASC',
 ) );
 ?>

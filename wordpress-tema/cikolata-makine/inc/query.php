@@ -19,6 +19,11 @@ function cm_pre_get_posts( $query ) {
 		// arşivi sessizce 0 sonuç döner. Aynı düzeltme ikisi için de geçerli.
 		$query->set( 'post_type', 'makine' );
 		$query->set( 'posts_per_page', 12 );
+		// Admin, ürün düzenleme ekranındaki "Sıra" (menu_order, page-attributes desteğiyle
+		// geldi) alanından gösterim sırasını belirler; aynı sıradaki ürünler başlığa göre
+		// sıralanır. page-urunler.php ("Tüm Ürünler") da AYNI mantığı kullanır — tutarlı olsun.
+		$query->set( 'orderby', 'menu_order title' );
+		$query->set( 'order', 'ASC' );
 	} elseif ( is_post_type_archive( 'katalog' ) ) {
 		$query->set( 'posts_per_page', 12 );
 	}

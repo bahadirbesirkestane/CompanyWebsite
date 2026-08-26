@@ -70,7 +70,10 @@ function cm_register_post_types() {
 		'public'       => true,
 		'has_archive'  => false,
 		'rewrite'      => array( 'slug' => 'makine', 'with_front' => false ),
-		'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
+		// 'page-attributes': düzenleme ekranında basit bir "Sıra" (menu_order) numarası
+		// alanı ekler — admin, kategori/ürünler sayfalarındaki gösterim sırasını buradan
+		// belirler (bkz. inc/query.php cm_pre_get_posts() ve page-urunler.php orderby).
+		'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
 		'menu_icon'    => 'dashicons-admin-tools',
 		'menu_position'=> 5,
 		'show_in_rest' => true,
