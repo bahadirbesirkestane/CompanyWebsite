@@ -15,6 +15,44 @@ require_once CM_THEME_DIR . '/inc/query.php';
 require_once CM_THEME_DIR . '/inc/admin-makine-list.php';
 require_once CM_THEME_DIR . '/inc/admin-product-order.php';
 
+/**
+ * Sayfalar (post_type=page) Klasik Düzenleyici ile açılır. Sebep: bu temadaki tüm
+ * "Sayfa" içeriği zaten ACF meta kutuları ve düz HTML/shortcode ile yönetiliyor,
+ * Gutenberg blokları hiç kullanılmıyor — ama Gutenberg'in klasik meta box uyumluluk
+ * katmanı 'side' konumlu kutuları (örn. Banner Görseli) GÜVENİLMEZ şekilde gösteriyor
+ * (bazı ekranlarda sıfır boyutlu, kaydırmadan erişilemeyen bir alanda kalıyor — admin
+ * bu yüzden Banner Görseli alanını bulamamıştı). Klasik Düzenleyici'de Öne Çıkan
+ * Görsel + Banner Görseli + diğer tüm 'side' ACF alanları AYNI, öngörülebilir sağ
+ * sütunda, üst üste görünür.
+ */
+function cm_disable_block_editor_for_pages( $use_block_editor, $post_type ) {
+	if ( $post_type === 'page' ) return false;
+	return $use_block_editor;
+}
+add_filter( 'use_block_editor_for_post_type', 'cm_disable_block_editor_for_pages', 10, 2 );
+
+/**
+ * Sağ sütunda Banner Görseli'ni Öne Çıkan Görsel'in HEMEN ALTINA sabitler — WP
+ * çekirdeği "postimagediv"i 'low' öncelikte kaydettiği için ACF'in (daha yüksek
+ * öncelikli) kutusu varsayılan olarak ÖNCE/ÜSTTE çıkıyordu (kullanıcı bunu istemedi:
+ * "banner'lar görseldeki sayfanın altındaki kısımdan yönetilsin").
+ */
+function cm_reorder_page_side_metaboxes() {
+	global $wp_meta_boxes;
+	if ( empty( $wp_meta_boxes['page']['side'] ) ) return;
+
+	$featured = $banner = null;
+	foreach ( $wp_meta_boxes['page']['side'] as $priority => &$boxes ) {
+		if ( isset( $boxes['postimagediv'] ) )              { $featured = $boxes['postimagediv']; unset( $boxes['postimagediv'] ); }
+		if ( isset( $boxes['acf-group_cm_sayfa_banner'] ) ) { $banner   = $boxes['acf-group_cm_sayfa_banner']; unset( $boxes['acf-group_cm_sayfa_banner'] ); }
+	}
+	unset( $boxes );
+
+	if ( $featured ) $wp_meta_boxes['page']['side']['low']['postimagediv'] = $featured;
+	if ( $banner )   $wp_meta_boxes['page']['side']['low']['acf-group_cm_sayfa_banner'] = $banner;
+}
+add_action( 'do_meta_boxes', 'cm_reorder_page_side_metaboxes', 999 );
+
 function cm_theme_setup() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
