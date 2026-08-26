@@ -23,12 +23,23 @@ if ( ! function_exists( 'acf_add_local_field_group' ) ) {
  * tüm dillerde tekrar seçmek istiyor — ama diğer ÜRÜNLERİN görselleri hâlâ görünmemeli.
  * PDF alanlarına (pdf_katalog, pdf_dosya) kasıtlı olarak UYGULANMIYOR — kataloglar dil
  * başına gerçekten ayrı dosyalar, paylaşılmaması gerekiyor (bkz. field tanımları).
+ *
+ * NOT (düzeltme): "acf/fields/image/query" diye bir filtre YOK — ACF'in medya modalı
+ * asıl WordPress çekirdeğinin "query-attachments" AJAX uç noktasını kullanıyor ve
+ * çekirdeğin "ajax_query_attachments_args" filtresi devreye giriyor (bkz.
+ * wp-admin/includes/ajax-actions.php). ACF, hangi alanın sorgulandığını "_acfuploader"
+ * (alan anahtarı) parametresiyle gönderiyor (bkz. advanced-custom-fields/includes/media.php
+ * get_source_field()) — doğru kanca budur, ACF'e özel bir filtre değil.
  */
-function cm_acf_scope_gallery_query_to_translation_group( $args, $field, $post_id ) {
-	if ( strpos( $field['name'], 'ek_gorsel_' ) !== 0 ) return $args;
-	if ( ! is_numeric( $post_id ) ) return $args;
+function cm_acf_scope_gallery_query_to_translation_group( $query ) {
+	if ( empty( $_REQUEST['query']['_acfuploader'] ) ) return $query;
 
-	$post_id = (int) $post_id;
+	$cm_field_key = sanitize_text_field( wp_unslash( $_REQUEST['query']['_acfuploader'] ) );
+	$cm_field     = function_exists( 'acf_get_field' ) ? acf_get_field( $cm_field_key ) : false;
+	if ( ! $cm_field || strpos( $cm_field['name'], 'ek_gorsel_' ) !== 0 ) return $query;
+	if ( empty( $query['post_parent'] ) ) return $query;
+
+	$post_id = (int) $query['post_parent'];
 	$ids     = array( $post_id );
 	if ( function_exists( 'pll_languages_list' ) && function_exists( 'pll_get_post' ) ) {
 		foreach ( pll_languages_list() as $cm_lang ) {
@@ -37,11 +48,11 @@ function cm_acf_scope_gallery_query_to_translation_group( $args, $field, $post_i
 		}
 	}
 
-	unset( $args['post_parent'] );
-	$args['post_parent__in'] = array_values( array_unique( $ids ) );
-	return $args;
+	unset( $query['post_parent'] );
+	$query['post_parent__in'] = array_values( array_unique( $ids ) );
+	return $query;
 }
-add_filter( 'acf/fields/image/query', 'cm_acf_scope_gallery_query_to_translation_group', 10, 3 );
+add_filter( 'ajax_query_attachments_args', 'cm_acf_scope_gallery_query_to_translation_group' );
 
 add_action( 'acf/init', function () {
 
