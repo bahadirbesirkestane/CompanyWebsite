@@ -16,6 +16,33 @@ if ( ! function_exists( 'acf_add_local_field_group' ) ) {
 	return;
 }
 
+/**
+ * "Ek Görsel" (ek_gorsel_1..8) seçim penceresinin kapsamını, tek bir post'un
+ * kendi post_parent'ından, AYNI ürünün TR/EN/RU/ES çeviri grubunun TAMAMINA genişletir.
+ * Neden: kullanıcı dil başına ayrı fotoğraf YÜKLEMİYOR, bir kez yüklediği fotoğrafı
+ * tüm dillerde tekrar seçmek istiyor — ama diğer ÜRÜNLERİN görselleri hâlâ görünmemeli.
+ * PDF alanlarına (pdf_katalog, pdf_dosya) kasıtlı olarak UYGULANMIYOR — kataloglar dil
+ * başına gerçekten ayrı dosyalar, paylaşılmaması gerekiyor (bkz. field tanımları).
+ */
+function cm_acf_scope_gallery_query_to_translation_group( $args, $field, $post_id ) {
+	if ( strpos( $field['name'], 'ek_gorsel_' ) !== 0 ) return $args;
+	if ( ! is_numeric( $post_id ) ) return $args;
+
+	$post_id = (int) $post_id;
+	$ids     = array( $post_id );
+	if ( function_exists( 'pll_languages_list' ) && function_exists( 'pll_get_post' ) ) {
+		foreach ( pll_languages_list() as $cm_lang ) {
+			$cm_translated_id = pll_get_post( $post_id, $cm_lang );
+			if ( $cm_translated_id ) $ids[] = (int) $cm_translated_id;
+		}
+	}
+
+	unset( $args['post_parent'] );
+	$args['post_parent__in'] = array_values( array_unique( $ids ) );
+	return $args;
+}
+add_filter( 'acf/fields/image/query', 'cm_acf_scope_gallery_query_to_translation_group', 10, 3 );
+
 add_action( 'acf/init', function () {
 
 	// ---- Makine Detayları -------------------------------------------------
@@ -52,11 +79,12 @@ add_action( 'acf/init', function () {
 			'name'  => "ek_gorsel_$i",
 			'type'  => 'image',
 			'return_format' => 'array',
-			// 'uploadedTo': seçim penceresi SADECE bu ürüne yüklenmiş görselleri gösterir —
-			// medya kütüphanesi büyüdükçe (ürün başına 3-8 görsel × artan ürün sayısı)
-			// karışmasın diye. Not: bu modda "Tüm medyayı göster" geçişi YOK (ACF'in
-			// tasarımı); yanlış ürüne yüklenmiş bir görsel önce Medya Kütüphanesi'nden
-			// (liste görünümü) "Ait olduğu" alanı düzeltilerek taşınmalı.
+			// 'uploadedTo': seçim penceresi varsayılan olarak "bu yazıya yüklenenler" sekmesiyle
+			// açılır — ama gerçek kapsam aşağıdaki cm_acf_scope_gallery_query_to_translation_group()
+			// filtresiyle genişletiliyor: aynı ürünün TR/EN/RU/ES çevirilerinin TÜMÜNE yüklenmiş
+			// görseller birlikte gösterilir (kullanıcı dil başına ayrı fotoğraf YÜKLEMİYOR, aynı
+			// fotoğrafı tüm dillerde tekrar kullanıyor) — ama diğer ÜRÜNLERİN veya sitedeki başka
+			// içeriğin görselleri hiç görünmez.
 			'library' => 'uploadedTo',
 			'instructions'  => $i === 1 ? 'Vitrin kapak görseli için Öne Çıkan Görsel (Featured Image) alanını kullanın. Buradaki alanlar, detay sayfası galerisindeki ek fotoğraflardır — hepsini doldurmak zorunlu değildir. 2 veya daha fazla fotoğraf (vitrin + ek görseller) olduğunda galeri üzerinde otomatik ileri/geri okları çıkar.' : '',
 		);
@@ -78,6 +106,10 @@ add_action( 'acf/init', function () {
 		'type'  => 'file',
 		'return_format' => 'array',
 		'mime_types'    => 'pdf',
+		// Görsellerin aksine PDF'ler dil başına AYRI yüklenir/seçilir (çeviri gerektirir,
+		// paylaşılmaz) — bu yüzden burada sibling-genişletme YOK, sadece bu yazıya
+		// yüklenenlerle sınırlı (diğer ürünlerin/site içeriğinin dosyaları karışmasın diye).
+		'library' => 'uploadedTo',
 		'instructions'  => 'Bu makineye özel teknik broşür/katalog dosyası. Yüklendiğinde ürün sayfasındaki "Dokümanlar" sekmesinde otomatik görünür.',
 	);
 	$cm_makine_fields[] = array(
@@ -128,6 +160,9 @@ add_action( 'acf/init', function () {
 				'return_format' => 'array',
 				'mime_types'    => 'pdf',
 				'required'      => 1,
+				// Katalog PDF'leri de dil başına ayrı seçilir/yüklenir — sadece bu kataloğa
+				// yüklenenlerle sınırlı, diğer kataloğun/ürünlerin dosyaları karışmasın diye.
+				'library' => 'uploadedTo',
 			),
 			array(
 				'key'   => 'field_cm_katalog_dil',
