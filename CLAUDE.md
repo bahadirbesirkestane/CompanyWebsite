@@ -36,6 +36,13 @@ docker compose down       # durdurur (veritabanı korunur)
 - **"Boşsa gizle" ilkesi**: harita (harita URL'si yoksa hiç basılmaz), PDF indir/görüntüle butonları (dosya yoksa basılmaz), video sekmesi (link yoksa sekme hiç yok), Uluslararası İletişim bölümü (ülke girilmemişse VEYA "Bölümü Gizle" işaretliyse hiç basılmaz), Kurumsal kartları vb. — yeni eklenen her opsiyonel içerik bloğu bu deseni izlemeli, boş/yarım görünüm asla sitede görünmemeli.
 - **Çeviri metinleri**: `inc/strings.php` → `cm_strings()` (TR varsayılan metinler) + `cm__($key)` okuma yardımcısı. Gerçek EN/RU/ES çevirileri Polylang'in `PLL_MO` sınıfı ile veritabanına yazılır (`Diller → Dize Çevirisi` ekranıyla aynı depo). Yeni bir `cm__()` anahtarı eklerken MUTLAKA 3 dilin çevirisini de eklemeyi unutma (`new PLL_MO(); $mo->import_from_db($lang); $mo->add_entry($mo->make_entry($orijinal, $ceviri)); $mo->export_to_db($lang);`) — aksi halde o dilde Türkçe metin sızar.
 
+## Çok dilli içerik ekleme — KURAL
+
+Bu site 4 dilli (TR/EN/RU/ES). **Yeni bir sayfa, menü öğesi veya içerik taşıyan herhangi bir özellik eklerken SADECE Türkçe ile yetinme** — aynı anda diğer 3 dilin de (çevrilmiş içerikle) oluşturulup Polylang üzerinden bağlanması ve ilgili dilin ana menüsüne eklenmesi GEREKİR. "Admin sonra kendi ekler" varsayımıyla sadece TR tarafını yapıp bırakma.
+- **Neden**: Kariyer sayfası ilk seferinde sadece TR'de oluşturulmuştu; kullanıcı "diğer dillerde sayfa yok, onları ekle" diye net bir geri bildirimde bulundu ve bunun her özellik için genel bir kural olarak yazılmasını istedi.
+- **Nasıl**: `pll_set_post_language()` + `pll_save_post_translations()` ile 4 post'u birbirine bağla, her dilin `ana-menu-{en,ru,es}` menüsüne de karşılık gelen öğeyi ekle (bkz. `wp menu item add-post`). Çeviri metni gerekiyorsa (yeni bir sayfa/CTA metni gibi) makul kalitede bir ilk taslak çevirisi yazılabilir — ama bu, kullanıcının/gerçek bir çevirmenin daha sonra gözden geçirmesi gereken bir taslak olduğu açıkça belirtilmeli.
+- **İstisna**: Sadece kod/altyapı değişiklikleri (CSS, PHP mantığı, admin-only özellikler) — bunlarda zaten dil ayrımı yok.
+
 ## Git iş akışı — KURAL
 
 - Uzak depo: `https://github.com/bahadirbesirkestane/CompanyWebsite.git`

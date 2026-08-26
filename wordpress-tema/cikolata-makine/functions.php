@@ -278,6 +278,21 @@ function cm_whatsapp_url() {
 }
 
 /**
+ * "whatsapp_numarasi" alanına düz rakam dizisi olarak girilen numarayı (örn.
+ * "905377258129") ekranda okunaklı biçime çevirir ("+90 537 725 81 29").
+ * Türkiye cep telefonu biçimine (ülke kodu 2 + operatör 3 + 3+2+2) uymayan
+ * numaralarda (farklı ülke kodu, eksik/fazla hane) olduğu gibi (rakamlar halinde)
+ * döner — yanlış gruplamayla yanıltıcı bir görünüm oluşturmaktansa ham hali gösterilir.
+ */
+function cm_format_phone_display( $raw ) {
+	$digits = preg_replace( '/\D+/', '', (string) $raw );
+	if ( strlen( $digits ) === 12 ) {
+		return '+' . substr( $digits, 0, 2 ) . ' ' . substr( $digits, 2, 3 ) . ' ' . substr( $digits, 5, 3 ) . ' ' . substr( $digits, 8, 2 ) . ' ' . substr( $digits, 10, 2 );
+	}
+	return $raw;
+}
+
+/**
  * Görünüm → Özelleştir → İletişim & WhatsApp'ta girilen Google Haritalar embed URL'sini
  * döndürür. Boşsa boş string döner — çağıran taraf (page.php) bunu görüp harita
  * bölümünü hiç basmaz (yanlış/örnek bir konum asla otomatik gösterilmez).

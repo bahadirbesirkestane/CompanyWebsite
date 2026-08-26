@@ -73,6 +73,46 @@ function cm_page_banner( $image, $size = 'normal' ) {
 }
 
 /**
+ * "Uluslararası İletişim" bölümünü $source_post_id'deki (bkz. inc/acf-fields.php
+ * group_cm_kurumsal, ID 7/277/278/279) intl_kisi_1..10 alanlarından render eder.
+ * Hem Kurumsal sayfasının kendisinde HEM İletişim sayfasında (bizim kendi
+ * iletişimimizin altında) çağrılır — aynı veri iki yerde gösteriliyor, ayrı bir
+ * veri girişi YOK. "intl_gizle" işaretliyse veya hiç ülke girilmemişse hiçbir
+ * şey basmaz (boşsa gizle).
+ */
+function cm_render_intl_contact_section( $source_post_id ) {
+	if ( ! $source_post_id || ! function_exists( 'get_field' ) || get_field( 'intl_gizle', $source_post_id ) ) return;
+
+	$entries = array();
+	for ( $i = 1; $i <= 10; $i++ ) {
+		$row = get_field( "intl_kisi_$i", $source_post_id );
+		if ( $row && ! empty( $row['ulke'] ) ) $entries[] = $row;
+	}
+	if ( ! $entries ) return;
+	?>
+	<section class="intl-contact">
+		<div class="eyebrow"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_eyebrow' ) ); ?></div>
+		<h2 class="h-md"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_baslik' ) ); ?></h2>
+		<p class="body-p" style="margin-top:10px; max-width:70ch;"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_aciklama' ) ); ?></p>
+		<div class="intl-contact-grid">
+			<?php foreach ( $entries as $e ) : ?>
+				<div class="intl-contact-card">
+					<div class="intl-contact-country"><?php echo esc_html( $e['ulke'] ); ?></div>
+					<?php if ( ! empty( $e['kisi_firma'] ) ) : ?><div class="intl-contact-name"><?php echo esc_html( $e['kisi_firma'] ); ?></div><?php endif; ?>
+					<?php if ( ! empty( $e['telefon'] ) || ! empty( $e['eposta'] ) ) : ?>
+						<div class="intl-contact-details">
+							<?php if ( ! empty( $e['telefon'] ) ) : ?><a href="tel:<?php echo esc_attr( preg_replace( '/[^+0-9]/', '', $e['telefon'] ) ); ?>"><?php echo esc_html( $e['telefon'] ); ?></a><?php endif; ?>
+							<?php if ( ! empty( $e['eposta'] ) ) : ?><a href="mailto:<?php echo esc_attr( $e['eposta'] ); ?>"><?php echo esc_html( $e['eposta'] ); ?></a><?php endif; ?>
+						</div>
+					<?php endif; ?>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</section>
+	<?php
+}
+
+/**
  * Öne çıkan görseli (varsa) .ph çerçevesi içinde, yoksa yer tutucu ikonla basar.
  */
 function cm_render_thumb( $post_id, $extra_class = '', $img_size = 'large', $featured_badge = false ) {

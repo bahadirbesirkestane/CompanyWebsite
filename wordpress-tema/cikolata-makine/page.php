@@ -65,38 +65,7 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 		</div>
 	<?php endif; ?>
 
-	<?php
-	// Kurumsal sayfasına özel: farklı ülkelerdeki iş birliği yaptığımız yerel iletişim
-	// noktaları. "intl_gizle" işaretliyse VEYA hiç ülke girilmemişse bölüm hiç basılmaz —
-	// yarım/boş bir bölüm asla otomatik görünmez (bkz. inc/acf-fields.php group_cm_kurumsal).
-	if ( $cm_is_kurumsal && function_exists( 'get_field' ) && ! get_field( 'intl_gizle' ) ) :
-		$cm_intl_entries = array();
-		for ( $cm_i = 1; $cm_i <= 10; $cm_i++ ) {
-			$cm_row = get_field( "intl_kisi_$cm_i" );
-			if ( $cm_row && ! empty( $cm_row['ulke'] ) ) $cm_intl_entries[] = $cm_row;
-		}
-		if ( $cm_intl_entries ) : ?>
-			<section class="intl-contact">
-				<div class="eyebrow"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_eyebrow' ) ); ?></div>
-				<h2 class="h-md"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_baslik' ) ); ?></h2>
-				<p class="body-p" style="margin-top:10px; max-width:70ch;"><?php echo esc_html( cm__( 'kurumsal_uluslararasi_aciklama' ) ); ?></p>
-				<div class="intl-contact-grid">
-					<?php foreach ( $cm_intl_entries as $cm_e ) : ?>
-						<div class="intl-contact-card">
-							<div class="intl-contact-country"><?php echo esc_html( $cm_e['ulke'] ); ?></div>
-							<?php if ( ! empty( $cm_e['kisi_firma'] ) ) : ?><div class="intl-contact-name"><?php echo esc_html( $cm_e['kisi_firma'] ); ?></div><?php endif; ?>
-							<?php if ( ! empty( $cm_e['telefon'] ) || ! empty( $cm_e['eposta'] ) ) : ?>
-								<div class="intl-contact-details">
-									<?php if ( ! empty( $cm_e['telefon'] ) ) : ?><a href="tel:<?php echo esc_attr( preg_replace( '/[^+0-9]/', '', $cm_e['telefon'] ) ); ?>"><?php echo esc_html( $cm_e['telefon'] ); ?></a><?php endif; ?>
-									<?php if ( ! empty( $cm_e['eposta'] ) ) : ?><a href="mailto:<?php echo esc_attr( $cm_e['eposta'] ); ?>"><?php echo esc_html( $cm_e['eposta'] ); ?></a><?php endif; ?>
-								</div>
-							<?php endif; ?>
-						</div>
-					<?php endforeach; ?>
-				</div>
-			</section>
-		<?php endif;
-	endif; ?>
+	<?php if ( $cm_is_kurumsal ) cm_render_intl_contact_section( get_the_ID() ); ?>
 
 	<?php
 	// İletişim sayfasına özel: form + harita (Görünüm → Özelleştir → İletişim & WhatsApp
@@ -110,28 +79,45 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 		// Telefon/e-posta/adres/çalışma saatleri — footer'la AYNI kaynaktan (Customizer)
 		// okunur, tek doğruluk kaynağı; sayfa içeriğine elle yazılıp zamanla footer'dan
 		// farklılaşan/eskiyen bilgi tekrar yaşanmasın diye (bkz. proje notları). Her biri
-		// ayrı ayrı "boşsa gizle" — doldurulmamış hiçbir alan sitede görünmez.
+		// ayrı ayrı "boşsa gizle" — doldurulmamış hiçbir alan sitede görünmez. Görsel dili
+		// aşağıdaki Uluslararası İletişim kartlarıyla (intl-contact-*) BİLEREK aynı —
+		// "bizim iletişimimiz" ile "uluslararası iletişim" tek, tutarlı bir blok gibi okunsun.
 		$cm_tel     = cm_option( 'sirket_telefon' );
 		$cm_eposta  = cm_option( 'sirket_eposta' );
 		$cm_adres   = cm_option( 'sirket_adres' );
 		$cm_saatler = cm_option( 'calisma_saatleri' );
 		$cm_wa      = cm_whatsapp_url();
 		if ( $cm_tel || $cm_eposta || $cm_adres || $cm_saatler || $cm_wa ) : ?>
-			<div class="chip-row" style="margin-top:20px;">
+			<div class="intl-contact-grid" style="margin-top:24px;">
 				<?php if ( $cm_tel ) : ?>
-					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_telefon' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>" style="color:inherit;text-decoration:none;"><?php echo esc_html( $cm_tel ); ?></a></div></div>
+					<div class="intl-contact-card">
+						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_telefon' ) ); ?></div>
+						<div class="intl-contact-details"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>"><?php echo esc_html( $cm_tel ); ?></a></div>
+					</div>
 				<?php endif; ?>
 				<?php if ( $cm_wa ) : ?>
-					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_whatsapp' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;"><?php echo esc_html( cm_option( 'whatsapp_numarasi' ) ); ?></a></div></div>
+					<div class="intl-contact-card">
+						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_whatsapp' ) ); ?></div>
+						<div class="intl-contact-details"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener"><?php echo esc_html( cm_format_phone_display( cm_option( 'whatsapp_numarasi' ) ) ); ?></a></div>
+					</div>
 				<?php endif; ?>
 				<?php if ( $cm_eposta ) : ?>
-					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_eposta' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>" style="color:inherit;text-decoration:none;"><?php echo esc_html( $cm_eposta ); ?></a></div></div>
+					<div class="intl-contact-card">
+						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_eposta' ) ); ?></div>
+						<div class="intl-contact-details"><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>"><?php echo esc_html( $cm_eposta ); ?></a></div>
+					</div>
 				<?php endif; ?>
 				<?php if ( $cm_adres ) : ?>
-					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_adres' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><?php echo nl2br( esc_html( $cm_adres ) ); ?></div></div>
+					<div class="intl-contact-card">
+						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_adres' ) ); ?></div>
+						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_adres ) ); ?></span></div>
+					</div>
 				<?php endif; ?>
 				<?php if ( $cm_saatler ) : ?>
-					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_calisma_saatleri' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><?php echo nl2br( esc_html( $cm_saatler ) ); ?></div></div>
+					<div class="intl-contact-card">
+						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_calisma_saatleri' ) ); ?></div>
+						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_saatler ) ); ?></span></div>
+					</div>
 				<?php endif; ?>
 			</div>
 		<?php endif;
@@ -156,6 +142,12 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 				<?php endif; ?>
 			</div>
 		<?php endif;
+
+		// Kullanıcı isteği: Uluslararası İletişim, İletişim sayfasında da BİZİM kendi
+		// iletişimimizin (üstteki kartlar + form/harita) ALTINDA görünsün. Veri Kurumsal
+		// sayfasından geliyor (pll_get_post ile geçerli dile çözülür) — ayrı giriş yok.
+		$cm_kurumsal_id_for_lang = function_exists( 'pll_get_post' ) ? pll_get_post( 7, function_exists( 'pll_current_language' ) ? pll_current_language() : 'tr' ) : 7;
+		cm_render_intl_contact_section( $cm_kurumsal_id_for_lang ?: 7 );
 	endif; ?>
 </div>
 

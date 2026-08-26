@@ -194,8 +194,12 @@ add_action( 'acf/init', function () {
 	// "Boşsa gizle" ilkesi: alan boşken sayfa şu anki (banner'sız) haliyle
 	// görünmeye devam eder — bkz. cm_page_banner() (inc/template-tags.php).
 	acf_add_local_field_group( array(
-		'key'    => 'group_cm_sayfa_banner',
-		'title'  => 'Sayfa Üstü Banner',
+		'key'      => 'group_cm_sayfa_banner',
+		'title'    => 'Sayfa Üstü Banner',
+		// 'side': sağdaki panelde, "Öne Çıkan Görsel" ile aynı yerde görünsün diye —
+		// varsayılan 'normal' konumu içerik editörünün ALTINA (kaydırmadan görünmeyen
+		// bir yere) koyuyordu, kullanıcı bu yüzden alanı hiç bulamamıştı.
+		'position' => 'side',
 		'fields' => array(
 			array(
 				'key'   => 'field_cm_sayfa_banner_gorseli',
