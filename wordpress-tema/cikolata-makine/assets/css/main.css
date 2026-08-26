@@ -510,6 +510,12 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .ref-logo:hover img { filter: grayscale(0); opacity: 1; }
 .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
 
+/* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ---- */
+.page-banner { height: 240px; overflow: hidden; background: var(--paper-raised); }
+.page-banner--small { height: 140px; }
+.page-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 640px) { .page-banner { height: 160px; } .page-banner--small { height: 110px; } }
+
 /* ---- generic content page ---- */
 .page-content { padding-top: 48px; padding-bottom: 72px; }
 .page-content h2 { font-size: 24px; margin: 40px 0 14px; }

@@ -86,6 +86,11 @@ function cm_strings() {
 
 			'iletisim_formu_baslik'     => 'Bize Ulaşın',
 			'konum_baslik'              => 'Bulunduğumuz Konum',
+			'iletisim_telefon'          => 'Telefon',
+			'iletisim_eposta'           => 'E-posta',
+			'iletisim_adres'            => 'Adres',
+			'iletisim_whatsapp'         => 'WhatsApp',
+			'iletisim_calisma_saatleri' => 'Çalışma Saatleri',
 
 			'sidebar_tum_urunler'       => 'Tüm Ürünler',
 			'sidebar_aria'              => 'Kategori filtresi',

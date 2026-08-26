@@ -2,6 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 the_post();
+cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 ?>
 
 <div class="wrap page-content">
@@ -105,6 +106,36 @@ the_post();
 	if ( $cm_is_iletisim ) :
 		$cm_form_id = cm_contact_form_id();
 		$cm_map_url = cm_harita_embed_url();
+
+		// Telefon/e-posta/adres/çalışma saatleri — footer'la AYNI kaynaktan (Customizer)
+		// okunur, tek doğruluk kaynağı; sayfa içeriğine elle yazılıp zamanla footer'dan
+		// farklılaşan/eskiyen bilgi tekrar yaşanmasın diye (bkz. proje notları). Her biri
+		// ayrı ayrı "boşsa gizle" — doldurulmamış hiçbir alan sitede görünmez.
+		$cm_tel     = cm_option( 'sirket_telefon' );
+		$cm_eposta  = cm_option( 'sirket_eposta' );
+		$cm_adres   = cm_option( 'sirket_adres' );
+		$cm_saatler = cm_option( 'calisma_saatleri' );
+		$cm_wa      = cm_whatsapp_url();
+		if ( $cm_tel || $cm_eposta || $cm_adres || $cm_saatler || $cm_wa ) : ?>
+			<div class="chip-row" style="margin-top:20px;">
+				<?php if ( $cm_tel ) : ?>
+					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_telefon' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>" style="color:inherit;text-decoration:none;"><?php echo esc_html( $cm_tel ); ?></a></div></div>
+				<?php endif; ?>
+				<?php if ( $cm_wa ) : ?>
+					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_whatsapp' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;"><?php echo esc_html( cm_option( 'whatsapp_numarasi' ) ); ?></a></div></div>
+				<?php endif; ?>
+				<?php if ( $cm_eposta ) : ?>
+					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_eposta' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>" style="color:inherit;text-decoration:none;"><?php echo esc_html( $cm_eposta ); ?></a></div></div>
+				<?php endif; ?>
+				<?php if ( $cm_adres ) : ?>
+					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_adres' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><?php echo nl2br( esc_html( $cm_adres ) ); ?></div></div>
+				<?php endif; ?>
+				<?php if ( $cm_saatler ) : ?>
+					<div class="chip"><div class="l"><?php echo esc_html( cm__( 'iletisim_calisma_saatleri' ) ); ?></div><div class="v" style="font-family:var(--font-body);"><?php echo nl2br( esc_html( $cm_saatler ) ); ?></div></div>
+				<?php endif; ?>
+			</div>
+		<?php endif;
+
 		if ( $cm_form_id || $cm_map_url ) : ?>
 			<div class="contact-grid">
 				<?php if ( $cm_form_id ) : ?>

@@ -49,6 +49,30 @@ function cm_generic_icon( $size = 34 ) {
 }
 
 /**
+ * Sayfa üstü banner: görsel varsa geniş bir fotoğraf şeridi basar, yoksa HİÇBİR
+ * ŞEY çıktılamaz — "boşsa gizle" ilkesi, sayfa banner'sız haliyle görünmeye devam
+ * eder. $image, ACF image alanının döndürdüğü dizi (return_format=array) VEYA
+ * doğrudan bir URL string'i olabilir (Customizer theme_mod'ları URL döner) —
+ * ikisi de kabul edilir, çağıran taraf hangisi olduğunu düşünmek zorunda kalmaz.
+ */
+function cm_page_banner( $image, $size = 'normal' ) {
+	$url = '';
+	$alt = '';
+	if ( is_array( $image ) && ! empty( $image['url'] ) ) {
+		$url = $image['url'];
+		$alt = $image['alt'] ?? '';
+	} elseif ( is_string( $image ) && $image ) {
+		$url = $image;
+	}
+	if ( ! $url ) return;
+	?>
+	<div class="page-banner<?php echo $size === 'small' ? ' page-banner--small' : ''; ?>">
+		<img src="<?php echo esc_url( $url ); ?>" alt="<?php echo esc_attr( $alt ); ?>">
+	</div>
+	<?php
+}
+
+/**
  * Öne çıkan görseli (varsa) .ph çerçevesi içinde, yoksa yer tutucu ikonla basar.
  */
 function cm_render_thumb( $post_id, $extra_class = '', $img_size = 'large', $featured_badge = false ) {

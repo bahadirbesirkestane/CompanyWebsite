@@ -20,6 +20,8 @@ $cm_all_products = new WP_Query( array(
 	'orderby'        => 'menu_order title', // admin sırası (bkz. Ürün düzenle -> "Sıra" alanı), eşitse başlığa göre
 	'order'          => 'ASC',
 ) );
+
+cm_page_banner( get_field( 'sayfa_banner_gorseli' ), 'small' );
 ?>
 
 <div class="wrap section-tight">

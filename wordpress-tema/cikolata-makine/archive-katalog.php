@@ -1,6 +1,7 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
+cm_page_banner( cm_option( 'kataloglar_banner_gorseli' ) );
 ?>
 
 <div class="wrap section-tight">
