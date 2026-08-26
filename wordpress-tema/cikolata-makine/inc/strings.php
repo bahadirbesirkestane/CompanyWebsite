@@ -80,11 +80,9 @@ function cm_strings() {
 			'aciklama_404'              => 'Sayfa kaldırılmış veya adres hatalı olabilir.',
 			'anasayfaya_don'            => 'Anasayfaya Dön',
 
-			'blog_etiket'               => 'Blog',
 			'arama_sonuclari'           => 'Arama Sonuçları',
 			'arama_sonuclari_prefix'    => 'Arama Sonuçları: ',
-			'devamini_oku'              => 'Devamını Oku →',
-			'blog_bos'                  => 'Henüz içerik eklenmedi.',
+			'arama_sonucu_bos'          => 'Aramanızla eşleşen bir sonuç bulunamadı.',
 
 			'iletisim_formu_baslik'     => 'Bize Ulaşın',
 			'konum_baslik'              => 'Bulunduğumuz Konum',
