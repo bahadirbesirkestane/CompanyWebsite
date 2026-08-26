@@ -42,7 +42,7 @@ the_post();
 				$cm_tr_child  = function_exists( 'pll_get_post' ) ? pll_get_post( $cm_child_id, 'tr' ) : $cm_child_id;
 				$cm_teaser    = has_excerpt( $cm_child_id ) ? get_the_excerpt( $cm_child_id ) : wp_trim_words( wp_strip_all_tags( $cm_child->post_content ), 18, '…' );
 			?>
-				<a class="corp-card" href="<?php echo esc_url( get_permalink( $cm_child_id ) ); ?>">
+				<a class="corp-card reveal" href="<?php echo esc_url( get_permalink( $cm_child_id ) ); ?>">
 					<div class="corp-card-icon"><?php cm_kurumsal_child_icon( (int) $cm_tr_child ); ?></div>
 					<h3><?php echo esc_html( get_the_title( $cm_child_id ) ); ?></h3>
 					<p><?php echo esc_html( $cm_teaser ); ?></p>
@@ -53,7 +53,7 @@ the_post();
 	<?php elseif ( $cm_children ) : ?>
 		<div class="prod-grid" style="margin-top:40px;">
 			<?php foreach ( $cm_children as $cm_child ) : ?>
-				<a class="prod-card" href="<?php echo esc_url( get_permalink( $cm_child ) ); ?>">
+				<a class="prod-card reveal" href="<?php echo esc_url( get_permalink( $cm_child ) ); ?>">
 					<?php if ( has_post_thumbnail( $cm_child ) ) : ?>
 						<div class="ph"><?php echo get_the_post_thumbnail( $cm_child, 'cm-card' ); ?></div>
 					<?php endif; ?>

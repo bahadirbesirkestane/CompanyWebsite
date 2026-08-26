@@ -68,7 +68,7 @@ if ( function_exists( 'get_field' ) ) {
 </div>
 
 <?php if ( $cm_stats ) : ?>
-<div class="wrap" style="margin-top:56px;">
+<div class="wrap reveal" style="margin-top:56px;">
 	<div class="stat-row">
 		<?php foreach ( $cm_stats as $stat ) : ?>
 			<div class="stat"><div class="n mono"><?php echo esc_html( $stat['sayi'] ); ?></div><div class="l"><?php echo esc_html( $stat['etiket'] ); ?></div></div>
@@ -82,8 +82,8 @@ $cm_top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0,
 if ( ! is_wp_error( $cm_top_cats ) && $cm_top_cats ) :
 ?>
 <div class="wrap section">
-	<div class="eyebrow"><?php echo esc_html( cm_urunler_label() ); ?></div>
-	<h2 class="h-lg"><?php echo esc_html( cm__( 'urunler_kesfet_baslik' ) ); ?></h2>
+	<div class="eyebrow reveal"><?php echo esc_html( cm_urunler_label() ); ?></div>
+	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'urunler_kesfet_baslik' ) ); ?></h2>
 	<div class="cat-grid">
 		<?php foreach ( $cm_top_cats as $term ) cm_category_card( $term ); ?>
 	</div>
@@ -103,8 +103,8 @@ if ( ! $cm_featured_q->have_posts() ) {
 if ( $cm_featured_q->have_posts() ) :
 ?>
 <div class="wrap section-tight">
-	<div class="eyebrow"><?php echo esc_html( cm__( 'vitrin_eyebrow' ) ); ?></div>
-	<h2 class="h-lg"><?php echo esc_html( cm__( 'one_cikan_makineler' ) ); ?></h2>
+	<div class="eyebrow reveal"><?php echo esc_html( cm__( 'vitrin_eyebrow' ) ); ?></div>
+	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'one_cikan_makineler' ) ); ?></h2>
 	<div class="prod-grid">
 		<?php while ( $cm_featured_q->have_posts() ) : $cm_featured_q->the_post(); cm_product_card( get_the_ID() ); endwhile; wp_reset_postdata(); ?>
 	</div>
@@ -116,7 +116,7 @@ $cm_refs = new WP_Query( array( 'post_type' => 'referans', 'posts_per_page' => -
 if ( $cm_refs->have_posts() ) :
 ?>
 <div class="section-tight" style="padding-bottom:0;">
-	<div class="wrap"><div class="eyebrow"><?php echo esc_html( cm__( 'referanslarimiz' ) ); ?></div><h2 class="h-md"><?php echo esc_html( cm__( 'referans_baslik' ) ); ?></h2></div>
+	<div class="wrap reveal"><div class="eyebrow"><?php echo esc_html( cm__( 'referanslarimiz' ) ); ?></div><h2 class="h-md"><?php echo esc_html( cm__( 'referans_baslik' ) ); ?></h2></div>
 	<div class="marquee-wrap">
 		<div class="marquee-track">
 			<?php
@@ -147,7 +147,7 @@ $cm_kat_aciklama = ( function_exists( 'get_field' ) ? get_field( 'katalog_acikla
 $cm_kat_pdf      = function_exists( 'get_field' ) ? get_field( 'katalog_banner_pdf' ) : false;
 ?>
 <div class="banner">
-	<div class="wrap banner-inner">
+	<div class="wrap banner-inner reveal">
 		<div><h3><?php echo esc_html( $cm_kat_baslik ); ?></h3><p><?php echo esc_html( $cm_kat_aciklama ); ?></p></div>
 		<div class="btns">
 			<?php if ( ! empty( $cm_kat_pdf['url'] ) ) : ?>

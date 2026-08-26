@@ -1,5 +1,77 @@
 document.addEventListener('DOMContentLoaded', function () {
 
+  // ---- sticky header: scroll'da küçülme + gölge ----
+  (function () {
+    var header = document.querySelector('.site-header');
+    if (!header) return;
+    var ticking = false;
+    function update() {
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+      ticking = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { requestAnimationFrame(update); ticking = true; }
+    }, { passive: true });
+    update();
+  })();
+
+  // ---- scroll-reveal: .reveal sınıflı herhangi bir eleman görünür olunca .is-visible
+  // ekler (main.css .reveal/.reveal.is-visible) — tüm sayfalarda tekrar kullanılabilir
+  // tek bir gözlemci, her eleman bir kez göründükten sonra gözlemden çıkarılır. ----
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      els.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    els.forEach(function (el) { io.observe(el); });
+  })();
+
+  // ---- istatistik sayaç animasyonu: "27+", "40+", "500+" gibi rakamla başlayan
+  // .stat .n etiketleri görünür olunca 0'dan hedefe sayarak dolar. "ISO 9001" gibi
+  // rakamla BAŞLAMAYAN etiketler regex'e takılmadığı için olduğu gibi kalır. ----
+  (function () {
+    var nums = document.querySelectorAll('.stat .n');
+    if (!nums.length || !('IntersectionObserver' in window)) return;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animate(el) {
+      var match = el.textContent.trim().match(/^(\d+)(.*)$/);
+      if (!match || reduceMotion) return;
+      var target = parseInt(match[1], 10);
+      var suffix = match[2];
+      var duration = 1200;
+      var start = null;
+      function step(ts) {
+        if (!start) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target) + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      el.textContent = '0' + suffix;
+      requestAnimationFrame(step);
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        animate(entry.target);
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    nums.forEach(function (el) { io.observe(el); });
+  })();
+
   // ---- mobil hamburger menü ----
   (function () {
     var headerInner = document.querySelector('.site-header-inner');

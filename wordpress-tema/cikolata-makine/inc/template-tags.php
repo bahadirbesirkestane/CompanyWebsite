@@ -97,7 +97,7 @@ function cm_category_card( $term ) {
 		}
 	}
 	?>
-	<a class="cat-card" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
+	<a class="cat-card reveal" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
 		<div class="cat-icon">
 			<?php if ( $icon && ! empty( $icon['url'] ) ) : ?>
 				<img src="<?php echo esc_url( $icon['url'] ); ?>" alt="" width="34" height="34" style="filter:none;">
@@ -169,7 +169,7 @@ function cm_product_card( $post_id ) {
 	$featured = function_exists( 'get_field' ) ? (bool) get_field( 'one_cikan', $post_id ) : false;
 	$ozet     = function_exists( 'get_field' ) ? get_field( 'kisa_ozet', $post_id ) : '';
 	?>
-	<a class="prod-card" href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
+	<a class="prod-card reveal" href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
 		<?php cm_render_thumb( $post_id, '', 'medium_large', $featured ); ?>
 		<h3><?php echo esc_html( get_the_title( $post_id ) ); ?></h3>
 		<?php if ( $ozet ) : ?><div class="spec mono"><?php echo esc_html( $ozet ); ?></div><?php endif; ?>

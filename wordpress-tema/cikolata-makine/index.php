@@ -19,7 +19,7 @@ get_header();
 	<?php if ( have_posts() ) : ?>
 		<div class="prod-grid">
 			<?php while ( have_posts() ) : the_post(); ?>
-				<a class="prod-card" href="<?php the_permalink(); ?>">
+				<a class="prod-card reveal" href="<?php the_permalink(); ?>">
 					<?php cm_render_thumb( get_the_ID(), '', 'cm-card' ); ?>
 					<h3><?php the_title(); ?></h3>
 					<div class="spec"><?php echo esc_html( get_the_date() ); ?></div>

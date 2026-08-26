@@ -1,22 +1,26 @@
 :root {
-  --ink: #1E2732;
-  --ink-soft: #55606B;
+  /* Bkz. 03_TASARIM_YENILEME_ONERISI.md Bölüm 2-3 — palet Bühler Group + Framework
+     Computer'dan canlı ölçülen veriyle temellendirildi: sıcak nötr zemin (mavi-gri DEĞİL)
+     + tek doymuş vurgu rengi (turuncu-kızıl), bakır/altın gibi soluk/metalik değil. */
+  --ink: #1F1B17;
+  --ink-soft: #5C554C;
   --paper: #FFFFFF;
-  --paper-raised: #F7F9FB;
-  --paper-sunken: #EDF1F5;
-  --accent: #3E7CB8;
-  --accent-deep: #2C5D8F;
-  --accent-tint: #3E7CB81a;
-  --steel: #7C8791;
-  --steel-soft: #A4ACB4;
-  --line: #1E27321a;
-  --line-strong: #1E273240;
+  --paper-raised: #FAF8F4;
+  --paper-sunken: #F1ECE4;
+  --accent: #E8622C;
+  --accent-deep: #C24A1B;
+  --accent-tint: #E8622C14;
+  --steel: #8C8175;
+  --steel-soft: #B7AEA1;
+  --line: #1F1B171a;
+  --line-strong: #1F1B1740;
   --good: #3E8E63;
-  --footer-bg: #16202C;
-  --footer-text: #EDF1F5;
-  --font-display: "Segoe UI Semibold", "Segoe UI", "Helvetica Neue", "Noto Sans", Arial, sans-serif;
-  --font-body: "Segoe UI", "Helvetica Neue", "Noto Sans", Arial, sans-serif;
-  --font-mono: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", ui-monospace, monospace;
+  --footer-bg: #17130F;
+  --footer-text: #F1ECE4;
+  --font-display: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-headline: "IBM Plex Serif", Georgia, "Times New Roman", serif; /* sadece büyük başlıklar — bkz. .h-xl/.h-lg */
+  --font-body: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", "Cascadia Code", Consolas, ui-monospace, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -54,8 +58,12 @@ img, svg { display: block; max-width: 100%; }
   color: var(--accent); display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
 }
 .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--accent); }
-.h-xl { font-size: clamp(30px, 4vw, 46px); line-height: 1.08; }
-.h-lg { font-size: clamp(24px, 3vw, 32px); line-height: 1.12; }
+/* Büyük sayfa/bölüm başlıkları serif (--font-headline) — küçük UI metni (nav, buton,
+   kart başlıkları) yukarıdaki h1/h2/h3 temel kuralında sans (--font-display) kalır.
+   Class specificity (0,1,0) > element specificity (0,0,1), bu yüzden h1.h-xl gibi
+   birleşik durumlarda kaynak sırasından bağımsız olarak bu kural kazanır. */
+.h-xl { font-family: var(--font-headline); font-weight: 600; font-size: clamp(30px, 4vw, 46px); line-height: 1.08; }
+.h-lg { font-family: var(--font-headline); font-weight: 600; font-size: clamp(24px, 3vw, 32px); line-height: 1.12; }
 .h-md { font-size: 20px; }
 .lede { font-size: 17px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
 .body-p { font-size: 15.5px; line-height: 1.85; color: var(--ink-soft); max-width: 66ch; }
@@ -66,16 +74,22 @@ img, svg { display: block; max-width: 100%; }
   display: inline-flex; align-items: center; gap: 8px; border-radius: 3px; cursor: pointer;
   font-family: var(--font-display); font-size: 13.5px; letter-spacing: 0.02em; padding: 13px 22px;
   text-decoration: none; border: 1px solid transparent;
+  transition: background-color .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
 }
 .btn-primary { background: var(--accent); color: #fff; }
-.btn-primary:hover { background: var(--accent-deep); }
+.btn-primary:hover { background: var(--accent-deep); transform: translateY(-1px); box-shadow: 0 10px 20px rgba(232,98,44,.24); }
+.btn-primary:active { transform: translateY(0); box-shadow: none; }
 .btn-outline { border-color: var(--line-strong); color: var(--ink); background: transparent; }
-.btn-outline:hover { border-color: var(--ink); }
+.btn-outline:hover { border-color: var(--ink); transform: translateY(-1px); }
+.btn-outline:active { transform: translateY(0); }
 .btn-ghost { color: var(--accent); padding: 6px 0; font-size: 13.5px; }
 
 /* ---- header ---- */
-.site-header { border-bottom: 1px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 30; }
-.site-header-inner { max-width: 1240px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.site-header { border-bottom: 1px solid var(--line); background: var(--paper); position: sticky; top: 0; z-index: 30; transition: box-shadow .25s ease; }
+.site-header-inner { max-width: 1240px; margin: 0 auto; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; transition: padding .25s ease; }
+/* Scroll'da küçülme: main.js scrollY > 8px olunca .is-scrolled ekler/kaldırır (bkz. assets/js/main.js) */
+.site-header.is-scrolled { box-shadow: 0 2px 16px rgba(31,27,23,.08); }
+.site-header.is-scrolled .site-header-inner { padding-top: 11px; padding-bottom: 11px; }
 .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; flex: 0 0 auto; min-width: 0; }
 .logo img { max-height: 40px; width: auto; max-width: 100%; }
 .logo-mark { font-family: var(--font-display); font-weight: 700; font-size: 19px; letter-spacing: 0.01em; white-space: nowrap; }
@@ -252,8 +266,8 @@ ul.megamenu-flyout {
 .footer-inner { max-width: 1240px; margin: 0 auto; padding: 56px 24px 28px; }
 .footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr; gap: 40px; }
 .footer-grid h4 { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-.footer-grid p, .footer-grid a { font-size: 13.5px; color: #EDF1F5ad; line-height: 1.9; text-decoration: none; display: block; }
-.footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #EDF1F524; display: flex; justify-content: space-between; font-size: 12px; color: #EDF1F580; flex-wrap: wrap; gap: 8px; }
+.footer-grid p, .footer-grid a { font-size: 13.5px; color: #F1ECE4ad; line-height: 1.9; text-decoration: none; display: block; }
+.footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #F1ECE424; display: flex; justify-content: space-between; font-size: 12px; color: #F1ECE480; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 
 /* ---- breadcrumb ---- */
@@ -269,6 +283,20 @@ ul.megamenu-flyout {
 .stat .n { font-size: 28px; font-weight: 700; }
 .stat .l { font-size: 12px; color: var(--steel); margin-top: 4px; }
 @media (max-width: 760px) { .stat-row { grid-template-columns: 1fr 1fr; } .stat:nth-child(3) { border-left: none; } }
+
+/* ---- scroll-reveal: main.js bir eleman görünür olunca IntersectionObserver ile
+   .is-visible ekler (bkz. assets/js/main.js) — element bir kez göründükten sonra
+   gözlem bırakılır, yukarı scroll'da tekrar gizlenmez. */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+.reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+/* Kart ızgaralarında kademeli (staggered) beliriş — 6'ya kadar, sonrası ek gecikme almadan aynı anda belirir. */
+.cat-grid > .reveal:nth-child(1), .prod-grid > .reveal:nth-child(1), .corp-grid > .reveal:nth-child(1) { transition-delay: 0ms; }
+.cat-grid > .reveal:nth-child(2), .prod-grid > .reveal:nth-child(2), .corp-grid > .reveal:nth-child(2) { transition-delay: 70ms; }
+.cat-grid > .reveal:nth-child(3), .prod-grid > .reveal:nth-child(3), .corp-grid > .reveal:nth-child(3) { transition-delay: 140ms; }
+.cat-grid > .reveal:nth-child(4), .prod-grid > .reveal:nth-child(4), .corp-grid > .reveal:nth-child(4) { transition-delay: 210ms; }
+.cat-grid > .reveal:nth-child(5), .prod-grid > .reveal:nth-child(5), .corp-grid > .reveal:nth-child(5) { transition-delay: 280ms; }
+.cat-grid > .reveal:nth-child(6), .prod-grid > .reveal:nth-child(6), .corp-grid > .reveal:nth-child(6) { transition-delay: 350ms; }
 
 /* ---- placeholder art (used until real photos are uploaded) ---- */
 .ph {
@@ -287,8 +315,8 @@ ul.megamenu-flyout {
 
 /* ---- category grid ---- */
 .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 32px; }
-.cat-card { background: var(--paper); padding: 28px 24px; transition: background .15s; text-decoration: none; color: inherit; display: block; }
-.cat-card:hover { background: var(--paper-raised); }
+.cat-card { background: var(--paper); padding: 28px 24px; transition: background .15s ease, transform .2s ease, box-shadow .2s ease; text-decoration: none; color: inherit; display: block; position: relative; }
+.cat-card:hover { background: var(--paper-raised); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); z-index: 1; }
 .cat-icon { color: var(--accent); margin-bottom: 18px; }
 .cat-card h3 { font-size: 16.5px; margin-bottom: 8px; }
 .cat-card .sub { font-size: 12.5px; color: var(--steel); line-height: 1.6; }
@@ -299,11 +327,14 @@ ul.megamenu-flyout {
 /* ---- product grid ---- */
 .prod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 32px; }
 .prod-card { text-decoration: none; color: inherit; display: block; }
-.prod-card .ph { aspect-ratio: 4/3; margin-bottom: 14px; }
+.prod-card .ph { aspect-ratio: 4/3; margin-bottom: 14px; transition: border-color .2s ease; }
+.prod-card .ph img { transition: transform .35s ease; }
 .prod-card:hover .ph { border-color: var(--line-strong); }
+.prod-card:hover .ph img { transform: scale(1.045); }
 .prod-card h3 { font-size: 15.5px; margin-bottom: 6px; }
 .prod-card .spec { font-size: 12px; color: var(--steel); }
-.prod-card .go { font-size: 12.5px; color: var(--accent); margin-top: 10px; font-family: var(--font-display); }
+.prod-card .go { font-size: 12.5px; color: var(--accent); margin-top: 10px; font-family: var(--font-display); transition: transform .15s ease; display: inline-block; }
+.prod-card:hover .go { transform: translateX(3px); }
 .featured-tag { position: absolute; top: 8px; left: 8px; background: var(--accent); color: #fff; font-size: 9.5px; letter-spacing: .08em; padding: 4px 8px; text-transform: uppercase; font-family: var(--font-display); }
 @media (max-width: 900px) { .prod-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .prod-grid { grid-template-columns: 1fr; } }
@@ -419,6 +450,11 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 
 .hero-media { position: relative; height: clamp(420px, 56vw, 640px); overflow: hidden; background: var(--paper-raised); }
 .hero-media > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Ken-Burns: aktif slaytın fotoğrafı yavaşça büyür — slayt her .active olduğunda
+   main.js'in class toggle'ı animasyonu sıfırdan başlatır (heroFade ile aynı teknik). */
+.hero-slide.active .hero-media > img { animation: heroKenBurns 9s ease-out forwards; }
+@keyframes heroKenBurns { from { transform: scale(1); } to { transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) { .hero-slide.active .hero-media > img { animation: none; } }
 .hero-media .ph-fill {
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--steel-soft);
   background: repeating-linear-gradient(135deg, var(--paper-sunken), var(--paper-sunken) 10px, var(--paper-raised) 10px, var(--paper-raised) 20px);
@@ -474,8 +510,8 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 
 /* ---- kurumsal: alt sayfa kartları (ikon + başlık + özet) ---- */
 .corp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.corp-card { background: var(--paper); padding: 30px 28px; text-decoration: none; color: inherit; display: block; transition: background .15s; }
-.corp-card:hover { background: var(--paper-raised); }
+.corp-card { background: var(--paper); padding: 30px 28px; text-decoration: none; color: inherit; display: block; position: relative; transition: background .15s ease, transform .2s ease, box-shadow .2s ease; }
+.corp-card:hover { background: var(--paper-raised); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); z-index: 1; }
 .corp-card-icon { color: var(--accent); margin-bottom: 16px; }
 .corp-card h3 { font-size: 17px; margin-bottom: 10px; }
 .corp-card p { font-size: 13.5px; color: var(--steel); line-height: 1.7; margin: 0; max-width: 46ch; }
