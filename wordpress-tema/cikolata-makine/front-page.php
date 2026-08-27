@@ -158,12 +158,16 @@ if ( $cm_refs->have_posts() ) :
 
 <?php
 // "Kalite Belgelerimiz": kalite_belge_1..8 (bkz. inc/acf-fields.php group_cm_anasayfa) —
-// hiç dolu slot yoksa bölüm TAMAMEN gizli kalır ("boşsa gizle").
+// hiç dolu slot yoksa bölüm TAMAMEN gizli kalır ("boşsa gizle"). Belirleyici alan
+// "Belge"dir (dosya) — başlıksız ama dosyalı bir slot da gösterilir (başlık YOKSA
+// sadece kart üzerindeki başlık satırı basılmaz); ESKİDEN ikisi de zorunluydu, admin
+// dosyayı/önizlemeyi yükleyip başlığı boş bıraktığında kart tamamen gizli kalıyordu —
+// beklenmedik ve kafa karıştırıcı bulunduğu için (bkz. proje notları) gevşetildi.
 $cm_certs = array();
 if ( function_exists( 'get_field' ) ) {
 	foreach ( range( 1, 8 ) as $cm_n ) {
 		$cm_cert = get_field( "kalite_belge_$cm_n" );
-		if ( $cm_cert && ! empty( $cm_cert['baslik'] ) && ! empty( $cm_cert['dosya']['url'] ) ) $cm_certs[] = $cm_cert;
+		if ( $cm_cert && ! empty( $cm_cert['dosya']['url'] ) ) $cm_certs[] = $cm_cert;
 	}
 }
 if ( $cm_certs ) : ?>
@@ -180,17 +184,19 @@ if ( $cm_certs ) : ?>
 			$cm_cert_preview  = ! empty( $cm_cert['onizleme_gorseli']['url'] )
 				? $cm_cert['onizleme_gorseli']['url']
 				: ( $cm_cert_is_image ? $cm_cert['dosya']['url'] : cm_pdf_preview_url( $cm_cert['dosya'] ) );
+			// Başlık boşsa erişilebilirlik/alt-metin için dosyanın kendi başlığına düş.
+			$cm_cert_label = $cm_cert['baslik'] ?: ( $cm_cert['dosya']['title'] ?? '' );
 		?>
-			<a class="cert-card reveal" href="<?php echo esc_url( $cm_cert['dosya']['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( sprintf( cm__( 'belge_yeni_sekme_aria' ), $cm_cert['baslik'] ) ); ?>">
+			<a class="cert-card reveal" href="<?php echo esc_url( $cm_cert['dosya']['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( sprintf( cm__( 'belge_yeni_sekme_aria' ), $cm_cert_label ) ); ?>">
 				<div class="ph">
 					<?php if ( $cm_cert_preview ) : ?>
-						<img src="<?php echo esc_url( $cm_cert_preview ); ?>" alt="<?php echo esc_attr( $cm_cert['baslik'] ); ?>">
+						<img src="<?php echo esc_url( $cm_cert_preview ); ?>" alt="<?php echo esc_attr( $cm_cert_label ); ?>">
 					<?php else : ?>
 						<?php cm_document_icon( 40 ); ?>
 					<?php endif; ?>
 					<span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
 				</div>
-				<h3><?php echo esc_html( $cm_cert['baslik'] ); ?></h3>
+				<?php if ( $cm_cert['baslik'] ) : ?><h3><?php echo esc_html( $cm_cert['baslik'] ); ?></h3><?php endif; ?>
 			</a>
 		<?php endforeach; ?>
 	</div>

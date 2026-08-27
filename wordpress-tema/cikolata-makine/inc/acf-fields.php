@@ -294,12 +294,16 @@ add_action( 'acf/init', function () {
 	$cm_anasayfa_fields[] = array( 'key' => 'field_cm_katalog_banner_pdf', 'label' => 'Katalog Banner PDF Dosyası', 'name' => 'katalog_banner_pdf', 'type' => 'file', 'return_format' => 'array', 'mime_types' => 'pdf' );
 
 	// "Kalite Belgelerimiz" (anasayfa bölümü): sabit sayıda numaralı slot — diğer
-	// anasayfa bloklarıyla (hero_slayt_1..3, istatistik_1..4) AYNI desen. Her slotun
-	// "Başlık"ı belirleyici alan: boşsa (veya dosya boşsa) slot sitede hiç görünmez.
-	// Tek bir "dosya" alanı hem PDF hem görsel (JPG/PNG/WEBP) kabul eder — hangisi
-	// yüklendiyse ön yüzde ona göre davranılır (bkz. front-page.php): görsel yüklendiyse
-	// kartta o görsel gösterilir, PDF yüklendiyse genel bir belge ikonu gösterilir;
-	// tıklandığında HER İKİ durumda da yüklenen dosyanın kendisi yeni sekmede açılır.
+	// anasayfa bloklarıyla (hero_slayt_1..3, istatistik_1..4) AYNI desen. Belirleyici
+	// alan "Belge"dir (dosya): boşsa slot sitede hiç görünmez. "Başlık" İSTEĞE BAĞLIDIR
+	// — boş bırakılırsa kartta sadece başlık satırı basılmaz, kart (görsel + link) yine
+	// görünür (eskiden başlık da zorunluydu; admin dosyayı doldurup başlığı unuttuğunda
+	// kartın SESSİZCE tamamen kaybolması kafa karıştırıcı bulunduğu için gevşetildi —
+	// bkz. front-page.php). Tek bir "dosya" alanı hem PDF hem görsel (JPG/PNG/WEBP)
+	// kabul eder — hangisi yüklendiyse ön yüzde ona göre davranılır (bkz. front-page.php):
+	// görsel yüklendiyse kartta o görsel gösterilir, PDF yüklendiyse ilk sayfa önizlemesi
+	// (veya aşağıdaki "Önizleme Görseli" doluysa o) gösterilir; tıklandığında HER
+	// DURUMDA "Belge"nin kendisi yeni sekmede açılır.
 	for ( $cm_n = 1; $cm_n <= 8; $cm_n++ ) {
 		$cm_anasayfa_fields[] = array(
 			'key'          => "field_cm_kalite_belge_$cm_n",
@@ -307,7 +311,7 @@ add_action( 'acf/init', function () {
 			'name'         => "kalite_belge_$cm_n",
 			'type'         => 'group',
 			'layout'       => 'block',
-			'instructions' => $cm_n === 1 ? '"Başlık" boş bırakılan slotlar sitede hiç görünmez — hepsini doldurmak zorunda değilsiniz.' : '',
+			'instructions' => $cm_n === 1 ? '"Belge" boş bırakılan slotlar sitede hiç görünmez — hepsini doldurmak zorunda değilsiniz. "Başlık" isteğe bağlıdır (boşsa kartta sadece başlık yazısı görünmez).' : '',
 			'sub_fields'   => array(
 				array( 'key' => "field_cm_kb{$cm_n}_baslik", 'label' => 'Başlık', 'name' => 'baslik', 'type' => 'text', 'placeholder' => 'örn. ISO 9001:2015' ),
 				array(
