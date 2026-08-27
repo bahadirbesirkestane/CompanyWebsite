@@ -296,6 +296,36 @@ function cm_pll_disambiguate_pagename_request( $query_vars ) {
 add_filter( 'request', 'cm_pll_disambiguate_pagename_request', 20 );
 
 /**
+ * page-{slug}.php şablon kuralı (bkz. page-kataloglar.php, page-urunler.php,
+ * page-haberler.php) WordPress çekirdeğinde SADECE görüntülenen Sayfanın KENDİ
+ * post_name'ine bakar. Ama bu Sayfaların EN/RU/ES çevirileri farklı, yerelleştirilmiş
+ * bir slug'a sahip OLABİLİR (örn. "kataloglar" yerine İngilizce'de "catalogues") — bu
+ * durumda çekirdek doğru özel şablonu hiç bulamaz ve sessizce genel page.php'ye düşer
+ * (SONUÇ: örn. İngilizce "Catalogues" sayfası PDF listesini hiç göstermez, sadece boş
+ * bir içerik sayfası gibi görünür — bu tam olarak böyle bir hata olarak bulundu).
+ * ÇÖZÜM: hedef Sayfanın DEĞİL, o Sayfanın Polylang çeviri grubundaki VARSAYILAN DİL
+ * sürümünün slug'ına göre de page-{slug}.php ara; bulunursa çekirdeğin (varsayılan
+ * page.php'ye düşmüş) seçimi yerine onu kullan.
+ */
+function cm_page_template_by_canonical_slug( $template ) {
+	if ( ! is_page() || ! function_exists( 'pll_get_post' ) || ! function_exists( 'pll_default_language' ) ) return $template;
+
+	$post_id      = get_queried_object_id();
+	$default_lang = pll_default_language();
+	if ( ! $default_lang ) return $template;
+
+	$canonical_id = pll_get_post( $post_id, $default_lang );
+	if ( ! $canonical_id || (int) $canonical_id === (int) $post_id ) return $template;
+
+	$canonical_slug = get_post_field( 'post_name', $canonical_id );
+	if ( ! $canonical_slug ) return $template;
+
+	$candidate = locate_template( "page-{$canonical_slug}.php" );
+	return $candidate ?: $template;
+}
+add_filter( 'template_include', 'cm_page_template_by_canonical_slug' );
+
+/**
  * Görünüm → Özelleştir → "İletişim & WhatsApp" alanını (bkz. inc/customizer.php)
  * kolayca okumak için kısa yardımcı.
  */

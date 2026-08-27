@@ -106,6 +106,18 @@ function cm_strings() {
 			'kurumsal_uluslararasi_eyebrow'   => 'Global Destek',
 			'kurumsal_uluslararasi_baslik'    => 'Uluslararası İletişim',
 			'kurumsal_uluslararasi_aciklama'  => 'Uluslararası müşterilerimize daha hızlı destek sunabilmek amacıyla, farklı ülkelerde iş birliği yaptığımız yerel iletişim noktalarımız bulunmaktadır. Bulunduğunuz ülkeye göre aşağıdaki kişilerle iletişime geçebilirsiniz.',
+
+			'kalite_belgeleri_eyebrow'  => 'Kalite Güvencesi',
+			'kalite_belgeleri_baslik'   => 'Kalite Belgelerimiz',
+			'belge_yeni_sekme_aria'     => '%s belgesini yeni sekmede aç',
+
+			'haberler_eyebrow'    => 'Bizden Haberler',
+			'haberlerimiz_baslik' => 'Haberler',
+			'haberler_baslik'     => 'Haberler',
+			'haberler_aciklama'   => 'Şirketimizden ve sektörden güncel gelişmeler.',
+			'haberler_bos'        => 'Henüz haber eklenmedi.',
+			'devamini_oku'        => 'Devamını Oku →',
+			'tum_haberler'        => 'Tüm Haberler',
 		);
 	}
 	return $s;

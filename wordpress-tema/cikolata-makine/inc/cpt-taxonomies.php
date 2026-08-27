@@ -125,6 +125,31 @@ function cm_register_post_types() {
 		'menu_icon'     => 'dashicons-groups',
 		'menu_position' => 7,
 	) );
+
+	register_post_type( 'haber', array(
+		'labels' => array(
+			'name'               => 'Haberler',
+			'singular_name'      => 'Haber',
+			'add_new'            => 'Yeni Haber Ekle',
+			'add_new_item'       => 'Yeni Haber Ekle',
+			'edit_item'          => 'Haberi Düzenle',
+			'new_item'           => 'Yeni Haber',
+			'view_item'          => 'Haberi Görüntüle',
+			'search_items'       => 'Haber Ara',
+			'not_found'          => 'Haber bulunamadı',
+			'not_found_in_trash' => 'Çöp kutusunda haber yok',
+			'menu_name'          => 'Haberler',
+		),
+		'public'       => true,
+		// has_archive=false: "Haberler" kendi CPT arşivi değil, "urunler"/"kataloglar" ile
+		// AYNI desende gerçek bir Sayfa (bkz. page-haberler.php, page-{slug}.php kuralı).
+		'has_archive'  => false,
+		'rewrite'      => array( 'slug' => 'haber', 'with_front' => false ),
+		'supports'     => array( 'title', 'editor', 'thumbnail', 'excerpt' ),
+		'menu_icon'    => 'dashicons-megaphone',
+		'menu_position'=> 8,
+		'show_in_rest' => true,
+	) );
 }
 add_action( 'init', 'cm_register_post_types' );
 
@@ -139,7 +164,7 @@ function cm_admin_thumbnail_column( $columns ) {
 	}
 	return $new;
 }
-foreach ( array( 'makine', 'katalog', 'referans' ) as $cm_pt ) {
+foreach ( array( 'makine', 'katalog', 'referans', 'haber' ) as $cm_pt ) {
 	add_filter( "manage_{$cm_pt}_posts_columns", 'cm_admin_thumbnail_column' );
 }
 function cm_admin_thumbnail_column_content( $column, $post_id ) {
@@ -147,6 +172,6 @@ function cm_admin_thumbnail_column_content( $column, $post_id ) {
 		echo get_the_post_thumbnail( $post_id, array( 48, 48 ), array( 'style' => 'object-fit:cover;border-radius:3px;' ) );
 	}
 }
-foreach ( array( 'makine', 'katalog', 'referans' ) as $cm_pt ) {
+foreach ( array( 'makine', 'katalog', 'referans', 'haber' ) as $cm_pt ) {
 	add_action( "manage_{$cm_pt}_posts_custom_column", 'cm_admin_thumbnail_column_content', 10, 2 );
 }

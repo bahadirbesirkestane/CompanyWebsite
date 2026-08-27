@@ -287,6 +287,36 @@ add_action( 'acf/init', function () {
 	$cm_anasayfa_fields[] = array( 'key' => 'field_cm_katalog_aciklama', 'label' => 'Katalog Banner Açıklaması', 'name' => 'katalog_aciklama', 'type' => 'text', 'default_value' => 'Genel katalog · Türkçe / İngilizce' );
 	$cm_anasayfa_fields[] = array( 'key' => 'field_cm_katalog_banner_pdf', 'label' => 'Katalog Banner PDF Dosyası', 'name' => 'katalog_banner_pdf', 'type' => 'file', 'return_format' => 'array', 'mime_types' => 'pdf' );
 
+	// "Kalite Belgelerimiz" (anasayfa bölümü): sabit sayıda numaralı slot — diğer
+	// anasayfa bloklarıyla (hero_slayt_1..3, istatistik_1..4) AYNI desen. Her slotun
+	// "Başlık"ı belirleyici alan: boşsa (veya dosya boşsa) slot sitede hiç görünmez.
+	// Tek bir "dosya" alanı hem PDF hem görsel (JPG/PNG/WEBP) kabul eder — hangisi
+	// yüklendiyse ön yüzde ona göre davranılır (bkz. front-page.php): görsel yüklendiyse
+	// kartta o görsel gösterilir, PDF yüklendiyse genel bir belge ikonu gösterilir;
+	// tıklandığında HER İKİ durumda da yüklenen dosyanın kendisi yeni sekmede açılır.
+	for ( $cm_n = 1; $cm_n <= 8; $cm_n++ ) {
+		$cm_anasayfa_fields[] = array(
+			'key'          => "field_cm_kalite_belge_$cm_n",
+			'label'        => "Kalite Belgesi $cm_n",
+			'name'         => "kalite_belge_$cm_n",
+			'type'         => 'group',
+			'layout'       => 'block',
+			'instructions' => $cm_n === 1 ? '"Başlık" boş bırakılan slotlar sitede hiç görünmez — hepsini doldurmak zorunda değilsiniz.' : '',
+			'sub_fields'   => array(
+				array( 'key' => "field_cm_kb{$cm_n}_baslik", 'label' => 'Başlık', 'name' => 'baslik', 'type' => 'text', 'placeholder' => 'örn. ISO 9001:2015' ),
+				array(
+					'key'           => "field_cm_kb{$cm_n}_dosya",
+					'label'         => 'Belge (PDF veya Görsel)',
+					'name'          => 'dosya',
+					'type'          => 'file',
+					'return_format' => 'array',
+					'mime_types'    => 'pdf,jpg,jpeg,png,webp',
+					'instructions'  => 'PDF olarak taranmış bir belge ya da doğrudan bir fotoğraf/logo (JPG, PNG, WEBP) yükleyebilirsiniz.',
+				),
+			),
+		);
+	}
+
 	acf_add_local_field_group( array(
 		'key'      => 'group_cm_anasayfa',
 		'title'    => 'Anasayfa Ayarları',
@@ -390,3 +420,26 @@ add_action( 'acf/init', function () {
 	) );
 
 } );
+
+/**
+ * "Kalite Belgesi" slotlarına bir PDF yüklendiğinde, ilk sayfa önizlemesini (bkz.
+ * cm_pdf_preview_url(), inc/template-tags.php) SAYFA KAYDEDİLİRKEN (admin ekranında,
+ * bir defaya mahsus) üretip önbelleğe alır. Bunu YAPMAZSAK ilk önizleme, o PDF'in
+ * konduğu Sayfayı (Anasayfa) ilk ziyaret eden GERÇEK ziyaretçinin isteğinde Ghostscript
+ * çalıştırılarak üretilir — bu da anasayfanın (ve üzerindeki referans logosu şeridi gibi
+ * `window.load` sonrası çalışan script'lerin) o istekte gözle görülür şekilde
+ * yavaşlamasına yol açar (bir kez tam olarak bu şekilde fark edilmiş bir sorun).
+ * cm_pdf_preview_url() zaten kendi içinde dosya bazlı önbelleğe alıyor, burada sadece
+ * "kaydet" anında bir kez ÖNCEDEN tetikliyoruz ki halka açık sayfa hep hazır bulsun.
+ */
+function cm_prewarm_kalite_belge_previews( $post_id ) {
+	if ( get_post_type( $post_id ) !== 'page' || ! function_exists( 'get_field' ) ) return;
+	for ( $cm_i = 1; $cm_i <= 8; $cm_i++ ) {
+		$cm_cert = get_field( "kalite_belge_$cm_i", $post_id );
+		$cm_dosya = $cm_cert['dosya'] ?? null;
+		if ( $cm_dosya && strpos( $cm_dosya['mime_type'] ?? '', 'image/' ) !== 0 ) {
+			cm_pdf_preview_url( $cm_dosya );
+		}
+	}
+}
+add_action( 'acf/save_post', 'cm_prewarm_kalite_belge_previews', 20 );

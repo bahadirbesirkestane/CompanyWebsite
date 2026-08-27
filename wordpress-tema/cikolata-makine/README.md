@@ -17,10 +17,11 @@ Onaylanan tasarım önizlemesinin ([01_tasarim_onizleme.html](../01_tasarim_oniz
    - "Anasayfa" (front page olarak atanacak)
    - "Ürünler" (istediğiniz başka bir başlık da olur, örn. "Makinelerimiz") — **slug mutlaka `urunler` olmalı** (şablon otomatik eşleşir; sadece görünen BAŞLIK değil, slug/adres de değişirse bu sayfa şablonu ve site genelindeki linkler kırılır — başlığı istediğiniz kadar değiştirebilirsiniz, sadece slug'a dokunmayın)
    - "İletişim" — slug `iletisim`
+   - "Haberler" — **slug mutlaka `haberler` olmalı** (haber listeleme şablonu bu slug'a bağlıdır — çeviri sayfalarının slug'ı farklı/yerelleştirilmiş olabilir, örn. İngilizce'de `news`, sorun olmaz, tema otomatik doğru şablonu bulur)
    - "Kurumsal", "Hakkımızda" vb. istediğiniz diğer sayfalar
 5. **Ayarlar → Okuma**: Anasayfa gösterimini "Sabit bir sayfa" yapıp "Anasayfa" sayfasını seçin.
-6. "Anasayfa" sayfasını düzenlerken sağdaki **Anasayfa Ayarları** kutusunu doldurun: **Slayt 1/2/3** (her biri üst etiket, başlık, açıklama, görsel, 2 buton — başlık boş bırakılan slayt sitede hiç görünmez, en az Slayt 1'i doldurun), **İstatistik 1-4**, Katalog Banner metni/PDF'i.
-7. **Görünüm → Menüler**: Bir menü oluşturup **"Üst Menü (Header)"** konumuna atayın (Anasayfa, Kurumsal, Ürünler, Kataloglar, Blog, İletişim). İsteğe bağlı olarak "Footer — Hızlı Linkler" ve "Footer — Kategoriler" konumlarını da doldurun. Bir üst menü öğesini fare ile bir üst öğenin biraz altına/sağına sürükleyerek bırakırsanız (WordPress'in standart girintileme yöntemi), o öğe alt sayfa/alt kategori olarak eklenir ve mobil hamburger menüde üst öğenin altında girintili görünür.
+6. "Anasayfa" sayfasını düzenlerken sağdaki **Anasayfa Ayarları** kutusunu doldurun: **Slayt 1/2/3** (her biri üst etiket, başlık, açıklama, görsel, 2 buton — başlık boş bırakılan slayt sitede hiç görünmez, en az Slayt 1'i doldurun), **İstatistik 1-4**, Katalog Banner metni/PDF'i, **Kalite Belgesi 1-8** (her biri bir başlık + bir dosya — dosya olarak PDF VEYA görsel (JPG/PNG/WEBP) yükleyebilirsiniz; görsel yüklerseniz kartta o görsel gösterilir, PDF yüklerseniz genel bir belge ikonu gösterilir, tıklandığında yüklediğiniz dosya yeni sekmede açılır — "Başlık" boş bırakılan slotlar sitede hiç görünmez, hiç dolu slot yoksa "Kalite Belgelerimiz" bölümü anasayfada hiç görünmez).
+7. **Görünüm → Menüler**: Bir menü oluşturup **"Üst Menü (Header)"** konumuna atayın (Anasayfa, Kurumsal, Ürünler, Kataloglar, Haberler, İletişim). İsteğe bağlı olarak "Footer — Hızlı Linkler" ve "Footer — Kategoriler" konumlarını da doldurun. Bir üst menü öğesini fare ile bir üst öğenin biraz altına/sağına sürükleyerek bırakırsanız (WordPress'in standart girintileme yöntemi), o öğe alt sayfa/alt kategori olarak eklenir ve mobil hamburger menüde üst öğenin altında girintili görünür.
 8. **Ürünler → Kategoriler**: Kategori/alt kategori ağacınızı oluşturun (yapı karmaşıklaşmasın diye **en fazla 2 seviye** — kategori → alt kategori — önerilir). Her kategoriye isterseniz bir **Kategori İkonu** yükleyin. Bir kategoride ürün yoksa (kendi içinde veya alt kategorilerinde) kart üzerinde sayı satırı hiç görünmez — "Proje Bazlı" gibi bir yer tutucu metin yoktur.
 9. **Ürünler → Yeni Ekle**: Her makine için:
    - Öne Çıkan Görsel (vitrin kapak — bu, detay sayfasındaki galerinin de ilk fotoğrafıdır)
@@ -47,6 +48,17 @@ Onaylanan tasarım önizlemesinin ([01_tasarim_onizleme.html](../01_tasarim_oniz
 - **Çoklu dil**: Form, "Ürünler"/"İletişim" sayfaları gibi Polylang ile çevrilebilir işaretlenmiştir. Yeni bir dilde form eklemek için Contact Form 7 → Formlar'da `iletisim-formu`nun yanındaki **"+ Çeviri Ekle"** ile yeni dilde bir form oluşturup alan etiketlerini (Ad Soyad, Firma Adı, vb.) o dile çevirin — tema otomatik olarak geçerli ziyaretçi diline uygun formu gösterir, ekstra kod/ayar gerekmez.
 - **"Bize Ulaşın" kartları (Telefon/WhatsApp/E-posta/Adres/Çalışma Saatleri)**: Formun ÜSTÜNDE görünen bu kartların başlığı VE içeriği, **Sayfalar → İletişim** (her dilin kendi sayfası) düzenleme ekranındaki **"İletişim Sayfası: 'Bize Ulaşın' Kartları"** kutusundan yönetilir — Özelleştir'e gitmenize gerek yoktur. Bir kartın alanını boş bırakırsanız Özelleştir → İletişim & WhatsApp'taki (footer'la paylaşılan) genel değere düşer; o da boşsa kart hiç görünmez.
 
+## Haberler
+
+`wp-admin → Haberler → Yeni Ekle` ile her haber için sadece standart WordPress alanları kullanılır — ayrı bir özel alan YOKTUR:
+- **Başlık**, **İçerik** (tam haber metni, haber detay sayfasında gösterilir), **Öne Çıkan Görsel** (hem haber kartında hem detay sayfasının üstündeki banner'da kullanılır — banner'da sayfa başlığı bu görselin üstüne bindirilir), **Alıntı (Excerpt)** (kart üzerindeki kısa özet — boş bırakılırsa içerikten otomatik kısaltılır).
+- **Anasayfa**: en yeni 3 haber otomatik olarak "Haberler" bölümünde gösterilir (hiç haber yoksa bölüm hiç görünmez). **Haberler Sayfası** (`/haberler/`): tüm haberleri sayfalı olarak listeler.
+- **Çoklu dil**: `Ürünler`/`Kataloglar` gibi Polylang ile çevrilebilir işaretlenmiştir (yukarıdaki kurulum adım 3) — her haberin "+ Çeviri Ekle" ile diğer 3 dildeki karşılığını girin.
+
+## Kalite Belgelerimiz — PDF Önizleme Notu
+
+Bir "Kalite Belgesi" slotuna PDF yüklediğinizde, tema o PDF'in İLK SAYFASINI otomatik olarak küçük bir görsele çevirmeye çalışır (kartta boş/ikon yerine gerçek belge önizlemesi görünsün diye). Bunun çalışması sunucunuzda **Ghostscript** kurulu ve PHP'nin **Imagick** eklentisinin (veya `exec()` fonksiyonunun) açık olmasına bağlıdır — birçok paylaşımlı hosting'te bu KAPALI olabilir (güvenlik amacıyla). Önizleme üretilemezse kart otomatik olarak genel bir belge ikonuna düşer, site bozulmaz. Eğer canlı sunucunuzda önizleme çalışmıyorsa ve gerçek bir önizleme istiyorsanız, PDF yerine doğrudan belgenin taranmış/fotoğraflanmış bir görselini (JPG/PNG) yükleyebilirsiniz — aynı "Belge" alanı ikisini de kabul eder.
+
 ## Yükleme Boyutu Sınırı (PDF/Görsel)
 
 wp-admin → Medya yükleme ekranında gördüğünüz "Maksimum yükleme boyutu" (genelde 2MB), WordPress'in değil **hosting'in PHP ayarının** (`upload_max_filesize`, `post_max_size`) sınırıdır — bu tema kodundan değiştirilemez, hosting tarafında yükseltilmesi gerekir:
@@ -68,16 +80,18 @@ cikolata-makine/
 ├── style.css                    Tema başlığı
 ├── functions.php                Kurulum, enqueue, menüler
 ├── header.php / footer.php      Ortak site iskeleti
-├── front-page.php               Anasayfa (hero slider, kategori vitrini, öne çıkanlar, referans şeridi, katalog banner)
+├── front-page.php               Anasayfa (hero slider, kategori vitrini, öne çıkanlar, referans şeridi, kalite belgeleri, haberler, katalog banner)
 ├── page-urunler.php             Ürünler kategori indeksi (slug: urunler — sayfa BAŞLIĞI değiştirilebilir, slug değişemez)
 ├── taxonomy-makine_kategori.php Kategori / alt kategori + ürün listesi
 ├── single-makine.php            Makine detay sayfası
 ├── page-kataloglar.php          Kataloglar (PDF) grid sayfası (slug: kataloglar — page-urunler.php ile aynı desen)
+├── page-haberler.php            Haberler grid/listeleme sayfası (slug: haberler — aynı desen)
+├── single-haber.php             Haber detay sayfası
 ├── page.php                     Genel içerik sayfası (Kurumsal, Hakkımızda, İletişim...)
 ├── single.php / index.php       Blog yazı detayı / listesi
 ├── 404.php                      Sayfa bulunamadı
 ├── inc/
-│   ├── cpt-taxonomies.php       makine / katalog / referans post type'ları + makine_kategori taksonomisi
+│   ├── cpt-taxonomies.php       makine / katalog / referans / haber post type'ları + makine_kategori taksonomisi
 │   ├── acf-fields.php           Tüm özel alan tanımları (kod tabanlı, ACF arayüzünden bağımsız)
 │   ├── template-tags.php        breadcrumb, kategori/ürün kartı, PDF satırı gibi paylaşılan render fonksiyonları
 │   ├── customizer.php           Görünüm → Özelleştir → "İletişim & WhatsApp" (telefon/adres/WhatsApp/sosyal linkler)
@@ -95,7 +109,7 @@ Tema, **Polylang (ücretsiz sürüm)** ile çalışacak şekilde baştan hazırl
 
 1. **Eklentiler → Yeni Ekle**: "Polylang" kurup etkinleştirin. İlk açılan kurulum sihirbazında Türkçe/İngilizce/Rusça/İspanyolca dillerini ekleyin, **varsayılan dil Türkçe** olarak seçin.
 2. Sihirbazın "mevcut içeriği varsayılan dile ata" adımını mutlaka çalıştırın — bu atlanırsa mevcut makine/kategori/sayfa içerikleriniz dil filtresine takılıp sitede görünmez olur.
-3. **Diller → Ayarlar → Custom Post Types and Taxonomies**: `Ürünler` (makine) ve `Kataloglar` (katalog) post type'larını, `Ürün Kategorileri` (makine_kategori) taksonomisini "çevrilebilir" işaretleyip kaydedin. (`Referanslar` işaretlemeyin — logo/isim dilden bağımsızdır.)
+3. **Diller → Ayarlar → Custom Post Types and Taxonomies**: `Ürünler` (makine), `Kataloglar` (katalog) ve `Haberler` (haber) post type'larını, `Ürün Kategorileri` (makine_kategori) taksonomisini "çevrilebilir" işaretleyip kaydedin. (`Referanslar` işaretlemeyin — logo/isim dilden bağımsızdır.)
 4. **Diller → Ayarlar → URL sekmesi**: "Anasayfa URL'i sayfa adı/id yerine dil kodunu içersin" seçeneğini **işaretleyin** — bu işaretlenmezse İngilizce/Rusça/İspanyolca anasayfa `/en/` yerine `/en/anasayfa-slug-adi/` gibi yanlış bir adrese yönlenir.
 5. **Ayarlar → Kalıcı Bağlantılar → Kaydet** (rewrite kurallarını tazeler).
 

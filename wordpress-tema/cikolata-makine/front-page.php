@@ -157,6 +157,59 @@ if ( $cm_refs->have_posts() ) :
 <?php endif; ?>
 
 <?php
+// "Kalite Belgelerimiz": kalite_belge_1..8 (bkz. inc/acf-fields.php group_cm_anasayfa) —
+// hiç dolu slot yoksa bölüm TAMAMEN gizli kalır ("boşsa gizle").
+$cm_certs = array();
+if ( function_exists( 'get_field' ) ) {
+	foreach ( range( 1, 8 ) as $cm_n ) {
+		$cm_cert = get_field( "kalite_belge_$cm_n" );
+		if ( $cm_cert && ! empty( $cm_cert['baslik'] ) && ! empty( $cm_cert['dosya']['url'] ) ) $cm_certs[] = $cm_cert;
+	}
+}
+if ( $cm_certs ) : ?>
+<div class="wrap section-tight">
+	<div class="eyebrow reveal"><?php echo esc_html( cm__( 'kalite_belgeleri_eyebrow' ) ); ?></div>
+	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'kalite_belgeleri_baslik' ) ); ?></h2>
+	<div class="cert-grid">
+		<?php foreach ( $cm_certs as $cm_cert ) :
+			$cm_cert_is_image = strpos( $cm_cert['dosya']['mime_type'] ?? '', 'image/' ) === 0;
+			$cm_cert_preview  = $cm_cert_is_image ? $cm_cert['dosya']['url'] : cm_pdf_preview_url( $cm_cert['dosya'] );
+		?>
+			<a class="cert-card reveal" href="<?php echo esc_url( $cm_cert['dosya']['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( sprintf( cm__( 'belge_yeni_sekme_aria' ), $cm_cert['baslik'] ) ); ?>">
+				<div class="ph">
+					<?php if ( $cm_cert_preview ) : ?>
+						<img src="<?php echo esc_url( $cm_cert_preview ); ?>" alt="<?php echo esc_attr( $cm_cert['baslik'] ); ?>">
+					<?php else : ?>
+						<?php cm_document_icon( 40 ); ?>
+					<?php endif; ?>
+					<span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
+				</div>
+				<h3><?php echo esc_html( $cm_cert['baslik'] ); ?></h3>
+			</a>
+		<?php endforeach; ?>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php
+// "Haberler": haber CPT'sinden en yeni 3 kayıt — hiç haber yoksa bölüm tamamen gizli
+// kalır ("boşsa gizle"). Listeleme/detay: page-haberler.php ("Haberler" Sayfası) +
+// single-haber.php.
+$cm_haberler_q = new WP_Query( array( 'post_type' => 'haber', 'posts_per_page' => 3 ) );
+if ( $cm_haberler_q->have_posts() ) : ?>
+<div class="wrap section-tight">
+	<div class="eyebrow reveal"><?php echo esc_html( cm__( 'haberler_eyebrow' ) ); ?></div>
+	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'haberlerimiz_baslik' ) ); ?></h2>
+	<div class="prod-grid">
+		<?php while ( $cm_haberler_q->have_posts() ) : $cm_haberler_q->the_post(); cm_news_card( get_the_ID() ); endwhile; wp_reset_postdata(); ?>
+	</div>
+	<div style="margin-top:28px;">
+		<a class="btn btn-outline" href="<?php echo esc_url( cm_translated_page_url( 'haberler', '/haberler/' ) ); ?>"><?php echo esc_html( cm__( 'tum_haberler' ) ); ?></a>
+	</div>
+</div>
+<?php endif; ?>
+
+<?php
 // Bunlar ACF'in "Anasayfa Ayarları" grubundan (front_page konumlu) — cm_option() ile
 // KARIŞTIRMAYIN, o Özelleştir/theme_mod alanları içindir; bunlar mevcut sayfanın (Anasayfa) ACF alanlarıdır.
 $cm_kat_baslik   = ( function_exists( 'get_field' ) ? get_field( 'katalog_baslik' ) : '' ) ?: cm__( 'katalog_banner_baslik_default' );

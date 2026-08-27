@@ -49,6 +49,75 @@ function cm_generic_icon( $size = 34 ) {
 }
 
 /**
+ * Kalite Belgeleri kartlarında (bkz. front-page.php) görsel yüklenmemiş — PDF olarak
+ * yüklenmiş — bir belgenin yerine basılan genel doküman ikonu. cm_generic_icon() ile
+ * AYNI çizgisel stil (stroke, currentColor, 34x34 viewBox).
+ */
+function cm_document_icon( $size = 34 ) {
+	printf(
+		'<svg width="%1$d" height="%1$d" viewBox="0 0 34 34" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M10 4h9l6 6v19a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M19 4v6h6"/><line x1="12.5" y1="18" x2="21.5" y2="18"/><line x1="12.5" y1="22" x2="21.5" y2="22"/><line x1="12.5" y1="26" x2="17.5" y2="26"/></svg>',
+		(int) $size
+	);
+}
+
+/**
+ * Bir PDF ekinin İLK SAYFASINI JPG önizleme olarak döndürür (bkz. Kalite Belgeleri
+ * kartları, front-page.php) — bulunamazsa/oluşturulamazsa boş döner, çağıran taraf
+ * bu durumda cm_document_icon() gibi genel bir ikona düşer ("boşsa gizle" ilkesi).
+ *
+ * İki kademeli dener:
+ * 1) WordPress'in KENDİ ürettiği önizleme boyutu — sunucuda Imagick'in PDF delege
+ *    desteği (Ghostscript ile) çalışıyorsa yükleme sırasında OTOMATİK oluşur, ekstra
+ *    kod gerekmez.
+ * 2) O yoksa, sunucuda `exec()` açıksa (birçok paylaşımlı hosting'te KAPALIDIR —
+ *    bu normal, bu durumda sessizce 2. adım atlanır) Ghostscript doğrudan çağrılır
+ *    ve üretilen önizleme, PDF'in yanına TEK SEFERLİK önbelleğe alınır (aynı PDF
+ *    için bir daha çalıştırılmaz — bkz. dosya adı ekin ID'sine bağlı, değişmez).
+ *
+ * NOT: Production sunucusunda (hosting.com.tr vb.) `exec()` kapalıysa VE Imagick'in
+ * PDF delegesi de yoksa, kart otomatik olarak genel belge ikonuna düşer — bu durumda
+ * gerçek bir önizleme istenirse tek seçenek PDF'in yanında admin tarafından ayrıca
+ * bir görsel yüklenmesidir (aynı slotun "Belge" alanına PDF yerine doğrudan görsel
+ * yüklenebilir).
+ */
+function cm_pdf_preview_url( $file ) {
+	if ( empty( $file['id'] ) || empty( $file['url'] ) ) return '';
+	$id = (int) $file['id'];
+
+	$native = wp_get_attachment_image_url( $id, 'medium' );
+	if ( $native && $native !== $file['url'] ) return $native;
+
+	static $cm_exec_ok = null;
+	if ( $cm_exec_ok === null ) {
+		$disabled   = array_map( 'trim', explode( ',', (string) ini_get( 'disable_functions' ) ) );
+		$cm_exec_ok = function_exists( 'exec' ) && ! in_array( 'exec', $disabled, true );
+	}
+	if ( ! $cm_exec_ok ) return '';
+
+	$pdf_path = get_attached_file( $id );
+	if ( ! $pdf_path || ! file_exists( $pdf_path ) ) return '';
+
+	$upload_dir   = wp_upload_dir();
+	$preview_rel  = 'cm-pdf-preview/' . $id . '.jpg';
+	$preview_path = trailingslashit( $upload_dir['basedir'] ) . $preview_rel;
+	$preview_url  = trailingslashit( $upload_dir['baseurl'] ) . $preview_rel;
+
+	if ( file_exists( $preview_path ) && filemtime( $preview_path ) >= filemtime( $pdf_path ) ) {
+		return $preview_url;
+	}
+
+	wp_mkdir_p( dirname( $preview_path ) );
+	$cmd = sprintf(
+		'gs -q -dNOPAUSE -dBATCH -dSAFER -sDEVICE=jpeg -r120 -dFirstPage=1 -dLastPage=1 -o %s %s 2>&1',
+		escapeshellarg( $preview_path ),
+		escapeshellarg( $pdf_path )
+	);
+	@exec( $cmd, $cm_out, $cm_code );
+
+	return ( $cm_code === 0 && file_exists( $preview_path ) ) ? $preview_url : '';
+}
+
+/**
  * Sayfa üstü banner: görsel varsa geniş bir fotoğraf şeridi basar, yoksa HİÇBİR
  * ŞEY çıktılamaz — "boşsa gizle" ilkesi, sayfa banner'sız haliyle görünmeye devam
  * eder. $image, ACF image alanının döndürdüğü dizi (return_format=array) VEYA
@@ -250,6 +319,24 @@ function cm_product_card( $post_id ) {
 		<h3><?php echo esc_html( get_the_title( $post_id ) ); ?></h3>
 		<?php if ( $ozet ) : ?><div class="spec mono"><?php echo esc_html( $ozet ); ?></div><?php endif; ?>
 		<div class="go"><?php echo esc_html( cm__( 'detaylari_gor' ) ); ?></div>
+	</a>
+	<?php
+}
+
+/**
+ * Haber kartı (bkz. page-haberler.php listeleme sayfası + front-page.php "Haberler"
+ * bölümü) — cm_product_card() ile AYNI görsel dil (.prod-card), ayrı CSS gerekmez.
+ * Tarih + kısa özet (varsa Alıntı, yoksa içerikten otomatik kısaltma).
+ */
+function cm_news_card( $post_id ) {
+	$teaser = has_excerpt( $post_id ) ? get_the_excerpt( $post_id ) : wp_trim_words( wp_strip_all_tags( get_post_field( 'post_content', $post_id ) ), 18, '…' );
+	?>
+	<a class="prod-card reveal" href="<?php echo esc_url( get_permalink( $post_id ) ); ?>">
+		<?php cm_render_thumb( $post_id, '', 'medium_large' ); ?>
+		<div class="news-date"><?php echo esc_html( get_the_date( '', $post_id ) ); ?></div>
+		<h3><?php echo esc_html( get_the_title( $post_id ) ); ?></h3>
+		<?php if ( $teaser ) : ?><div class="spec"><?php echo esc_html( $teaser ); ?></div><?php endif; ?>
+		<div class="go"><?php echo esc_html( cm__( 'devamini_oku' ) ); ?></div>
 	</a>
 	<?php
 }
