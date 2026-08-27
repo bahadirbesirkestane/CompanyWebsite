@@ -2,7 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 the_post();
-cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() );
 ?>
 
 <div class="wrap page-content">
@@ -16,7 +16,7 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 	cm_breadcrumb( $cm_crumbs );
 	?>
 
-	<h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1>
+	<?php if ( ! $cm_has_banner ) : ?><h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1><?php endif; ?>
 
 	<?php if ( has_post_thumbnail() ) : ?>
 		<div class="ph" style="aspect-ratio:16/6; margin-top:28px;">
@@ -76,46 +76,58 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 		$cm_form_id = cm_contact_form_id();
 		$cm_map_url = cm_harita_embed_url();
 
-		// Telefon/e-posta/adres/çalışma saatleri — footer'la AYNI kaynaktan (Customizer)
-		// okunur, tek doğruluk kaynağı; sayfa içeriğine elle yazılıp zamanla footer'dan
-		// farklılaşan/eskiyen bilgi tekrar yaşanmasın diye (bkz. proje notları). Her biri
-		// ayrı ayrı "boşsa gizle" — doldurulmamış hiçbir alan sitede görünmez. Görsel dili
-		// aşağıdaki Uluslararası İletişim kartlarıyla (intl-contact-*) BİLEREK aynı —
-		// "bizim iletişimimiz" ile "uluslararası iletişim" tek, tutarlı bir blok gibi okunsun.
-		$cm_tel     = cm_option( 'sirket_telefon' );
-		$cm_eposta  = cm_option( 'sirket_eposta' );
-		$cm_adres   = cm_option( 'sirket_adres' );
-		$cm_saatler = cm_option( 'calisma_saatleri' );
-		$cm_wa      = cm_whatsapp_url();
+		// Telefon/WhatsApp/e-posta/adres/çalışma saatleri kartları artık İletişim sayfasının
+		// KENDİ alanlarından yönetilir (bkz. inc/acf-fields.php group_cm_iletisim_kartlar —
+		// Sayfalar → İletişim'den, Özelleştir'e gitmeden düzenlenir). Alan boşsa footer'la
+		// paylaşılan Customizer değerine düşülür, o da boşsa kart hiç görünmez ("boşsa
+		// gizle"). Görsel dili aşağıdaki Uluslararası İletişim kartlarıyla (intl-contact-*)
+		// BİLEREK aynı — "bizim iletişimimiz" ile "uluslararası iletişim" tek, tutarlı bir
+		// blok gibi okunsun.
+		$cm_tel_baslik = get_field( 'iletisim_tel_baslik' ) ?: cm__( 'iletisim_telefon' );
+		$cm_tel        = get_field( 'iletisim_tel_deger' ) ?: cm_option( 'sirket_telefon' );
+
+		$cm_wa_baslik  = get_field( 'iletisim_wa_baslik' ) ?: cm__( 'iletisim_whatsapp' );
+		$cm_wa_numara  = get_field( 'iletisim_wa_deger' ) ?: cm_option( 'whatsapp_numarasi' );
+		$cm_wa         = cm_whatsapp_url( $cm_wa_numara );
+
+		$cm_eposta_baslik = get_field( 'iletisim_eposta_baslik' ) ?: cm__( 'iletisim_eposta' );
+		$cm_eposta        = get_field( 'iletisim_eposta_deger' ) ?: cm_option( 'sirket_eposta' );
+
+		$cm_adres_baslik = get_field( 'iletisim_adres_baslik' ) ?: cm__( 'iletisim_adres' );
+		$cm_adres        = get_field( 'iletisim_adres_deger' ) ?: cm_option( 'sirket_adres' );
+
+		$cm_saatler_baslik = get_field( 'iletisim_saatler_baslik' ) ?: cm__( 'iletisim_calisma_saatleri' );
+		$cm_saatler        = get_field( 'iletisim_saatler_deger' ) ?: cm_option( 'calisma_saatleri' );
+
 		if ( $cm_tel || $cm_eposta || $cm_adres || $cm_saatler || $cm_wa ) : ?>
 			<div class="intl-contact-grid" style="margin-top:24px;">
 				<?php if ( $cm_tel ) : ?>
 					<div class="intl-contact-card">
-						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_telefon' ) ); ?></div>
+						<div class="intl-contact-country"><?php echo esc_html( $cm_tel_baslik ); ?></div>
 						<div class="intl-contact-details"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>"><?php echo esc_html( $cm_tel ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_wa ) : ?>
 					<div class="intl-contact-card">
-						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_whatsapp' ) ); ?></div>
-						<div class="intl-contact-details"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener"><?php echo esc_html( cm_format_phone_display( cm_option( 'whatsapp_numarasi' ) ) ); ?></a></div>
+						<div class="intl-contact-country"><?php echo esc_html( $cm_wa_baslik ); ?></div>
+						<div class="intl-contact-details"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener"><?php echo esc_html( cm_format_phone_display( $cm_wa_numara ) ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_eposta ) : ?>
 					<div class="intl-contact-card">
-						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_eposta' ) ); ?></div>
+						<div class="intl-contact-country"><?php echo esc_html( $cm_eposta_baslik ); ?></div>
 						<div class="intl-contact-details"><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>"><?php echo esc_html( $cm_eposta ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_adres ) : ?>
 					<div class="intl-contact-card">
-						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_adres' ) ); ?></div>
+						<div class="intl-contact-country"><?php echo esc_html( $cm_adres_baslik ); ?></div>
 						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_adres ) ); ?></span></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_saatler ) : ?>
 					<div class="intl-contact-card">
-						<div class="intl-contact-country"><?php echo esc_html( cm__( 'iletisim_calisma_saatleri' ) ); ?></div>
+						<div class="intl-contact-country"><?php echo esc_html( $cm_saatler_baslik ); ?></div>
 						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_saatler ) ); ?></span></div>
 					</div>
 				<?php endif; ?>

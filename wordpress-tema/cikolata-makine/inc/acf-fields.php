@@ -357,4 +357,36 @@ add_action( 'acf/init', function () {
 		),
 	) );
 
+	// ---- İletişim Sayfası: "Bize Ulaşın" Kartları -----------------------------
+	// Eskiden bu 5 kart (Telefon/WhatsApp/E-posta/Adres/Çalışma Saatleri) SADECE
+	// Görünüm → Özelleştir → İletişim & WhatsApp'tan (bkz. inc/customizer.php)
+	// okunuyordu — kullanıcı isteği: İletişim sayfası kendi başlık+içeriğini
+	// Sayfalar ekranından, sayfanın kendi alanlarından yönetebilsin. Her kartın
+	// başlığı VE değeri ayrı ayrı alan — kart YAPISI (ikon, grid, link davranışı)
+	// koddan gelmeye devam eder, sadece METİN admin tarafından değiştirilebilir.
+	// Alan boş bırakılırsa Customizer'daki (footer'la paylaşılan) değere düşülür —
+	// bkz. page.php İletişim dalı — böylece mevcut siteler hiçbir şey kaybetmez.
+	acf_add_local_field_group( array(
+		'key'    => 'group_cm_iletisim_kartlar',
+		'title'  => 'İletişim Sayfası: "Bize Ulaşın" Kartları',
+		'fields' => array(
+			array( 'key' => 'field_cm_ilk_tel_baslik', 'label' => 'Telefon Kartı Başlığı', 'name' => 'iletisim_tel_baslik', 'type' => 'text', 'default_value' => 'Telefon' ),
+			array( 'key' => 'field_cm_ilk_tel_deger', 'label' => 'Telefon Numarası', 'name' => 'iletisim_tel_deger', 'type' => 'text', 'instructions' => 'Boş bırakılırsa Özelleştir → İletişim & WhatsApp\'taki telefon kullanılır.' ),
+			array( 'key' => 'field_cm_ilk_wa_baslik', 'label' => 'WhatsApp Kartı Başlığı', 'name' => 'iletisim_wa_baslik', 'type' => 'text', 'default_value' => 'WhatsApp' ),
+			array( 'key' => 'field_cm_ilk_wa_deger', 'label' => 'WhatsApp Numarası', 'name' => 'iletisim_wa_deger', 'type' => 'text', 'instructions' => 'Başında ülke kodu ile (örn. 905551234567). Boş bırakılırsa Özelleştir\'deki WhatsApp numarası kullanılır.' ),
+			array( 'key' => 'field_cm_ilk_eposta_baslik', 'label' => 'E-posta Kartı Başlığı', 'name' => 'iletisim_eposta_baslik', 'type' => 'text', 'default_value' => 'E-posta' ),
+			array( 'key' => 'field_cm_ilk_eposta_deger', 'label' => 'E-posta Adresi', 'name' => 'iletisim_eposta_deger', 'type' => 'email', 'instructions' => 'Boş bırakılırsa Özelleştir\'deki şirket e-postası kullanılır.' ),
+			array( 'key' => 'field_cm_ilk_adres_baslik', 'label' => 'Adres Kartı Başlığı', 'name' => 'iletisim_adres_baslik', 'type' => 'text', 'default_value' => 'Adres' ),
+			array( 'key' => 'field_cm_ilk_adres_deger', 'label' => 'Adres', 'name' => 'iletisim_adres_deger', 'type' => 'textarea', 'rows' => 3, 'instructions' => 'Boş bırakılırsa Özelleştir\'deki adres kullanılır.' ),
+			array( 'key' => 'field_cm_ilk_saatler_baslik', 'label' => 'Çalışma Saatleri Kartı Başlığı', 'name' => 'iletisim_saatler_baslik', 'type' => 'text', 'default_value' => 'Çalışma Saatleri' ),
+			array( 'key' => 'field_cm_ilk_saatler_deger', 'label' => 'Çalışma Saatleri', 'name' => 'iletisim_saatler_deger', 'type' => 'textarea', 'rows' => 3, 'instructions' => 'Boş bırakılırsa Özelleştir\'deki çalışma saatleri kullanılır; o da boşsa bu kart hiç görünmez.' ),
+		),
+		'location' => array(
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 6 ) ),   // İletişim (TR)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 102 ) ), // Contact (EN)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 134 ) ), // Контакты (RU)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 141 ) ), // Contacto (ES)
+		),
+	) );
+
 } );

@@ -43,6 +43,13 @@ Bu site 4 dilli (TR/EN/RU/ES). **Yeni bir sayfa, menü öğesi veya içerik taş
 - **Nasıl**: `pll_set_post_language()` + `pll_save_post_translations()` ile 4 post'u birbirine bağla, her dilin `ana-menu-{en,ru,es}` menüsüne de karşılık gelen öğeyi ekle (bkz. `wp menu item add-post`). Çeviri metni gerekiyorsa (yeni bir sayfa/CTA metni gibi) makul kalitede bir ilk taslak çevirisi yazılabilir — ama bu, kullanıcının/gerçek bir çevirmenin daha sonra gözden geçirmesi gereken bir taslak olduğu açıkça belirtilmeli.
 - **İstisna**: Sadece kod/altyapı değişiklikleri (CSS, PHP mantığı, admin-only özellikler) — bunlarda zaten dil ayrımı yok.
 
+## Metin içeriği ile kart/liste YAPISI ayrımı — KURAL
+
+Herhangi bir sayfada/bileşende görünen METİN (kart başlığı, kart içeriği, paragraf, buton yazısı vb.) admin panelinden (o sayfanın kendi ACF alanlarından veya `Diller → Dize Çevirisi`'nden) değiştirilebilir olmalı — PHP içine sabit (hardcoded) yazılıp sadece kod değiştirilerek güncellenebilir metin YOK. Buna karşılık kart/grid/liste YAPISI (kaç kart olduğu, ikon, link davranışı, CSS düzeni) koddan gelmeye devam eder — admin panelinden "yeni kart ekle/sil" gibi bir esneklik İSTENMİYOR, sadece mevcut sabit slotların metni düzenlenebilsin yeterli (bkz. `hero_slayt_1..3`, `istatistik_1..4`, `intl_kisi_1..10` gibi zaten var olan numaralı-alan-grubu deseni).
+- **Neden**: İletişim sayfasındaki "Bize Ulaşın" kartları (Telefon/WhatsApp/E-posta/Adres/Çalışma Saatleri) SADECE Görünüm → Özelleştir'den yönetiliyordu; kullanıcı bu sayfanın kendi başlık+içeriğini Sayfalar ekranından, sayfanın kendi alanlarından yönetebilmek istedi (bkz. `group_cm_iletisim_kartlar`, `inc/acf-fields.php`) ve bunun GENEL bir kural olmasını istedi.
+- **Nasıl**: Özelleştir (Customizer) yalnızca gerçekten SİTE GENELİ olan ayarlar için kalsın (örn. footer'da/header'da da kullanılan telefon/e-posta/adres — bkz. `cm_option()`); bir sayfaya ÖZEL görünen metin varsa o sayfanın post ID'sine bağlı bir ACF alan grubu ekle (Kurumsal/İletişim ID'leri deseni gibi, bkz. `group_cm_kurumsal`). Customizer'dan gelen bir değer aynı zamanda başka yerde de (footer gibi) kullanılıyorsa, sayfanın kendi alanı boşken Customizer'a "boşsa gizle" mantığıyla düşülebilir (fallback) — tek kaynağı olan gerçek site-geneli veriler (telefon/e-posta/adres gibi) MÜKERRER olarak 4 dilde ayrı ayrı girilmek zorunda kalınmasın diye.
+- **Kapsam notu**: Bu kural yeni eklenen/değiştirilen özelliklere uygulanır — sitedeki HER mevcut metni bulup ACF'e taşımak için baştan uçtan bir tarama yapılmadı (kapsamı belirsiz, riskli bir iş); tema zaten çoğunlukla bu deseni izliyor (`cm__()` string sistemi + numaralı alan grupları).
+
 ## Git iş akışı — KURAL
 
 - Uzak depo: `https://github.com/bahadirbesirkestane/CompanyWebsite.git`

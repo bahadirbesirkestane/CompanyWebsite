@@ -305,11 +305,13 @@ function cm_option( $key, $default = '' ) {
 }
 
 /**
- * Genel Ayarlar'da girilen WhatsApp numarasından wa.me linki üretir.
- * Numara girilmemişse boş döner (çağıran taraf bunu fallback için kullanır).
+ * Bir WhatsApp numarasından wa.me linki üretir. $number verilmezse Özelleştir →
+ * İletişim & WhatsApp'taki genel numara kullanılır (bkz. inc/customizer.php) — İletişim
+ * sayfasının kendi iletisim_wa_deger alanı gibi başka bir kaynaktan da çağrılabilir.
+ * Numara yoksa boş döner (çağıran taraf bunu fallback için kullanır).
  */
-function cm_whatsapp_url() {
-	$number = cm_option( 'whatsapp_numarasi' );
+function cm_whatsapp_url( $number = null ) {
+	if ( $number === null ) $number = cm_option( 'whatsapp_numarasi' );
 	if ( ! $number ) return '';
 	$digits = preg_replace( '/\D+/', '', $number );
 	return $digits ? 'https://wa.me/' . $digits : '';
