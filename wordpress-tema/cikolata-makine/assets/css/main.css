@@ -310,7 +310,15 @@ ul.megamenu-flyout {
    (dikey/yatay/kare); "contain" olsaydı kutuya sığdırılırken kırpılmadan boşluk (letterbox)
    bırakırdı. "cover" kutuyu kırparak tamamen doldurur, boşluk kalmaz — kullanıcı isteği. */
 .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: none; }
-.ph:has(img) { background: var(--paper-raised); } /* gerçek fotoğraf varken çapraz çizgili yer tutucu deseni gizle */
+/* gerçek fotoğraf varken çapraz çizgili yer tutucu deseni gizler. Saf beyaz (--paper) —
+   ÖNCE burada biraz daha koyu bir ton (--paper-sunken) denendi, ama gerçek ürün
+   fotoğrafları da (stüdyo çekimi) hemen hemen hep beyaz/açık gri zeminli olduğu için
+   o koyu ton, object-fit:contain kullanılan yerlerde (galeri ana görseli) fotoğrafın
+   kendi zemini ile ÇARPIŞIP "kutu içinde kutu" gibi bir zıtlık yaratıyordu — kullanıcı
+   ekran görüntüsüyle gösterdi. Saf beyaz, fotoğrafın kendi (genelde beyaz) zeminiyle
+   kaynaşır, dikiş görünmez. object-fit:cover kullanılan yerlerde (ürün kartları vb.)
+   zaten hiç görünmediği için bu seçim oralarda etkisizdir. */
+.ph:has(img) { background: var(--paper); }
 .ph svg { stroke: var(--steel-soft); }
 .ph .corner { position: absolute; width: 12px; height: 12px; border: 1.5px solid var(--ink-soft); opacity: .55; }
 .ph .c-tl { top: 8px; left: 8px; border-right: none; border-bottom: none; }
@@ -404,10 +412,21 @@ ul.megamenu-flyout {
    grid) aynı kalıyor, sadece fotoğrafa ayrılan alan büyüyor. Ana görsel de listedeki
    kartların aksine object-fit: cover DEĞİL contain kullanır — ürün listesinde kırpma
    (cover) kabul edilebilirken, detay sayfasındaki tek büyük fotoğrafta makinenin bir
-   kısmının kırpılıp gitmesi istenmiyor; boşta kalan kenarlar .ph'nin arka planıyla dolar. */
+   kısmının kırpılıp gitmesi istenmiyor.
+   Kutunun oranı BİLEREK 4/3 (yatay ağırlıklı) DEĞİL, 5/4'e (kareye yakın) çekildi:
+   makine fotoğrafları bazen dikey/uzun çekilmiş oluyor ("her zaman belirli formatta
+   yükleyemem" — admin talebi), 4/3 gibi net yatay bir kutuda dikey bir fotoğraf
+   object-fit:contain ile ÇOK küçük kalıyordu. Kareye yakın bir kutu, dikey VE yatay
+   fotoğraflar için en kötü durumda bile daha az küçülme demek — tam çözüm yok (kırpma
+   istenmiyor), ama en dengeli uzlaşı bu. İç boşluk (padding) SIFIR: fotoğraf, oranının
+   uyduğu eksende (yatay fotoğrafta sol-sağ, dikey fotoğrafta üst-alt) kutunun kenarına
+   TAM DAYANIR — ekstra bir boşluk payı eklemiyoruz, sadece object-fit:contain'in
+   matematiksel olarak bırakmak ZORUNDA olduğu (uymayan eksendeki) boşluk kalır, o da
+   artık .ph:has(img)'nin saf beyaz (--paper) arka planıyla fotoğrafın (genelde beyaz
+   stüdyo zemini) kendi zeminine karışır, "kutu içinde kutu" hissi vermez. */
 .detail-top { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; padding: 48px 0; }
-.gallery .ph.main { aspect-ratio: 4/3; }
-.gallery .ph.main img { object-fit: contain; padding: 20px; }
+.gallery .ph.main { aspect-ratio: 5/4; }
+.gallery .ph.main img { object-fit: contain; padding: 0; }
 .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
 .thumbs .ph { aspect-ratio: 1; cursor: pointer; }
 .thumbs .ph.sel, .thumbs img.sel { border-color: var(--accent); border-width: 2px; }
