@@ -180,9 +180,13 @@ add_action( 'acf/init', function () {
 				'return_format' => 'array',
 				'mime_types'    => 'pdf',
 				'required'      => 1,
-				// Katalog PDF'leri de dil başına ayrı seçilir/yüklenir — sadece bu kataloğa
-				// yüklenenlerle sınırlı, diğer kataloğun/ürünlerin dosyaları karışmasın diye.
-				'library' => 'uploadedTo',
+				// 'library'=>'all' (2026-08-27'de kullanıcı isteğiyle 'uploadedTo'dan değiştirildi):
+				// seçim penceresi hem "Bu yazıya yüklenenler" (varsayılan, sadece bu kataloğa
+				// yüklenenler — diller hâlâ ayrı ayrı dosya seçer/yükler, bu DEĞİŞMEDİ, kapsam
+				// cm_acf_scope_gallery_query_to_translation_group()'a hiç dahil değil) HEM
+				// dropdown'dan "Medya Kütüphanesi"ne geçilerek sitede önceden başka bir yere
+				// yüklenmiş PDF'ler arasından da seçim sunar.
+				'library' => 'all',
 			),
 			array(
 				'key'   => 'field_cm_katalog_dil',
@@ -445,3 +449,16 @@ function cm_prewarm_kalite_belge_previews( $post_id ) {
 	}
 }
 add_action( 'acf/save_post', 'cm_prewarm_kalite_belge_previews', 20 );
+
+/**
+ * Aynı önbelleğe-alma önlemi (bkz. yukarısı) "katalog" CPT'sinin pdf_dosya alanı
+ * için de gerekli — bkz. page-kataloglar.php kart önizlemesi (cm_pdf_preview_url()).
+ * Katalog kaydedilirken bir defaya mahsus üretilir, Kataloglar sayfasını ilk açan
+ * ziyaretçi Ghostscript'in çalışmasını beklemez.
+ */
+function cm_prewarm_katalog_preview( $post_id ) {
+	if ( get_post_type( $post_id ) !== 'katalog' || ! function_exists( 'get_field' ) ) return;
+	$cm_pdf = get_field( 'pdf_dosya', $post_id );
+	if ( $cm_pdf ) cm_pdf_preview_url( $cm_pdf );
+}
+add_action( 'acf/save_post', 'cm_prewarm_katalog_preview', 20 );

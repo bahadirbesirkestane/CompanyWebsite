@@ -43,8 +43,24 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 				$cm_pdf = get_field( 'pdf_dosya' );
 				$cm_dil = get_field( 'dil' );
 			?>
+				<?php
+				// Kart önizlemesi: manuel bir Öne Çıkan Görsel varsa (admin özellikle seçmişse)
+				// ONU kullan; yoksa PDF'in kendi ilk sayfa önizlemesine düş (bkz. cm_pdf_preview_url(),
+				// aynı Kalite Belgeleri kartlarındaki mantık — inc/template-tags.php); o da yoksa
+				// (sunucuda Ghostscript/exec yoksa) genel bir belge ikonuna düşer.
+				$cm_katalog_preview = has_post_thumbnail()
+					? get_the_post_thumbnail_url( get_the_ID(), 'cm-card' )
+					: ( $cm_pdf ? cm_pdf_preview_url( $cm_pdf ) : '' );
+				?>
 				<div class="catalog-card">
-					<?php cm_render_thumb( get_the_ID(), '', 'cm-card' ); ?>
+					<div class="ph">
+						<?php if ( $cm_katalog_preview ) : ?>
+							<img src="<?php echo esc_url( $cm_katalog_preview ); ?>" alt="<?php the_title_attribute(); ?>">
+						<?php else : ?>
+							<?php cm_document_icon( 40 ); ?>
+						<?php endif; ?>
+						<span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
+					</div>
 					<div class="body">
 						<h3><?php the_title(); ?></h3>
 						<div class="meta">
