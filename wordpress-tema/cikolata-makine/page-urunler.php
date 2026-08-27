@@ -21,7 +21,7 @@ $cm_all_products = new WP_Query( array(
 	'order'          => 'ASC',
 ) );
 
-cm_page_banner( get_field( 'sayfa_banner_gorseli' ), 'small' );
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() ?: cm_urunler_label() );
 ?>
 
 <div class="wrap section-tight">
@@ -35,7 +35,7 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ), 'small' );
 			<?php cm_category_sidebar(); ?>
 		</div>
 		<div class="category-main-col">
-			<h1 class="h-lg"><?php the_title(); ?></h1>
+			<?php if ( ! $cm_has_banner ) : ?><h1 class="h-lg"><?php the_title(); ?></h1><?php endif; ?>
 
 			<?php
 			$cm_has_content = false;

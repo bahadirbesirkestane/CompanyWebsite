@@ -63,7 +63,7 @@ img, svg { display: block; max-width: 100%; }
    Class specificity (0,1,0) > element specificity (0,0,1), bu yüzden h1.h-xl gibi
    birleşik durumlarda kaynak sırasından bağımsız olarak bu kural kazanır. */
 .h-xl { font-family: var(--font-headline); font-weight: 600; font-size: clamp(30px, 4vw, 46px); line-height: 1.08; }
-.h-lg { font-family: var(--font-headline); font-weight: 600; font-size: clamp(24px, 3vw, 32px); line-height: 1.12; }
+.h-lg { font-family: var(--font-headline); font-weight: 600; font-size: clamp(26px, 3.3vw, 36px); line-height: 1.12; }
 .h-md { font-size: 20px; }
 .lede { font-size: 17px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
 .body-p { font-size: 15.5px; line-height: 1.85; color: var(--ink-soft); max-width: 66ch; }
@@ -511,15 +511,20 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
 
 /* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ----
-   Yükseklik, ana sayfa hero'suyla (clamp(420px, 56vw, 640px)) aynı ölçek mantığıyla,
-   ama ondan biraz daha ölçülü — kurumsal sitelerde iç sayfa banner'larının tipik
-   oranı (viewport genişliğinin ~%35-40'ı, alt/üst sınırlarla). Sabit küçük bir piksel
-   değeri yerine clamp() kullanmak, geniş ekranlarda banner'ın "kısa bir şerit" gibi
-   değil gerçek bir bölüm gibi hissettirmesini sağlar. */
-.page-banner { height: clamp(320px, 38vw, 480px); overflow: hidden; background: var(--paper-raised); }
-.page-banner--small { height: clamp(220px, 26vw, 340px); }
+   Tüm iç sayfalarda TEK bir ölçü kullanılır (eskiden "normal"/"small" diye iki farklı
+   yükseklik vardı, normal olan çok büyük kalıyordu — artık hepsi eski "small" ölçüsünde).
+   Sayfa başlığı, ana sayfa hero'sundaki desenin AYNISIYLA (koyu gradyan + beyaz yazı)
+   banner'ın içine, alt kısma bindirilir — bkz. .page-banner-text / cm_page_banner(). */
+.page-banner { position: relative; height: clamp(220px, 26vw, 340px); overflow: hidden; background: var(--paper-raised); }
 .page-banner img { width: 100%; height: 100%; object-fit: cover; display: block; }
-@media (max-width: 640px) { .page-banner { height: clamp(220px, 55vw, 340px); } .page-banner--small { height: clamp(170px, 42vw, 260px); } }
+.page-banner::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(0deg, rgba(8,12,18,.8) 0%, rgba(8,12,18,.36) 48%, rgba(8,12,18,.04) 78%);
+}
+.page-banner-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 26px 24px 30px; }
+.page-banner-text-inner { max-width: 1240px; margin: 0 auto; }
+.page-banner-text h1 { color: #fff; margin: 0; }
+@media (max-width: 640px) { .page-banner { height: clamp(170px, 42vw, 260px); } .page-banner-text { padding: 18px 20px 22px; } }
 
 /* ---- generic content page ---- */
 .page-content { padding-top: 48px; padding-bottom: 72px; }

@@ -55,7 +55,13 @@ function cm_generic_icon( $size = 34 ) {
  * doğrudan bir URL string'i olabilir (Customizer theme_mod'ları URL döner) —
  * ikisi de kabul edilir, çağıran taraf hangisi olduğunu düşünmek zorunda kalmaz.
  */
-function cm_page_banner( $image, $size = 'normal' ) {
+/**
+ * Sayfa üstü banner + üzerine bindirilen sayfa başlığı (bkz. solen.com.tr/hakkimizda
+ * referansı — başlık banner görselinin üstünde, ayrı bir satır olarak DEĞİL). Banner
+ * görseli yoksa hiçbir şey basmaz (false döner) — çağıran taraf bu durumda başlığı
+ * kendi <h1>'iyle sayfa içeriğinde basmaya devam eder, "boşsa gizle" ilkesi korunur.
+ */
+function cm_page_banner( $image, $title = '' ) {
 	$url = '';
 	$alt = '';
 	if ( is_array( $image ) && ! empty( $image['url'] ) ) {
@@ -64,12 +70,18 @@ function cm_page_banner( $image, $size = 'normal' ) {
 	} elseif ( is_string( $image ) && $image ) {
 		$url = $image;
 	}
-	if ( ! $url ) return;
+	if ( ! $url ) return false;
 	?>
-	<div class="page-banner<?php echo $size === 'small' ? ' page-banner--small' : ''; ?>">
+	<div class="page-banner">
 		<img src="<?php echo esc_url( $url ); ?>" alt="<?php echo esc_attr( $alt ); ?>">
+		<?php if ( $title ) : ?>
+			<div class="page-banner-text"><div class="page-banner-text-inner">
+				<h1 class="h-xl"><?php echo esc_html( $title ); ?></h1>
+			</div></div>
+		<?php endif; ?>
 	</div>
 	<?php
+	return true;
 }
 
 /**

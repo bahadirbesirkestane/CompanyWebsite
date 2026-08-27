@@ -19,7 +19,7 @@ $cm_katalog_q = new WP_Query( array(
 	'paged'          => $cm_paged,
 ) );
 
-cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() );
 ?>
 
 <div class="wrap section-tight">
@@ -28,7 +28,7 @@ cm_page_banner( get_field( 'sayfa_banner_gorseli' ) );
 		array( 'label' => get_the_title() ?: cm__( 'kataloglar_baslik' ) ),
 	) ); ?>
 
-	<h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1>
+	<?php if ( ! $cm_has_banner ) : ?><h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1><?php endif; ?>
 	<?php if ( trim( get_the_content() ) !== '' ) : ?>
 		<div class="body-p" style="margin-top:10px;"><?php the_content(); ?></div>
 	<?php else : ?>
