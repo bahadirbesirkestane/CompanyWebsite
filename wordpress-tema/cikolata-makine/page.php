@@ -2,21 +2,24 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 the_post();
-$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() );
+
+// Alt sayfalarda (örn. Kurumsal > Hakkımızda) üst sayfa zincirini de kırıntı yoluna ekler.
+$cm_crumbs = array( array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ) );
+foreach ( array_reverse( get_post_ancestors( get_the_ID() ) ) as $cm_ancestor_id ) {
+	$cm_crumbs[] = array( 'label' => get_the_title( $cm_ancestor_id ), 'url' => get_permalink( $cm_ancestor_id ) );
+}
+$cm_crumbs[] = array( 'label' => get_the_title() );
+
+// Kırıntı yolu banner varsa ONUN İÇİNE, başlığın altına basılır (bkz. cm_page_banner());
+// banner yoksa aşağıdaki eski konumunda (başlığın da üstünde) basılmaya devam eder.
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title(), $cm_crumbs );
 ?>
 
 <div class="wrap page-content">
-	<?php
-	// Alt sayfalarda (örn. Kurumsal > Hakkımızda) üst sayfa zincirini de kırıntı yoluna ekler.
-	$cm_crumbs = array( array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ) );
-	foreach ( array_reverse( get_post_ancestors( get_the_ID() ) ) as $cm_ancestor_id ) {
-		$cm_crumbs[] = array( 'label' => get_the_title( $cm_ancestor_id ), 'url' => get_permalink( $cm_ancestor_id ) );
-	}
-	$cm_crumbs[] = array( 'label' => get_the_title() );
-	cm_breadcrumb( $cm_crumbs );
-	?>
-
-	<?php if ( ! $cm_has_banner ) : ?><h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1><?php endif; ?>
+	<?php if ( ! $cm_has_banner ) : ?>
+		<?php cm_breadcrumb( $cm_crumbs ); ?>
+		<h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1>
+	<?php endif; ?>
 
 	<?php if ( has_post_thumbnail() ) : ?>
 		<div class="ph" style="aspect-ratio:16/6; margin-top:28px;">
@@ -100,33 +103,40 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 		$cm_saatler        = get_field( 'iletisim_saatler_deger' ) ?: cm_option( 'calisma_saatleri' );
 
 		if ( $cm_tel || $cm_eposta || $cm_adres || $cm_saatler || $cm_wa ) : ?>
+			<div class="eyebrow reveal" style="margin-top:40px;"><?php echo esc_html( cm__( 'iletisim_bilgileri_eyebrow' ) ); ?></div>
+			<h2 class="h-md reveal"><?php echo esc_html( cm__( 'iletisim_bilgileri_baslik' ) ); ?></h2>
 			<div class="intl-contact-grid" style="margin-top:24px;">
 				<?php if ( $cm_tel ) : ?>
 					<div class="intl-contact-card">
+						<div class="intl-contact-icon"><?php cm_contact_icon( 'tel' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_tel_baslik ); ?></div>
 						<div class="intl-contact-details"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>"><?php echo esc_html( $cm_tel ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_wa ) : ?>
 					<div class="intl-contact-card">
+						<div class="intl-contact-icon"><?php cm_contact_icon( 'wa' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_wa_baslik ); ?></div>
 						<div class="intl-contact-details"><a href="<?php echo esc_url( $cm_wa ); ?>" target="_blank" rel="noopener"><?php echo esc_html( cm_format_phone_display( $cm_wa_numara ) ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_eposta ) : ?>
 					<div class="intl-contact-card">
+						<div class="intl-contact-icon"><?php cm_contact_icon( 'eposta' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_eposta_baslik ); ?></div>
 						<div class="intl-contact-details"><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>"><?php echo esc_html( $cm_eposta ); ?></a></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_adres ) : ?>
 					<div class="intl-contact-card">
+						<div class="intl-contact-icon"><?php cm_contact_icon( 'adres' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_adres_baslik ); ?></div>
 						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_adres ) ); ?></span></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_saatler ) : ?>
 					<div class="intl-contact-card">
+						<div class="intl-contact-icon"><?php cm_contact_icon( 'saat' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_saatler_baslik ); ?></div>
 						<div class="intl-contact-details"><span style="font-size:13px;color:var(--ink-soft);"><?php echo nl2br( esc_html( $cm_saatler ) ); ?></span></div>
 					</div>
@@ -135,7 +145,7 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 		<?php endif;
 
 		if ( $cm_form_id || $cm_map_url ) : ?>
-			<div class="contact-grid">
+			<div class="contact-grid<?php echo ( $cm_form_id && $cm_map_url ) ? '' : ' contact-grid--single'; ?>">
 				<?php if ( $cm_form_id ) : ?>
 					<div class="contact-form-col">
 						<h2 class="h-md"><?php echo esc_html( cm__( 'iletisim_formu_baslik' ) ); ?></h2>

@@ -19,16 +19,18 @@ $cm_katalog_q = new WP_Query( array(
 	'paged'          => $cm_paged,
 ) );
 
-$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() );
+$cm_crumbs = array(
+	array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ),
+	array( 'label' => get_the_title() ?: cm__( 'kataloglar_baslik' ) ),
+);
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title(), $cm_crumbs );
 ?>
 
 <div class="wrap section-tight">
-	<?php cm_breadcrumb( array(
-		array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ),
-		array( 'label' => get_the_title() ?: cm__( 'kataloglar_baslik' ) ),
-	) ); ?>
-
-	<?php if ( ! $cm_has_banner ) : ?><h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1><?php endif; ?>
+	<?php if ( ! $cm_has_banner ) : ?>
+		<?php cm_breadcrumb( $cm_crumbs ); ?>
+		<h1 class="h-lg" style="margin-top:16px;"><?php the_title(); ?></h1>
+	<?php endif; ?>
 	<?php if ( trim( get_the_content() ) !== '' ) : ?>
 		<div class="body-p" style="margin-top:10px;"><?php the_content(); ?></div>
 	<?php else : ?>

@@ -61,6 +61,23 @@ function cm_document_icon( $size = 34 ) {
 }
 
 /**
+ * İletişim sayfasındaki "Bize Ulaşın" kartlarında (bkz. page.php) her kanal türü için
+ * küçük bir çizgisel ikon — diğer ikonlarla (cm_generic_icon() vb.) AYNI stil
+ * (stroke, currentColor). Uluslararası İletişim kartlarında (cm_render_intl_contact_section())
+ * KULLANILMAZ — o kartlar bir ülke/kişi temsil eder, kanal türü değil.
+ */
+function cm_contact_icon( $type ) {
+	$icons = array(
+		'tel'    => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M4 2.5h2.5l1 3-1.5 1.2a8 8 0 0 0 4.3 4.3l1.2-1.5 3 1V13a1.5 1.5 0 0 1-1.5 1.5C7.5 14.5 3.5 10.5 2.5 5A1.5 1.5 0 0 1 4 2.5z"/></svg>',
+		'wa'     => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M3 15l1.1-3.2A6 6 0 1 1 6.9 14L3 15z"/><path d="M6.5 6.8c0 2.7 2 4.7 4.7 4.7"/></svg>',
+		'eposta' => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M2.5 4.8l6.5 5 6.5-5"/></svg>',
+		'adres'  => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M9 16s5-4.6 5-8.7A5 5 0 0 0 4 7.3C4 11.4 9 16 9 16z"/><circle cx="9" cy="7.3" r="1.8"/></svg>',
+		'saat'   => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="9" cy="9" r="6.5"/><path d="M9 5.5V9l2.8 1.6"/></svg>',
+	);
+	echo $icons[ $type ] ?? '';
+}
+
+/**
  * Bir PDF ekinin İLK SAYFASINI JPG önizleme olarak döndürür (bkz. Kalite Belgeleri
  * kartları, front-page.php) — bulunamazsa/oluşturulamazsa boş döner, çağıran taraf
  * bu durumda cm_document_icon() gibi genel bir ikona düşer ("boşsa gizle" ilkesi).
@@ -130,7 +147,7 @@ function cm_pdf_preview_url( $file ) {
  * görseli yoksa hiçbir şey basmaz (false döner) — çağıran taraf bu durumda başlığı
  * kendi <h1>'iyle sayfa içeriğinde basmaya devam eder, "boşsa gizle" ilkesi korunur.
  */
-function cm_page_banner( $image, $title = '' ) {
+function cm_page_banner( $image, $title = '', $crumbs = array() ) {
 	$url = '';
 	$alt = '';
 	if ( is_array( $image ) && ! empty( $image['url'] ) ) {
@@ -146,6 +163,7 @@ function cm_page_banner( $image, $title = '' ) {
 		<?php if ( $title ) : ?>
 			<div class="page-banner-text"><div class="page-banner-text-inner">
 				<h1 class="h-xl"><?php echo esc_html( $title ); ?></h1>
+				<?php if ( $crumbs ) cm_breadcrumb( $crumbs ); ?>
 			</div></div>
 		<?php endif; ?>
 	</div>
@@ -254,6 +272,27 @@ function cm_category_card( $term ) {
 		<div class="sub"><?php echo $sub_names ? esc_html( implode( ' · ', $sub_names ) ) : esc_html( wp_trim_words( $term->description, 10, '…' ) ); ?></div>
 		<?php if ( $count ) : ?><div class="count"><?php echo esc_html( $count . ' ' . cm__( 'urun_etiketi' ) ); ?></div><?php endif; ?>
 	</a>
+	<?php
+}
+
+/**
+ * Ürün listesi sayfalarında (page-urunler.php, taxonomy-makine_kategori.php,
+ * taxonomy-urun_ailesi.php — hepsinde AYNI .category-main-col > .prod-grid yapısı)
+ * "2 sütun / 3 sütun" görünüm seçici basar. Tıklama davranışı main.js'te — sadece
+ * `.category-main-col`'a `grid-3` sınıfı ekleyip/kaldırıp tercihi localStorage'a
+ * yazar, sayfa değişse de (başka bir kategoriye geçilse de) kalıcı kalır. Varsayılan
+ * her zaman 2 sütun (kullanıcı isteği: "mevcut + 3'lü gibi").
+ */
+function cm_grid_toggle() {
+	?>
+	<div class="grid-toggle" role="group" aria-label="<?php echo esc_attr( cm__( 'grid_gorunum_aria' ) ); ?>">
+		<button type="button" class="grid-toggle-btn active" data-cols="2" aria-pressed="true" aria-label="<?php echo esc_attr( cm__( 'grid_iki_sutun' ) ); ?>">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="6" height="12" rx="0.5"/><rect x="9" y="2" width="6" height="12" rx="0.5"/></svg>
+		</button>
+		<button type="button" class="grid-toggle-btn" data-cols="3" aria-pressed="false" aria-label="<?php echo esc_attr( cm__( 'grid_uc_sutun' ) ); ?>">
+			<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="2" width="4" height="12" rx="0.5"/><rect x="6" y="2" width="4" height="12" rx="0.5"/><rect x="11" y="2" width="4" height="12" rx="0.5"/></svg>
+		</button>
+	</div>
 	<?php
 }
 

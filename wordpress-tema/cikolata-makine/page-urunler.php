@@ -21,14 +21,15 @@ $cm_all_products = new WP_Query( array(
 	'order'          => 'ASC',
 ) );
 
-$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() ?: cm_urunler_label() );
+$cm_crumbs = array(
+	array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ),
+	array( 'label' => get_the_title() ?: cm_urunler_label() ),
+);
+$cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_title() ?: cm_urunler_label(), $cm_crumbs );
 ?>
 
 <div class="wrap section-tight">
-	<?php cm_breadcrumb( array(
-		array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ),
-		array( 'label' => get_the_title() ?: cm_urunler_label() ),
-	) ); ?>
+	<?php if ( ! $cm_has_banner ) cm_breadcrumb( $cm_crumbs ); ?>
 
 	<div class="category-layout">
 		<div class="category-sidebar-col">
@@ -49,7 +50,10 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 			<?php endif; ?>
 
 			<?php if ( $cm_all_products->have_posts() ) : ?>
-				<p class="breadcrumb" style="margin-top:20px;"><?php echo esc_html( sprintf( cm__( 'kategori_urun_sayisi' ), $cm_all_products->found_posts ) ); ?></p>
+				<div class="grid-toolbar">
+					<p class="breadcrumb"><?php echo esc_html( sprintf( cm__( 'kategori_urun_sayisi' ), $cm_all_products->found_posts ) ); ?></p>
+					<?php cm_grid_toggle(); ?>
+				</div>
 				<div class="prod-grid" style="margin-top:8px;">
 					<?php while ( $cm_all_products->have_posts() ) : $cm_all_products->the_post(); cm_product_card( get_the_ID() ); endwhile; wp_reset_postdata(); ?>
 				</div>

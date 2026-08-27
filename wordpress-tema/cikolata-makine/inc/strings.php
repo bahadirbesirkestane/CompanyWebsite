@@ -84,6 +84,8 @@ function cm_strings() {
 			'arama_sonuclari_prefix'    => 'Arama Sonuçları: ',
 			'arama_sonucu_bos'          => 'Aramanızla eşleşen bir sonuç bulunamadı.',
 
+			'iletisim_bilgileri_eyebrow' => 'Buradayız',
+			'iletisim_bilgileri_baslik'  => 'İletişim Bilgilerimiz',
 			'iletisim_formu_baslik'     => 'Bize Ulaşın',
 			'konum_baslik'              => 'Bulunduğumuz Konum',
 			'iletisim_telefon'          => 'Telefon',
@@ -97,6 +99,10 @@ function cm_strings() {
 			'kategori_urun_sayisi'      => '%d ürün bulundu',
 			'sayfalama_onceki'          => '‹ Önceki',
 			'sayfalama_sonraki'         => 'Sonraki ›',
+
+			'grid_gorunum_aria'  => 'Izgara görünümü',
+			'grid_iki_sutun'     => '2 sütun görünüm',
+			'grid_uc_sutun'      => '3 sütun görünüm',
 
 			'urunler_alt_menu_aria'     => 'Ürün kategorilerini göster',
 			'megamenu_alt_kategori_aria'=> '%s alt kategorilerini göster',

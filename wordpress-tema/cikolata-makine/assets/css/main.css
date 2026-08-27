@@ -355,7 +355,23 @@ ul.megamenu-flyout {
 .category-sidebar-col { position: sticky; top: 24px; }
 .category-main-col h1 { margin-top: 0; }
 @media (min-width: 901px) { .category-main-col .prod-grid { grid-template-columns: repeat(2, 1fr); } }
+/* "grid-3" sınıfı main.js (cm_grid_toggle() ile basılan butonlar) tarafından eklenir/
+   kaldırılır — ziyaretçi 2/3 sütun arasında seçim yapabilir, tercih localStorage'da
+   kalıcı tutulur. Varsayılan (sınıf yokken) hep 2 sütun. */
+@media (min-width: 901px) { .category-main-col.grid-3 .prod-grid { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 900px) { .category-layout { grid-template-columns: 1fr; gap: 28px; } .category-sidebar-col { position: static; } }
+
+.grid-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 20px; flex-wrap: wrap; }
+.grid-toolbar .breadcrumb { margin: 0; }
+.grid-toggle { display: flex; gap: 4px; flex: 0 0 auto; }
+.grid-toggle-btn {
+  width: 32px; height: 32px; border: 1px solid var(--line); border-radius: 3px; background: var(--paper);
+  color: var(--steel); display: flex; align-items: center; justify-content: center; cursor: pointer;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.grid-toggle-btn:hover { border-color: var(--line-strong); color: var(--ink); }
+.grid-toggle-btn.active { border-color: var(--accent); color: var(--accent); background: var(--paper-raised); }
+@media (max-width: 900px) { .grid-toggle { display: none; } }
 
 .cat-sidebar { border: 1px solid var(--line); border-radius: 3px; padding: 18px; background: var(--paper-raised); }
 .cat-sidebar-all { display: block; font-family: var(--font-display); font-size: 13px; font-weight: 600; color: var(--ink); text-decoration: none; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 1px solid var(--line); }
@@ -533,6 +549,12 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .page-banner-text { position: absolute; left: 0; right: 0; bottom: 0; z-index: 2; padding: 26px 24px 30px; }
 .page-banner-text-inner { max-width: 1240px; margin: 0 auto; }
 .page-banner-text h1 { color: #fff; margin: 0; }
+/* Kırıntı yolu (breadcrumb) artık banner'ın İÇİNDE, başlığın ALTINDA — koyu fotoğraf
+   üzerinde okunsun diye açık renk varyantı (bkz. .breadcrumb, normalde koyu metin). */
+.page-banner-text .breadcrumb { margin-top: 12px; color: rgba(255,255,255,.72); }
+.page-banner-text .breadcrumb a { color: rgba(255,255,255,.72); }
+.page-banner-text .breadcrumb a:hover { color: #fff; }
+.page-banner-text .breadcrumb .current { color: #fff; }
 @media (max-width: 640px) { .page-banner { height: clamp(170px, 42vw, 260px); } .page-banner-text { padding: 18px 20px 22px; } }
 
 /* ---- generic content page ---- */
@@ -568,6 +590,9 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .intl-contact { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--line); }
 .intl-contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 28px; }
 .intl-contact-card { border: 1px solid var(--line); border-radius: 3px; padding: 18px 20px; background: var(--paper-raised); }
+/* Sadece "Bize Ulaşın" kartlarında basılır (page.php, kanal türü ikonu) — Uluslararası
+   İletişim kartlarında (ülke/kişi) ikon YOK, aynı .intl-contact-card'ı paylaşırlar. */
+.intl-contact-icon { color: var(--accent); margin-bottom: 10px; }
 .intl-contact-country { font-family: var(--font-display); font-size: 11.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .intl-contact-name { font-size: 14.5px; margin-top: 6px; }
 .intl-contact-details { display: flex; flex-direction: column; gap: 3px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
@@ -578,6 +603,9 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 
 /* ---- iletişim: form + harita ---- */
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px; align-items: start; }
+/* Form VEYA harita alanlarından sadece biri doluysa (bkz. page.php) grid TEK sütuna
+   düşer — aksi halde boş kalan yarı, gereksiz büyük bir boşluk gibi duruyordu. */
+.contact-grid.contact-grid--single { grid-template-columns: 1fr; max-width: 640px; }
 .contact-form-col h2, .contact-map-col h2 { margin-bottom: 18px; }
 .cm-form label { display: block; font-family: var(--font-display); font-size: 13px; color: var(--ink); margin-bottom: 16px; }
 .cm-form .wpcf7-form-control-wrap { display: block; margin-top: 6px; }

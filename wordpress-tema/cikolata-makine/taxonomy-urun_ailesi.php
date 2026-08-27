@@ -42,7 +42,10 @@ $cm_families  = get_terms( array( 'taxonomy' => 'urun_ailesi', 'hide_empty' => f
 			<?php if ( $cm_term->description ) : ?><p class="body-p" style="margin-top:10px;"><?php echo esc_html( $cm_term->description ); ?></p><?php endif; ?>
 
 			<?php if ( have_posts() ) : ?>
-				<p class="breadcrumb" style="margin-top:20px;"><?php echo esc_html( sprintf( cm__( 'kategori_urun_sayisi' ), $wp_query->found_posts ) ); ?></p>
+				<div class="grid-toolbar">
+					<p class="breadcrumb"><?php echo esc_html( sprintf( cm__( 'kategori_urun_sayisi' ), $wp_query->found_posts ) ); ?></p>
+					<?php cm_grid_toggle(); ?>
+				</div>
 				<div class="prod-grid" style="margin-top:8px;">
 					<?php while ( have_posts() ) : the_post(); cm_product_card( get_the_ID() ); endwhile; ?>
 				</div>

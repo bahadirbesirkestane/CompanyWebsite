@@ -339,4 +339,34 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
+  // ---- ürün listesi: 2/3 sütun görünüm seçici (bkz. cm_grid_toggle(), inc/template-tags.php) ----
+  (function () {
+    var buttons = document.querySelectorAll('.grid-toggle-btn');
+    if (!buttons.length) return;
+    var KEY = 'cmProductGridCols';
+
+    function apply(cols) {
+      document.querySelectorAll('.category-main-col').forEach(function (col) {
+        col.classList.toggle('grid-3', cols === '3');
+      });
+      buttons.forEach(function (btn) {
+        var active = btn.getAttribute('data-cols') === cols;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    var saved = null;
+    try { saved = localStorage.getItem(KEY); } catch (err) {}
+    if (saved === '3') apply('3');
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var cols = btn.getAttribute('data-cols');
+        apply(cols);
+        try { localStorage.setItem(KEY, cols); } catch (err) {}
+      });
+    });
+  })();
+
 });
