@@ -48,6 +48,18 @@ Onaylanan tasarım önizlemesinin ([01_tasarim_onizleme.html](../01_tasarim_oniz
 - **Çoklu dil**: Form, "Ürünler"/"İletişim" sayfaları gibi Polylang ile çevrilebilir işaretlenmiştir. Yeni bir dilde form eklemek için Contact Form 7 → Formlar'da `iletisim-formu`nun yanındaki **"+ Çeviri Ekle"** ile yeni dilde bir form oluşturup alan etiketlerini (Ad Soyad, Firma Adı, vb.) o dile çevirin — tema otomatik olarak geçerli ziyaretçi diline uygun formu gösterir, ekstra kod/ayar gerekmez.
 - **"Bize Ulaşın" kartları (Telefon/WhatsApp/E-posta/Adres/Çalışma Saatleri)**: Formun ÜSTÜNDE görünen bu kartların başlığı VE içeriği, **Sayfalar → İletişim** (her dilin kendi sayfası) düzenleme ekranındaki **"İletişim Sayfası: 'Bize Ulaşın' Kartları"** kutusundan yönetilir — Özelleştir'e gitmenize gerek yoktur. Bir kartın alanını boş bırakırsanız Özelleştir → İletişim & WhatsApp'taki (footer'la paylaşılan) genel değere düşer; o da boşsa kart hiç görünmez.
 
+## Yeni Sayfa Ekleme & Kod/HTML ile Düzenleme
+
+Sayfa eklemek için özel bir işlem gerekmez: **Sayfalar → Yeni Ekle**, herhangi bir sayıda ve istediğiniz zaman kendiniz oluşturabilirsiniz — hazır sayfalarla (Ürünler, İletişim, Kataloglar, Haberler) sınırlı değilsiniz.
+
+Sayfa içeriği editörünün sağ üstünde **"Görsel" / "Kod"** iki sekmesi vardır:
+- **Görsel**: normal biçimlendirilmiş metin editörü (kalın, başlık, liste, link vb.).
+- **Kod**: sayfanın HAM HTML kodunu görüp doğrudan düzenleyebileceğiniz kaynak kod görünümü — kendi HTML'inizi ekleyebilir veya içeriği komple sıfırdan HTML olarak yazabilirsiniz. Yönetici (Administrator) hesabıyla girdiğiniz HTML (gerekirse `<style>`/`<script>` dahil) KAYDEDİLİRKEN budanmaz/temizlenmez.
+
+Bu, sayfanın sağındaki **Sayfa Öznitelikleri**, **Öne Çıkan Görsel**, **Sayfa Üstü Banner** gibi meta kutulardan tamamen BAĞIMSIZDIR — onlar ayrı ayrı, içerik alanına dokunmadan doldurulur.
+
+**Tamamen serbest / şablonsuz bir sayfa isterseniz**: aynı Sayfa Öznitelikleri kutusundan **Şablon: "Serbest Sayfa (HTML / Kod)"** seçin (bkz. `page-templates/serbest-sayfa.php`). Bu şablon, temanın diğer sayfalarda otomatik eklediği HİÇBİR ŞEYİ (kırıntı/breadcrumb, sayfa başlığı, banner, alt sayfa kartları) basmaz — sadece site header/footer'ı (menü, logo, WhatsApp butonu) korunur, içerik editöründe ne yazdıysanız (Kod sekmesinden girilen ham HTML dahil) sayfanın genişlik sınırı bile olmadan OLDUĞU GİBİ basılır; kendi düzeninizi (genişlik, arka plan, grid) tamamen kendi HTML/CSS'inizle kurabileceğiniz tam bir boş tuval — bir kampanya/açılış sayfası gibi standart site tasarımından bağımsız bir şey gerektiğinde kullanın.
+
 ## Haberler
 
 `wp-admin → Haberler → Yeni Ekle` ile her haber için sadece standart WordPress alanları kullanılır — ayrı bir özel alan YOKTUR:
@@ -88,6 +100,8 @@ cikolata-makine/
 ├── page-haberler.php            Haberler grid/listeleme sayfası (slug: haberler — aynı desen)
 ├── single-haber.php             Haber detay sayfası
 ├── page.php                     Genel içerik sayfası (Kurumsal, Hakkımızda, İletişim...)
+├── page-templates/
+│   └── serbest-sayfa.php        Seçimlik "Serbest Sayfa (HTML/Kod)" şablonu — sarmalayıcısız, tam serbest
 ├── single.php / index.php       Blog yazı detayı / listesi
 ├── 404.php                      Sayfa bulunamadı
 ├── inc/
