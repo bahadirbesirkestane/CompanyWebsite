@@ -96,14 +96,15 @@ add_action( 'acf/init', function () {
 			'name'  => "ek_gorsel_$i",
 			'type'  => 'image',
 			'return_format' => 'array',
-			// 'uploadedTo': seçim penceresi varsayılan olarak "bu yazıya yüklenenler" sekmesiyle
-			// açılır — ama gerçek kapsam aşağıdaki cm_acf_scope_gallery_query_to_translation_group()
-			// filtresiyle genişletiliyor: aynı ürünün TR/EN/RU/ES çevirilerinin TÜMÜNE yüklenmiş
-			// görseller birlikte gösterilir (kullanıcı dil başına ayrı fotoğraf YÜKLEMİYOR, aynı
-			// fotoğrafı tüm dillerde tekrar kullanıyor) — ama diğer ÜRÜNLERİN veya sitedeki başka
-			// içeriğin görselleri hiç görünmez.
-			'library' => 'uploadedTo',
-			'instructions'  => $i === 1 ? 'Vitrin kapak görseli için Öne Çıkan Görsel (Featured Image) alanını kullanın. Buradaki alanlar, detay sayfası galerisindeki ek fotoğraflardır — hepsini doldurmak zorunlu değildir. 2 veya daha fazla fotoğraf (vitrin + ek görseller) olduğunda galeri üzerinde otomatik ileri/geri okları çıkar.' : '',
+			// 'library'=>'all': medya seçim penceresi HEM "Bu yazıya yüklenenler" (varsayılan
+			// açılış, kapsamı aşağıdaki cm_acf_scope_gallery_query_to_translation_group()
+			// filtresiyle bu ürünün TR/EN/RU/ES çevirilerinin TAMAMINA genişletiliyor — kullanıcı
+			// dil başına ayrı fotoğraf YÜKLEMİYOR, aynı fotoğrafı tüm dillerde tekrar kullanıyor)
+			// HEM DE dropdown'dan "Medya Kütüphanesi"ne geçilerek sitedeki TÜM görseller arasından
+			// seçim sunar (kullanıcı isteği: "hem ilgili ürünün hem de tüm içerikten seçme").
+			// 'uploadedTo' verilseydi bu ikinci seçenek (tüm kütüphane) hiç görünmezdi.
+			'library' => 'all',
+			'instructions'  => $i === 1 ? 'Vitrin kapak görseli için Öne Çıkan Görsel (Featured Image) alanını kullanın. Buradaki alanlar, detay sayfası galerisindeki ek fotoğraflardır — hepsini doldurmak zorunlu değildir. 2 veya daha fazla fotoğraf (vitrin + ek görseller) olduğunda galeri üzerinde otomatik ileri/geri okları çıkar. Seçim penceresinde "Bu yazıya yüklenenler" bu ürünün (tüm dillerdeki) kendi görselerini, "Medya Kütüphanesi" ise sitedeki tüm görselleri gösterir.' : '',
 		);
 	}
 
@@ -123,12 +124,13 @@ add_action( 'acf/init', function () {
 		'type'  => 'file',
 		'return_format' => 'array',
 		'mime_types'    => 'pdf',
-		// 'uploadedTo' + cm_acf_scope_gallery_query_to_translation_group() (yukarıda):
-		// seçim penceresi bu ürünün TÜM dil kardeşlerine yüklenmiş PDF'leri de gösterir
-		// (kullanıcı genelde tek bir PDF'i tüm dillerde tekrar kullanıyor) — ama diğer
-		// ürünlerin/site içeriğinin dosyaları hâlâ karışmaz.
-		'library' => 'uploadedTo',
-		'instructions'  => 'Bu makineye özel teknik broşür/katalog dosyası. Yüklendiğinde ürün sayfasındaki "Dokümanlar" sekmesinde otomatik görünür.',
+		// 'library'=>'all' + cm_acf_scope_gallery_query_to_translation_group() (yukarıda):
+		// "Bu yazıya yüklenenler" bu ürünün TÜM dil kardeşlerine yüklenmiş PDF'leri gösterir
+		// (kullanıcı genelde tek bir PDF'i tüm dillerde tekrar kullanıyor); dropdown'dan
+		// "Medya Kütüphanesi"ne geçilerek sitedeki TÜM PDF'ler arasından da seçim yapılabilir
+		// (kullanıcı isteği — "önceki gibi tüm içeriklerin arasından seçme" de kalsın).
+		'library' => 'all',
+		'instructions'  => 'Bu makineye özel teknik broşür/katalog dosyası. Yüklendiğinde ürün sayfasındaki "Dokümanlar" sekmesinde otomatik görünür. Seçim penceresinde "Bu yazıya yüklenenler" bu ürünün (tüm dillerdeki) kendi dosyalarını, "Medya Kütüphanesi" ise sitedeki tüm dosyaları gösterir.',
 	);
 	$cm_makine_fields[] = array(
 		'key'   => 'field_cm_video_url',
