@@ -172,8 +172,14 @@ if ( $cm_certs ) : ?>
 	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'kalite_belgeleri_baslik' ) ); ?></h2>
 	<div class="cert-grid">
 		<?php foreach ( $cm_certs as $cm_cert ) :
+			// Önizleme önceliği: (1) elle yüklenmiş "Önizleme Görseli" — varsa, "Belge" PDF olsa
+			// bile ONU gösterir (bkz. inc/acf-fields.php field_cm_kbN_onizleme); (2) "Belge"nin
+			// kendisi zaten bir görselse doğrudan o; (3) "Belge" PDF ise ilk sayfa önizlemesi
+			// (cm_pdf_preview_url()); (4) hiçbiri yoksa genel belge ikonu.
 			$cm_cert_is_image = strpos( $cm_cert['dosya']['mime_type'] ?? '', 'image/' ) === 0;
-			$cm_cert_preview  = $cm_cert_is_image ? $cm_cert['dosya']['url'] : cm_pdf_preview_url( $cm_cert['dosya'] );
+			$cm_cert_preview  = ! empty( $cm_cert['onizleme_gorseli']['url'] )
+				? $cm_cert['onizleme_gorseli']['url']
+				: ( $cm_cert_is_image ? $cm_cert['dosya']['url'] : cm_pdf_preview_url( $cm_cert['dosya'] ) );
 		?>
 			<a class="cert-card reveal" href="<?php echo esc_url( $cm_cert['dosya']['url'] ); ?>" target="_blank" rel="noopener" aria-label="<?php echo esc_attr( sprintf( cm__( 'belge_yeni_sekme_aria' ), $cm_cert['baslik'] ) ); ?>">
 				<div class="ph">

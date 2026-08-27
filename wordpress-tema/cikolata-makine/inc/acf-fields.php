@@ -317,7 +317,15 @@ add_action( 'acf/init', function () {
 					'type'          => 'file',
 					'return_format' => 'array',
 					'mime_types'    => 'pdf,jpg,jpeg,png,webp',
-					'instructions'  => 'PDF olarak taranmış bir belge ya da doğrudan bir fotoğraf/logo (JPG, PNG, WEBP) yükleyebilirsiniz.',
+					'instructions'  => 'PDF olarak taranmış bir belge ya da doğrudan bir fotoğraf/logo (JPG, PNG, WEBP) yükleyebilirsiniz. Tıklandığında bu dosyanın kendisi yeni sekmede açılır.',
+				),
+				array(
+					'key'           => "field_cm_kb{$cm_n}_onizleme",
+					'label'         => 'Önizleme Görseli (opsiyonel)',
+					'name'          => 'onizleme_gorseli',
+					'type'          => 'image',
+					'return_format' => 'array',
+					'instructions'  => 'Belge PDF ise kartta varsayılan olarak PDF\'in ilk sayfasının otomatik önizlemesi gösterilir. Bunun yerine kendi seçtiğiniz bir görsel (örn. daha temiz bir logo/rozet) göstermek isterseniz buraya yükleyin — kart tıklanınca yine yukarıdaki "Belge" açılır, sadece kartta görünen resim değişir.',
 				),
 			),
 		);
@@ -443,6 +451,9 @@ function cm_prewarm_kalite_belge_previews( $post_id ) {
 	for ( $cm_i = 1; $cm_i <= 8; $cm_i++ ) {
 		$cm_cert = get_field( "kalite_belge_$cm_i", $post_id );
 		$cm_dosya = $cm_cert['dosya'] ?? null;
+		// "Önizleme Görseli" elle girilmişse zaten ONUN gösterileceği için PDF önizlemesi
+		// hiç kullanılmayacak — boşuna üretip önbellek doldurmayalım.
+		if ( ! empty( $cm_cert['onizleme_gorseli'] ) ) continue;
 		if ( $cm_dosya && strpos( $cm_dosya['mime_type'] ?? '', 'image/' ) !== 0 ) {
 			cm_pdf_preview_url( $cm_dosya );
 		}
