@@ -574,8 +574,8 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .marquee-track { display: flex; align-items: center; width: max-content; gap: 64px; padding: 26px 32px; }
 @media (prefers-reduced-motion: reduce) { .marquee-wrap { scroll-behavior: auto; } }
 .ref-logo { display: flex; align-items: center; gap: 9px; color: var(--steel); font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: .03em; white-space: nowrap; opacity: .8; }
-.ref-logo img { max-height: 34px; width: auto; filter: grayscale(1); opacity: .7; transition: opacity .2s, filter .2s; -webkit-user-drag: none; user-drag: none; pointer-events: none; }
-.ref-logo:hover img { filter: grayscale(0); opacity: 1; }
+.ref-logo img { max-height: 34px; width: auto; opacity: .9; transition: opacity .2s; -webkit-user-drag: none; user-drag: none; pointer-events: none; }
+.ref-logo:hover img { opacity: 1; }
 .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
 
 /* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ----
