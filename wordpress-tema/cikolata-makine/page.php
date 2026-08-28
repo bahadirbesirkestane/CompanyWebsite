@@ -33,9 +33,9 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 	</div>
 
 	<?php
-	// "Kurumsal" ailesi (TR + EN/RU/ES çevirileri) sabit ID'lerle tanınır — bkz.
+	// "Kurumsal" ailesi (TR + EN/RU/ES/AR çevirileri) sabit ID'lerle tanınır — bkz.
 	// inc/acf-fields.php group_cm_kurumsal konum kuralları, aynı ID listesi orada da kullanılır.
-	$cm_kurumsal_ids = array( 7, 277, 278, 279 );
+	$cm_kurumsal_ids = array( 7, 277, 278, 279, 786 );
 	$cm_is_kurumsal  = in_array( get_the_ID(), $cm_kurumsal_ids, true );
 
 	$cm_children = get_pages( array( 'child_of' => get_the_ID(), 'sort_column' => 'menu_order', 'parent' => get_the_ID() ) );

@@ -280,17 +280,37 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('load', ensureEnoughWidth);
     window.addEventListener('resize', ensureEnoughWidth);
 
+    // RTL'de (Arapça) tarayıcıların scrollLeft için kullandığı işaret/aralık uyumsuz
+    // olabilir (bazıları 0'dan negatife, bazıları ters pozitif aralık kullanır) — bu
+    // yüzden LTR varsayımıyla yazılmış aşağıdaki kod (scrollLeft += speed vb.) RTL'de
+    // hareket etmiyordu (sınır kontrolü anında sıfırlıyordu). Burada çalışma zamanında
+    // gerçek yönü ölçüp "rtlSign" ile normalize ediyoruz: pos()/setPos() LTR'deki gibi
+    // hep 0'dan artan "mantıksal" bir konum kullanır, geri kalan kod hiç değişmeden çalışır.
+    var rtlSign = 1;
+    if (getComputedStyle(wrap).direction === 'rtl') {
+      // Küçük (1px) bir dürtme, sınır kenarındaki yuvarlama payı yüzünden yanıltıcı
+      // olabiliyordu (bazı tarayıcılar 0 sınırını ~1px'e kadar tolere ediyor, bu da
+      // testi "pozitif de çalışıyor" sanıp yanlış yön tespit etmesine yol açıyordu) —
+      // gerçek hareketi yuvarlama payının çok üzerinde bir mesafeyle (100px) ölçüyoruz.
+      var beforeProbe = wrap.scrollLeft;
+      wrap.scrollLeft = beforeProbe + 100;
+      rtlSign = (wrap.scrollLeft > beforeProbe + 50) ? 1 : -1;
+      wrap.scrollLeft = beforeProbe;
+    }
+    function pos() { return rtlSign * wrap.scrollLeft; }
+    function setPos(p) { wrap.scrollLeft = rtlSign * p; }
+
     var isDown = false, isHover = false, startX = 0, startScroll = 0, speed = 0.7;
 
     function wrapScroll() {
       if (half <= 0) return;
-      if (wrap.scrollLeft >= half) wrap.scrollLeft -= half;
-      else if (wrap.scrollLeft < 0) wrap.scrollLeft += half;
+      if (pos() >= half) setPos(pos() - half);
+      else if (pos() < 0) setPos(pos() + half);
     }
 
     setInterval(function () {
       if (isDown || isHover) return;
-      wrap.scrollLeft += speed;
+      setPos(pos() + speed);
       wrapScroll();
     }, 30);
 
@@ -301,13 +321,13 @@ document.addEventListener('DOMContentLoaded', function () {
       isDown = true;
       wrap.classList.add('dragging');
       startX = e.clientX;
-      startScroll = wrap.scrollLeft;
+      startScroll = pos();
       try { wrap.setPointerCapture(e.pointerId); } catch (err) {}
       e.preventDefault(); // metin seçimi / native sürükleme başlatılmasını engeller
     });
     wrap.addEventListener('pointermove', function (e) {
       if (!isDown) return;
-      wrap.scrollLeft = startScroll - (e.clientX - startX);
+      setPos(startScroll - (e.clientX - startX));
       wrapScroll();
     });
     function endDrag() { isDown = false; wrap.classList.remove('dragging'); }
@@ -315,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
     wrap.addEventListener('pointercancel', endDrag);
     wrap.addEventListener('pointerleave', function () { endDrag(); isHover = false; });
 
-    wrap.scrollLeft = 1;
+    setPos(1);
   })();
 
   // ---- makine detay sayfası galerisi: küçük görsel + ileri/geri ok ----
