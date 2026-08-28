@@ -133,7 +133,7 @@ Tema, **Polylang (ücretsiz sürüm)** ile çalışacak şekilde baştan hazırl
 
 ### RTL / Arapça Notu
 
-Arapça sayfa/menü **iskeleti** (Anasayfa, Ürünler, İletişim, Kurumsal + alt sayfaları, Kataloglar, Haberler, ürün kategorisi isimleri, tüm arayüz metni — buton/boş-durum/breadcrumb yazıları) hazır ve taslak olarak çevrilmiştir. **Bilerek yapılmayan**: 57 ürünün başlık/açıklama/teknik özellik içeriği ve Kurumsal alt sayfalarının (Hakkımızda vb.) gövde metni — bunlar tamamen boş, gerçek Arapça içeriği siz veya bir çevirmen `Sayfalar`/`Ürünler` ekranlarından "+ Çeviri Ekle" ile gireceksiniz (diğer diller için de aynı yöntem). Taslak çevrilen menü/kart/başlık metinlerini de bir Arapça anadili konuşanın gözden geçirmesi önerilir.
+Arapça, artık diğer 4 dille (TR/EN/RU/ES) tam eşdeğer: sayfa/menü iskeleti, 57 ürünün tamamı (başlık/açıklama/teknik özellikler/kategori), Kurumsal aile sayfalarının gövde metni, Anasayfa'nın hero/istatistik alanları, İletişim sayfası ve ayrı bir Arapça Contact Form 7 formu (`iletisim-formu-ar`) dahil olmak üzere içerik makine çevirisiyle dolduruldu. Katalog/sertifika PDF **dosyalarının kendisi** çevrilemedi (bu, RU/ES'te de var olan genel bir kısıt — sadece başlık/meta çevrildi, dosya TR'den kopyalandı). Makine çevirisiyle girilen tüm metinlerin bir Arapça anadili konuşan tarafından gözden geçirilmesi, özellikle teknik terimler ve ürün açıklamaları için önerilir.
 
 RTL düzen (sağdan sola) tamamen otomatik — `assets/css/rtl.css` sadece Arapça'da (`is_rtl()`) yüklenir, yeni bir CSS kuralı eklerken `left`/`right`/`border-left`/`margin-left` gibi yön-sabit bir şey yazdıysanız orada da bir karşılığı gerekip gerekmediğini kontrol edin.
 
