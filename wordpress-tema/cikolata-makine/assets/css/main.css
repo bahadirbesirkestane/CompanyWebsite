@@ -327,9 +327,15 @@ ul.megamenu-flyout {
 .ph .c-br { bottom: 8px; right: 8px; border-left: none; border-top: none; }
 .ph .tag { position: absolute; bottom: 8px; right: 22px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.08em; color: var(--steel-soft); text-transform: uppercase; }
 
-/* ---- category grid ---- */
-.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-top: 32px; }
-.cat-card { background: var(--paper); padding: 28px 24px; transition: background .15s ease, transform .2s ease, box-shadow .2s ease; text-decoration: none; color: inherit; display: block; position: relative; }
+/* ---- category grid ----
+   Önceki "gap + arka plan rengi" tekniği (kartlar arasındaki 1px'lik boşluktan
+   sızan bir zemin rengiyle çizgi efekti) son satır tamamlanmadığında (örn. 3
+   sütunda 4 kart) boş hücrelerin TAMAMINI o zemin rengiyle dolduruyordu — büyük
+   çirkin bir gri kutu. Çizgiler artık kartların KENDİ border'larından geliyor
+   (sağ+alt), konteyner sadece üst+sol border veriyor; böylece hiç kart olmayan
+   bir hücre basitçe HİÇ ÇİZİLMİYOR, kaç kart olursa olsun boşluk oluşmuyor. */
+.cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 32px; border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.cat-card { background: var(--paper); padding: 28px 24px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: background .15s ease, transform .2s ease, box-shadow .2s ease; text-decoration: none; color: inherit; display: block; position: relative; }
 .cat-card:hover { background: var(--paper-raised); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); z-index: 1; }
 .cat-icon { color: var(--accent); margin-bottom: 18px; }
 .cat-card h3 { font-size: 16.5px; margin-bottom: 8px; }
@@ -615,9 +621,13 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .cert-card h3 { font-size: 13.5px; font-weight: 600; margin-top: 14px; }
 @media (max-width: 480px) { .cert-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* ---- kurumsal: alt sayfa kartları (ikon + başlık + özet) ---- */
-.corp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
-.corp-card { background: var(--paper); padding: 30px 28px; text-decoration: none; color: inherit; display: block; position: relative; transition: background .15s ease, transform .2s ease, box-shadow .2s ease; }
+/* ---- kurumsal: alt sayfa kartları (ikon + başlık + özet) ----
+   .cat-grid'deki AYNI "gap + arka plan rengi sızıntısı" düzeltmesi burada da
+   geçerli: kart sayısı sütun sayısına tam bölünmediğinde (örn. 5 kart / 2 sütun)
+   son satırdaki boş hücre eskiden TAMAMEN zemin rengiyle doluyordu. Çizgiler artık
+   kartların kendi border'larından (sağ+alt) geliyor, konteyner üst+sol veriyor. */
+.corp-grid { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.corp-card { background: var(--paper); padding: 30px 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); text-decoration: none; color: inherit; display: block; position: relative; transition: background .15s ease, transform .2s ease, box-shadow .2s ease; }
 .corp-card:hover { background: var(--paper-raised); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); z-index: 1; }
 .corp-card-icon { color: var(--accent); margin-bottom: 16px; }
 .corp-card h3 { font-size: 17px; margin-bottom: 10px; }
