@@ -134,23 +134,25 @@ if ( $cm_refs->have_posts() ) :
 ?>
 <div class="section-tight" style="padding-bottom:0;">
 	<div class="wrap reveal"><div class="eyebrow"><?php echo esc_html( cm__( 'referanslarimiz' ) ); ?></div><h2 class="h-md"><?php echo esc_html( cm__( 'referans_baslik' ) ); ?></h2></div>
-	<div class="marquee-wrap">
-		<div class="marquee-track">
-			<?php
-			$cm_ref_items = array();
-			while ( $cm_refs->have_posts() ) : $cm_refs->the_post();
-				ob_start();
-				if ( has_post_thumbnail() ) {
-					echo '<span class="ref-logo">' . get_the_post_thumbnail( get_the_ID(), 'cm-thumb' ) . '</span>';
-				} else {
-					echo '<span class="ref-logo"><span class="dot"></span>' . esc_html( get_the_title() ) . '</span>';
-				}
-				$cm_ref_items[] = ob_get_clean();
-			endwhile;
-			wp_reset_postdata();
-			// Tek kopya basılır; ekrana göre yetmeyecek kadar kısa olursa JS gerektiği kadar çoğaltır (main.js).
-			echo implode( '', $cm_ref_items );
-			?>
+	<div class="wrap">
+		<div class="marquee-wrap">
+			<div class="marquee-track">
+				<?php
+				$cm_ref_items = array();
+				while ( $cm_refs->have_posts() ) : $cm_refs->the_post();
+					ob_start();
+					if ( has_post_thumbnail() ) {
+						echo '<span class="ref-logo">' . get_the_post_thumbnail( get_the_ID(), 'cm-thumb' ) . '</span>';
+					} else {
+						echo '<span class="ref-logo"><span class="dot"></span>' . esc_html( get_the_title() ) . '</span>';
+					}
+					$cm_ref_items[] = ob_get_clean();
+				endwhile;
+				wp_reset_postdata();
+				// Tek kopya basılır; ekrana göre yetmeyecek kadar kısa olursa JS gerektiği kadar çoğaltır (main.js).
+				echo implode( '', $cm_ref_items );
+				?>
+			</div>
 		</div>
 	</div>
 </div>

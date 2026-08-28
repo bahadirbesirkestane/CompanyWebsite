@@ -591,19 +591,27 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .hero-dot.active { background: var(--accent); }
 @media (max-width: 640px) { .hero-media { height: clamp(380px, 92vw, 480px); } }
 
-/* ---- reference logo marquee (sonsuz + sürüklenebilir) ---- */
+/* ---- reference logo marquee (sonsuz + sürüklenebilir) ----
+   Eskiden .wrap'ın DIŞINDA, tam ekran genişliğinde (kenarsız) basılıyordu — kullanıcıya
+   "saçma" göründü ("komple ekranı kaplaması"), sitenin geri kalanı hep .wrap'ın 1240px
+   sınırında dursun diye tasarlanmışken bu şerit tek başına kenarları taşıyordu. Artık
+   front-page.php'de bir .wrap içine alınıyor (bkz. o dosya) — diğer bölümlerle AYNI
+   genişlikte, sağında/solunda sayfanın geri kalanıyla tutarlı bir kenar boşluğu var;
+   dört kenarı da (üst/alt zaten vardı, artık sol/sağ da) kart gibi border ile çevrili. */
 .marquee-wrap {
-  margin-top: 28px; overflow-x: auto; overflow-y: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  margin-top: 28px; overflow-x: auto; overflow-y: hidden; border: 1px solid var(--line);
   background: var(--paper-raised); cursor: grab; scrollbar-width: none; -ms-overflow-style: none; user-select: none;
   touch-action: pan-y; /* yatay hareketi JS/pointer sürüklemesine bırak, dikey sayfa kaydırmasını engelleme */
 }
 .marquee-wrap::-webkit-scrollbar { display: none; }
 .marquee-wrap.dragging { cursor: grabbing; }
-.marquee-track { display: flex; align-items: center; width: max-content; gap: 64px; padding: 26px 32px; }
+.marquee-track { display: flex; align-items: center; width: max-content; gap: 56px; padding: 22px 32px; }
 @media (prefers-reduced-motion: reduce) { .marquee-wrap { scroll-behavior: auto; } }
-.ref-logo { display: flex; align-items: center; gap: 9px; color: var(--steel); font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: .03em; white-space: nowrap; opacity: .8; }
-.ref-logo img { max-height: 34px; width: auto; opacity: .9; transition: opacity .2s; -webkit-user-drag: none; user-drag: none; pointer-events: none; }
-.ref-logo:hover img { opacity: 1; }
+/* Eskiden .ref-logo (%80) VE .ref-logo img (%90) üst üste binen opacity taşıyordu —
+   birleşince ~%72 gibi soluk/"filtreli" bir görünüm veriyordu (kullanıcı: "filtreli
+   gibi"); aslında CSS filter değil, bu çift opacity'ydi — ikisi de tam opaklığa çekildi. */
+.ref-logo { display: flex; align-items: center; gap: 9px; color: var(--steel); font-family: var(--font-display); font-weight: 600; font-size: 14px; letter-spacing: .03em; white-space: nowrap; }
+.ref-logo img { max-height: 46px; width: auto; -webkit-user-drag: none; user-drag: none; pointer-events: none; }
 .ref-logo .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
 
 /* ---- sayfa üstü banner: görsel varsa (cm_page_banner()) tam genişlikte bir şerit ----
