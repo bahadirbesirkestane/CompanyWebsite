@@ -306,6 +306,43 @@ function cm_pll_disambiguate_pagename_request( $query_vars ) {
 add_filter( 'request', 'cm_pll_disambiguate_pagename_request', 20 );
 
 /**
+ * KRİTİK — sayfalanmış (paged) taksonomi arşivlerinde Polylang'in geçerli dili
+ * yanlış dile (genelde İngilizce) "sızdırması" hatasını düzeltir.
+ *
+ * Kaynak: Polylang'in PLL_Canonical::redirect_canonical() metodu (src/frontend/canonical.php,
+ * 'template_redirect' önceliği 4), $wp_query'yi "yedeklerken" sadece referansı kopyalıyor
+ * ($backup = $wp_query; — nesne KLONLANMIYOR), sonra $wp_query->tax_query->queried_terms['language']
+ * öğesini SİLİP çekirdeğin redirect_canonical() fonksiyonunu çağırıyor ve "curlang"ı bu işlem
+ * süresince geçici olarak hedef dile ayarlıyor ("Hack to filter the page_for_posts option").
+ * Sayfalanmış arşivlerde çekirdek fonksiyon kanonik URL'yi tam eşleşmeyen bulup kendini
+ * yinelemeli çağırdığında, bu ikinci çağrı artık SİLİNMİŞ 'language' bilgisiyle çalışıyor;
+ * get_queried_term_id() dil eşleşmesi bulamayınca "ilk bulunan terim"e (aynı slug'ı paylaşan
+ * TR/EN/RU/ES/AR terimleri arasından alfabetik ilk isim — genelde İngilizce "Chocolate Lines"
+ * gibi) düşüyor ve bunu curlang olarak bırakıyor; GERİ YÜKLEME hiç yapılmıyor. Sonuç: ana
+ * WP_Query (ve dolayısıyla ürün listesi) doğru dilde kalırken menü/kategori ağacı/dil seçici
+ * gibi curlang'a bağlı HER ŞEY yanlış dilde render oluyor — sadece 2. ve sonraki sayfalarda
+ * (bu tetikleyici sadece sayfalama canonical kontrolünde devreye giriyor).
+ *
+ * Polylang'in kendi dosyasını yamalamak (bir plugin güncellemesinde kaybolur) yerine, doğru
+ * dili bu hack'ten HEMEN ÖNCE (öncelik 0) yakalayıp HEMEN SONRA (öncelik 5) zorla geri
+ * yüklüyoruz — check_canonical_url'ün (öncelik 4) yaptığı her şeyi (olası bir GERÇEK
+ * yönlendirme dahil) etkilemeden, sadece kalıcı yan etkisini temizliyor.
+ */
+function cm_capture_correct_pll_language() {
+	if ( function_exists( 'PLL' ) && PLL() && ! empty( PLL()->curlang ) ) {
+		$GLOBALS['cm_correct_pll_language'] = PLL()->curlang;
+	}
+}
+add_action( 'template_redirect', 'cm_capture_correct_pll_language', 0 );
+
+function cm_restore_pll_language_after_canonical_check() {
+	if ( isset( $GLOBALS['cm_correct_pll_language'] ) && function_exists( 'PLL' ) && PLL() ) {
+		PLL()->curlang = $GLOBALS['cm_correct_pll_language'];
+	}
+}
+add_action( 'template_redirect', 'cm_restore_pll_language_after_canonical_check', 5 );
+
+/**
  * page-{slug}.php şablon kuralı (bkz. page-kataloglar.php, page-urunler.php,
  * page-haberler.php) WordPress çekirdeğinde SADECE görüntülenen Sayfanın KENDİ
  * post_name'ine bakar. Ama bu Sayfaların EN/RU/ES çevirileri farklı, yerelleştirilmiş
