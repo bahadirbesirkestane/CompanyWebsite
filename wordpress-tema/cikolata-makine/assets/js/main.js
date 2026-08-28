@@ -108,11 +108,19 @@ document.addEventListener('DOMContentLoaded', function () {
   // önceden hesaplayıp .flyout-left sınıfını ekliyor/kaldırıyor.
   (function () {
     var FLYOUT_WIDTH = 260; // main.css .megamenu-flyout genişliğiyle eşleşmeli
+    // RTL'de (bkz. rtl.css) flyout'un VARSAYILAN yönü tersine döner (sağdan sola akan
+    // menüde flyout normalde SOLA açılır; ".flyout-left" sınıfı RTL'de CSS tarafında
+    // "SAĞA aç" anlamına gelecek şekilde yeniden kullanılır) — bu yüzden taşma kontrolü
+    // de yön bazında dallanır: LTR'de sağ kenar, RTL'de sol kenar kontrol edilir.
+    var isRTL = document.documentElement.dir === 'rtl';
     var items = document.querySelectorAll('.megamenu-item.has-children');
     items.forEach(function (item) {
       item.addEventListener('mouseenter', function () {
         var rect = item.getBoundingClientRect();
-        item.classList.toggle('flyout-left', rect.right + FLYOUT_WIDTH > window.innerWidth);
+        var overflows = isRTL
+          ? (rect.left - FLYOUT_WIDTH < 0)
+          : (rect.right + FLYOUT_WIDTH > window.innerWidth);
+        item.classList.toggle('flyout-left', overflows);
       });
     });
   })();

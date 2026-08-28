@@ -85,6 +85,16 @@ function cm_enqueue_assets() {
 	wp_enqueue_style( 'cikolata-makine-fonts', 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap', array(), null );
 	wp_enqueue_style( 'cikolata-makine-main', CM_THEME_URI . '/assets/css/main.css', array( 'cikolata-makine-fonts' ), file_exists( $cm_css ) ? filemtime( $cm_css ) : CM_THEME_VERSION );
 	wp_enqueue_script( 'cikolata-makine-main', CM_THEME_URI . '/assets/js/main.js', array(), file_exists( $cm_js ) ? filemtime( $cm_js ) : CM_THEME_VERSION, true );
+
+	// RTL dil (şu an sadece Arapça) aktifken: main.css'teki yön-sabit (left/right,
+	// border-left vb.) kuralları geçersiz kılan katman + marka tutarlılığı için Latin
+	// IBM Plex ailesiyle aynı tasarım dilindeki Arapça yazı tipi (main.css'ten SONRA
+	// yüklenmeli, ona bağımlı — bkz. rtl.css).
+	if ( is_rtl() ) {
+		$cm_rtl_css = CM_THEME_DIR . '/assets/css/rtl.css';
+		wp_enqueue_style( 'cikolata-makine-fonts-rtl', 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap', array(), null );
+		wp_enqueue_style( 'cikolata-makine-rtl', CM_THEME_URI . '/assets/css/rtl.css', array( 'cikolata-makine-main', 'cikolata-makine-fonts-rtl' ), file_exists( $cm_rtl_css ) ? filemtime( $cm_rtl_css ) : CM_THEME_VERSION );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'cm_enqueue_assets' );
 

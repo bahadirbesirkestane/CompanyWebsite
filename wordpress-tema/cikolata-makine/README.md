@@ -119,17 +119,23 @@ cikolata-makine/
     └── js/main.js                Hero slider + galeri küçük görsel geçişi
 ```
 
-## Çoklu Dil Kurulumu (Türkçe + İngilizce + Rusça + İspanyolca)
+## Çoklu Dil Kurulumu (Türkçe + İngilizce + Rusça + İspanyolca + Arapça)
 
-Tema, **Polylang (ücretsiz sürüm)** ile çalışacak şekilde baştan hazırlanmıştır. URL yapısı: Türkçe (varsayılan dil) önekssiz kalır (`/urunler/`), diğer diller önek alır (`/en/urunler/`, `/ru/...`, `/es/...`).
+Tema, **Polylang (ücretsiz sürüm)** ile çalışacak şekilde baştan hazırlanmıştır. URL yapısı: Türkçe (varsayılan dil) önekssiz kalır (`/urunler/`), diğer diller önek alır (`/en/urunler/`, `/ru/...`, `/es/...`, `/ar/...`). Arapça **RTL** (sağdan sola) — Polylang'i "Arabic" olarak eklediğinizde bunu otomatik algılar, ekstra bir ayar gerekmez (bkz. aşağıdaki "RTL / Arapça Notu").
 
 ### 1) Kurulum sırası (bu sıra önemlidir)
 
-1. **Eklentiler → Yeni Ekle**: "Polylang" kurup etkinleştirin. İlk açılan kurulum sihirbazında Türkçe/İngilizce/Rusça/İspanyolca dillerini ekleyin, **varsayılan dil Türkçe** olarak seçin.
+1. **Eklentiler → Yeni Ekle**: "Polylang" kurup etkinleştirin. İlk açılan kurulum sihirbazında Türkçe/İngilizce/Rusça/İspanyolca/Arapça dillerini ekleyin, **varsayılan dil Türkçe** olarak seçin.
 2. Sihirbazın "mevcut içeriği varsayılan dile ata" adımını mutlaka çalıştırın — bu atlanırsa mevcut makine/kategori/sayfa içerikleriniz dil filtresine takılıp sitede görünmez olur.
 3. **Diller → Ayarlar → Custom Post Types and Taxonomies**: `Ürünler` (makine), `Kataloglar` (katalog) ve `Haberler` (haber) post type'larını, `Ürün Kategorileri` (makine_kategori) taksonomisini "çevrilebilir" işaretleyip kaydedin. (`Referanslar` işaretlemeyin — logo/isim dilden bağımsızdır.)
-4. **Diller → Ayarlar → URL sekmesi**: "Anasayfa URL'i sayfa adı/id yerine dil kodunu içersin" seçeneğini **işaretleyin** — bu işaretlenmezse İngilizce/Rusça/İspanyolca anasayfa `/en/` yerine `/en/anasayfa-slug-adi/` gibi yanlış bir adrese yönlenir.
+4. **Diller → Ayarlar → URL sekmesi**: "Anasayfa URL'i sayfa adı/id yerine dil kodunu içersin" seçeneğini **işaretleyin** — bu işaretlenmezse İngilizce/Rusça/İspanyolca/Arapça anasayfa `/en/` yerine `/en/anasayfa-slug-adi/` gibi yanlış bir adrese yönlenir.
 5. **Ayarlar → Kalıcı Bağlantılar → Kaydet** (rewrite kurallarını tazeler).
+
+### RTL / Arapça Notu
+
+Arapça sayfa/menü **iskeleti** (Anasayfa, Ürünler, İletişim, Kurumsal + alt sayfaları, Kataloglar, Haberler, ürün kategorisi isimleri, tüm arayüz metni — buton/boş-durum/breadcrumb yazıları) hazır ve taslak olarak çevrilmiştir. **Bilerek yapılmayan**: 57 ürünün başlık/açıklama/teknik özellik içeriği ve Kurumsal alt sayfalarının (Hakkımızda vb.) gövde metni — bunlar tamamen boş, gerçek Arapça içeriği siz veya bir çevirmen `Sayfalar`/`Ürünler` ekranlarından "+ Çeviri Ekle" ile gireceksiniz (diğer diller için de aynı yöntem). Taslak çevrilen menü/kart/başlık metinlerini de bir Arapça anadili konuşanın gözden geçirmesi önerilir.
+
+RTL düzen (sağdan sola) tamamen otomatik — `assets/css/rtl.css` sadece Arapça'da (`is_rtl()`) yüklenir, yeni bir CSS kuralı eklerken `left`/`right`/`border-left`/`margin-left` gibi yön-sabit bir şey yazdıysanız orada da bir karşılığı gerekip gerekmediğini kontrol edin.
 
 ### 2) Aynı slug + dil öneki hakkında önemli not
 

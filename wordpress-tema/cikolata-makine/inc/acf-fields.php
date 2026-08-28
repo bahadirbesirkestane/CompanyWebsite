@@ -398,10 +398,12 @@ add_action( 'acf/init', function () {
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 277 ) ), // Corporate (EN)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 278 ) ), // О компании (RU)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 279 ) ), // Corporativo (ES)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 786 ) ), // الشركة (AR)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 6 ) ),   // İletişim (TR)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 102 ) ), // Contact (EN)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 134 ) ), // Контакты (RU)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 141 ) ), // Contacto (ES)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 785 ) ), // اتصل بنا (AR)
 		),
 	) );
 
@@ -434,6 +436,7 @@ add_action( 'acf/init', function () {
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 102 ) ), // Contact (EN)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 134 ) ), // Контакты (RU)
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 141 ) ), // Contacto (ES)
+			array( array( 'param' => 'page', 'operator' => '==', 'value' => 785 ) ), // اتصل بنا (AR)
 		),
 	) );
 

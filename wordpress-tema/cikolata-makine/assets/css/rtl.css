@@ -1,0 +1,64 @@
+/**
+ * Arapça (ve ileride eklenebilecek başka herhangi bir RTL dili) için yön-tersleme
+ * katmanı. Sadece `is_rtl()` doğruyken enqueue edilir (bkz. functions.php
+ * cm_enqueue_assets()) ve main.css'TEN SONRA yüklenir — burada SADECE main.css'te
+ * yönü LTR'ye sabit yazılmış (left/right, margin-left/right, border-left vb.) kurallar
+ * geçersiz kılınır. Genel düzen (grid/flex + gap kullanan çoğu bileşen) zaten yöne
+ * duyarlı olduğu için burada tekrar edilmez.
+ */
+
+/* ---- header: "Ürünler" mega menü (masaüstü) — flyout yönü ---- */
+/* main.css'teki .flyout-left sınıfı LTR varsayımıyla hesaplanıyordu (main.js, sağda
+   yer yoksa sola aç); RTL'de mantık ters — bkz. main.js düzeltmesi. Burada sadece
+   varsayılan açılma yönünü (sağdan sola akan menüde flyout normalde SOLA açılmalı)
+   ve .flyout-left'in (ekran kenarına yakınsa) SAĞA açılmasını tanımlıyoruz. */
+.megamenu { left: auto; right: 0; }
+ul.megamenu-flyout { left: auto; right: 100%; margin-left: 0; margin-right: 2px; }
+.megamenu-item.flyout-left > .megamenu-flyout { right: auto; left: 100%; margin-right: 0; margin-left: 2px; }
+
+/* ---- dil seçici dropdown ---- */
+.lang-dropdown-menu { right: auto; left: 0; }
+
+/* ---- mobil menü: "bulunduğunuz sayfa" kenar çizgisi + megamenü aç/kapat okları ---- */
+@media (max-width: 900px) {
+  .nav-menu a { border-left: none; border-right: 3px solid transparent; }
+  .nav-menu li.current-menu-item > a { border-right-color: var(--accent); }
+  .nav-menu li.has-megamenu > a { padding-right: 24px; padding-left: 60px; }
+  .megamenu-toggle { right: auto; left: 4px; }
+  .megamenu-list { padding: 0 24px 0 0; }
+  .megamenu-item.has-children > a { padding-right: 16px; padding-left: 46px; }
+  .megamenu-item-toggle { right: auto; left: 0; }
+  ul.megamenu-flyout { padding: 0 20px 0 0; }
+}
+
+/* ---- kategori sidebar: aktif öge kenar çizgisi ---- */
+.cat-sidebar-icon-row { border-left: none; border-right: 3px solid transparent; }
+.cat-sidebar-icon-row.active { border-left-color: transparent; border-right-color: var(--accent); }
+.cat-sidebar-children { padding-left: 0; padding-right: 31px; }
+.cat-sidebar-children a { border-left: none; border-right: 3px solid transparent; }
+.cat-sidebar-children a.active { border-left-color: transparent; border-right-color: var(--accent); }
+
+/* ---- istatistik satırı (ana sayfa) ---- */
+.stat { border-left: none; border-right: 1px solid var(--line); }
+.stat:first-child { border-right: none; }
+@media (max-width: 760px) { .stat:nth-child(3) { border-right: none; } }
+
+/* ---- PDF satırı aksiyon butonları (bkz. cm_pdf_row()) ---- */
+.pdf-actions { margin-left: 0; margin-right: auto; }
+
+/* ---- galeri (ürün detay) + ana sayfa hero ok tuşları ----
+   Konum SAĞ/SOL takas edilir; "‹"/"›" karakterleri translateY korunarak scaleX(-1)
+   ile ayna görüntüsüne çevrilir — "önceki" oku RTL'de sağda ve sağa (›), "sonraki"
+   oku solda ve sola (‹) bakar; PHP'deki karakterlere dokunmadan salt CSS ile çözülür. */
+.gallery-arrow.prev { left: auto; right: 8px; transform: translateY(-50%) scaleX(-1); }
+.gallery-arrow.next { right: auto; left: 8px; transform: translateY(-50%) scaleX(-1); }
+.hero-arrow.prev { left: auto; right: 16px; transform: translateY(-50%) scaleX(-1); }
+.hero-arrow.next { right: auto; left: 16px; transform: translateY(-50%) scaleX(-1); }
+
+/* ---- sayfa banner / hero metin alanı — left:0;right:0 zaten simetrik, dokunmuyoruz ---- */
+
+/* ---- Arapça yazı tipi: marka tutarlılığı için IBM Plex Sans Arabic
+   (bkz. functions.php cm_enqueue_assets() — sadece is_rtl() doğruyken yüklenir). ---- */
+body { font-family: 'IBM Plex Sans Arabic', var(--font-body); }
+.h-xl, .h-lg, h1, h2, h3, .display { font-family: 'IBM Plex Sans Arabic', var(--font-headline); }
+.eyebrow, .nav a, .btn, .breadcrumb { font-family: 'IBM Plex Sans Arabic', var(--font-display); }
