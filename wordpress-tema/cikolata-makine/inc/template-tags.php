@@ -325,14 +325,18 @@ function cm_category_sidebar( $current_term = null ) {
 				$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false ) );
 				if ( is_wp_error( $children ) ) $children = array();
 				$count = cm_category_total_count( $top, $children );
+				$has_children = ! is_wp_error( $children ) && $children;
 			?>
-				<li>
+				<li class="cat-sidebar-item<?php echo $has_children ? ' has-children' : ''; ?><?php echo $is_active_top ? ' open' : ''; ?>">
 					<a class="cat-sidebar-icon-row<?php echo $is_active_top ? ' active' : ''; ?>" href="<?php echo esc_url( get_term_link( $top ) ); ?>">
 						<span class="cat-sidebar-icon"><?php if ( $icon && ! empty( $icon['url'] ) ) : ?><img src="<?php echo esc_url( $icon['url'] ); ?>" alt="" width="18" height="18"><?php else : ?><?php cm_generic_icon( 18 ); ?><?php endif; ?></span>
 						<span class="cat-sidebar-name"><?php echo esc_html( $top->name ); ?></span>
 						<span class="cat-sidebar-count">(<?php echo (int) $count; ?>)</span>
 					</a>
-					<?php if ( $is_active_top && ! is_wp_error( $children ) && $children ) : ?>
+					<?php if ( $has_children ) : ?>
+						<button type="button" class="cat-sidebar-toggle" aria-expanded="<?php echo $is_active_top ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( cm__( 'sidebar_alt_kategori_aria' ), $top->name ) ); ?>">
+							<svg viewBox="0 0 12 8" width="10" height="7" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+						</button>
 						<ul class="cat-sidebar-children">
 							<?php foreach ( $children as $child ) : ?>
 								<li><a class="<?php echo $child->term_id === $active_sub_id ? 'active' : ''; ?>" href="<?php echo esc_url( get_term_link( $child ) ); ?>"><?php echo esc_html( $child->name ); ?> (<?php echo (int) $child->count; ?>)</a></li>

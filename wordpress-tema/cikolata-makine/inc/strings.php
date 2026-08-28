@@ -96,6 +96,7 @@ function cm_strings() {
 
 			'sidebar_tum_urunler'       => 'Tüm Ürünler',
 			'sidebar_aria'              => 'Kategori filtresi',
+			'sidebar_alt_kategori_aria' => '%s alt kategorilerini göster',
 			'kategori_urun_sayisi'      => '%d ürün bulundu',
 			'sayfalama_onceki'          => '‹ Önceki',
 			'sayfalama_sonraki'         => 'Sonraki ›',

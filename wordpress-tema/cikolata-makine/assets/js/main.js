@@ -141,6 +141,23 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
+  // ---- ürün listesi kategori sidebar'ı: alt kategorisi olan üst kategorinin ok
+  // butonuyla alt listesini aç/kapat (satırın geri kalanı hâlâ kategori sayfasına
+  // gider — bkz. cm_category_sidebar(), inc/template-tags.php) ----
+  (function () {
+    document.querySelectorAll('.cat-sidebar-toggle').forEach(function (btn) {
+      var item = btn.closest('.cat-sidebar-item');
+      if (!item) return;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var open = !item.classList.contains('open');
+        item.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+  })();
+
   // ---- header "Ürünler": mobilde ok butonuyla kategori/alt kategori listesini aç/kapat ----
   // (masaüstünde .megamenu CSS ":hover"/"focus-within" ile açılır, JS gerekmez)
   (function () {

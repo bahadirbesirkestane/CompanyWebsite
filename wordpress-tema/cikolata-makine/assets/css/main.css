@@ -393,13 +393,29 @@ ul.megamenu-flyout {
 .cat-sidebar-all.active { color: var(--accent); }
 .cat-sidebar > ul { list-style: none; margin: 0; padding: 0; }
 .cat-sidebar > ul > li + li { margin-top: 4px; }
+.cat-sidebar-item { position: relative; }
 .cat-sidebar-icon-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px; border-left: 3px solid transparent; text-decoration: none; color: var(--ink-soft); font-size: 13.5px; border-radius: 2px; transition: color .15s, border-color .15s; }
+.cat-sidebar-item.has-children .cat-sidebar-icon-row { padding-right: 30px; }
 .cat-sidebar-icon-row:hover { color: var(--ink); }
 .cat-sidebar-icon-row.active { color: var(--ink); border-left-color: var(--accent); font-weight: 600; }
 .cat-sidebar-icon { color: var(--accent); flex: 0 0 auto; display: flex; }
 .cat-sidebar-name { flex: 1 1 auto; }
 .cat-sidebar-count { font-size: 11.5px; color: var(--steel-soft); flex: 0 0 auto; }
-.cat-sidebar-children { list-style: none; margin: 4px 0 8px; padding-left: 31px; }
+/* Alt kategorisi olan üst kategorinin satırının SAĞ ucunda ayrı, küçük bir ok butonu —
+   satırın geri kalanı (.cat-sidebar-icon-row) o kategorinin sayfasına GİDER, sadece bu
+   ok alt kategori listesini AÇAR/KAPAR (megamenu'deki mobil akordeon deseniyle aynı
+   mantık, bkz. .megamenu-item-toggle). Varsayılan: sadece o an görüntülenen üst kategori
+   açık başlar, diğerleri kapalı — okuna basılınca herhangi biri açılıp kapanabilir. */
+.cat-sidebar-toggle {
+  position: absolute; top: 2px; right: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  background: none; border: none; color: var(--steel-soft); cursor: pointer; border-radius: 2px; transition: color .15s, background .15s;
+}
+.cat-sidebar-toggle:hover { color: var(--ink); background: var(--paper); }
+.cat-sidebar-toggle svg { transition: transform .2s; }
+.cat-sidebar-item.open .cat-sidebar-toggle svg { transform: rotate(180deg); }
+.cat-sidebar-item.open .cat-sidebar-toggle { color: var(--accent); }
+.cat-sidebar-children { list-style: none; margin: 4px 0 8px; padding-left: 31px; display: none; }
+.cat-sidebar-item.open .cat-sidebar-children { display: block; }
 .cat-sidebar-children li + li { margin-top: 2px; }
 .cat-sidebar-children a { display: block; padding: 6px 6px; font-size: 13px; color: var(--ink-soft); text-decoration: none; border-left: 3px solid transparent; }
 .cat-sidebar-children a:hover { color: var(--ink); }

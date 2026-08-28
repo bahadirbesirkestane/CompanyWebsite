@@ -31,9 +31,11 @@ ul.megamenu-flyout { left: auto; right: 100%; margin-left: 0; margin-right: 2px;
   ul.megamenu-flyout { padding: 0 20px 0 0; }
 }
 
-/* ---- kategori sidebar: aktif öge kenar çizgisi ---- */
+/* ---- kategori sidebar: aktif öge kenar çizgisi + alt kategori aç/kapat oku ---- */
 .cat-sidebar-icon-row { border-left: none; border-right: 3px solid transparent; }
 .cat-sidebar-icon-row.active { border-left-color: transparent; border-right-color: var(--accent); }
+.cat-sidebar-item.has-children .cat-sidebar-icon-row { padding-right: 6px; padding-left: 30px; }
+.cat-sidebar-toggle { right: auto; left: 0; }
 .cat-sidebar-children { padding-left: 0; padding-right: 31px; }
 .cat-sidebar-children a { border-left: none; border-right: 3px solid transparent; }
 .cat-sidebar-children a.active { border-left-color: transparent; border-right-color: var(--accent); }
