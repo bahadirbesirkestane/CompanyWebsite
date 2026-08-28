@@ -142,7 +142,7 @@ if ( $cm_refs->have_posts() ) :
 				while ( $cm_refs->have_posts() ) : $cm_refs->the_post();
 					ob_start();
 					if ( has_post_thumbnail() ) {
-						echo '<span class="ref-logo">' . get_the_post_thumbnail( get_the_ID(), 'cm-thumb' ) . '</span>';
+						echo '<span class="ref-logo">' . get_the_post_thumbnail( get_the_ID(), 'cm-logo' ) . '</span>';
 					} else {
 						echo '<span class="ref-logo"><span class="dot"></span>' . esc_html( get_the_title() ) . '</span>';
 					}

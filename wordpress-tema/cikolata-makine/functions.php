@@ -73,6 +73,11 @@ function cm_theme_setup() {
 	set_post_thumbnail_size( 900, 675, true );
 	add_image_size( 'cm-card', 640, 480, true );
 	add_image_size( 'cm-thumb', 200, 200, true );
+	// 'cm-thumb' KARE olarak sert kırpıyor (ürün galerisi küçük resimleri için doğru) —
+	// ama marka logoları (referanslar şeridi, bkz. front-page.php) genelde kare değil,
+	// geniş/dikdörtgen; kare kırpma logonun kenarlarını keserdi. crop=false ile SADECE
+	// bu kutuya sığacak şekilde ORANI KORUYARAK küçültülür, hiçbir zaman kırpılmaz.
+	add_image_size( 'cm-logo', 400, 120, false );
 }
 add_action( 'after_setup_theme', 'cm_theme_setup' );
 
