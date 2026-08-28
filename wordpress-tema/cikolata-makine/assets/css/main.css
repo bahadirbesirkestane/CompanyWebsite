@@ -436,25 +436,25 @@ ul.megamenu-flyout {
 .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
 .thumbs .ph { aspect-ratio: 1; cursor: pointer; }
 .thumbs .ph.sel, .thumbs img.sel { border-color: var(--accent); border-width: 2px; }
-/* Eskiden: 38px, hep dolu beyaz daire + çerçeve, mobilde (hover yok) SÜREKLİ görünür
-   kalıyordu — artık fotoğraf kutunun kenarına kadar sığdığı için (bkz. .gallery .ph.main
-   img padding:0) bu dolu daire doğrudan fotoğrafın üzerine biniyor, mobilde büyük ve
-   rahatsız edici duruyordu. Yeni tasarım: varsayılan durumda SADECE ok işareti (çerçeve/
-   arka plan YOK, "png ok ikonu" gibi) — herhangi bir fotoğrafın üzerinde okunsun diye
-   text-shadow ile hafif bir parlama var. Daire çerçeve/arka plan sadece BASILI durumda
-   (:active) — dokunsal geri bildirim için — beliriyor. Böylece hem masaüstü hem mobilde
-   fotoğrafı KAPATAN büyük bir buton yerine, hep görünen ama göze batmayan küçük bir ok var. */
+/* Eskiden (v1): 38px, hep dolu beyaz daire + çerçeve — fotoğrafı kapatan büyük bir
+   buton gibi duruyordu. Sonra (v2): sadece çıplak ok + beyaz text-shadow parlaması,
+   çerçeve/arka plan YOK — ama açık renkli (beyaz/gri) fotoğraflarda parlama zeminle
+   karışıp ok neredeyse görünmez oluyordu (kullanıcı geri bildirimi: "var mı yok mu
+   belli değil"). Üçüncüsü (v3, şimdiki): küçük yarı saydam beyaz bir daire HER ZAMAN
+   görünür — hem koyu hem açık renkli fotoğraflarda okunabilir kontrast sağlıyor, ama
+   v1'in tam opak/38px "büyük buton" hissini vermeyecek kadar küçük ve hafif (30px,
+   %70 saydamlık + ince gölge). */
 .gallery-arrow {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
-  width: 30px; height: 30px; border-radius: 50%; border: 1px solid transparent; background: transparent;
+  width: 30px; height: 30px; border-radius: 50%; border: 1px solid rgba(31,27,23,.10);
+  background: rgba(255,255,255,.72); box-shadow: 0 1px 5px rgba(31,27,23,.10);
   color: var(--ink); display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: background .15s, border-color .15s, color .15s; font-size: 16px; padding: 0;
-  text-shadow: 0 1px 2px rgba(255,255,255,.85), 0 0 8px rgba(255,255,255,.55);
+  cursor: pointer; transition: background .15s, border-color .15s, color .15s, box-shadow .15s; font-size: 16px; padding: 0;
 }
-.gallery-arrow.prev { left: 8px; } .gallery-arrow.next { right: 8px; }
-.gallery-arrow:hover { color: var(--accent); }
+.gallery-arrow.prev { left: 10px; } .gallery-arrow.next { right: 10px; }
+.gallery-arrow:hover { background: var(--paper); border-color: var(--line-strong); color: var(--accent); box-shadow: 0 3px 10px rgba(31,27,23,.16); }
 .gallery-arrow:active, .gallery-arrow:focus-visible {
-  background: var(--paper); border-color: var(--line-strong); color: var(--ink-soft); text-shadow: none;
+  background: var(--paper); border-color: var(--line-strong); color: var(--ink-soft);
 }
 .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0 24px; }
 .chip { border: 1px solid var(--line); padding: 10px 14px; font-size: 12.5px; min-width: 108px; }

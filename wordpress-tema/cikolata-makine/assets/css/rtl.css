@@ -50,8 +50,8 @@ ul.megamenu-flyout { left: auto; right: 100%; margin-left: 0; margin-right: 2px;
    Konum SAĞ/SOL takas edilir; "‹"/"›" karakterleri translateY korunarak scaleX(-1)
    ile ayna görüntüsüne çevrilir — "önceki" oku RTL'de sağda ve sağa (›), "sonraki"
    oku solda ve sola (‹) bakar; PHP'deki karakterlere dokunmadan salt CSS ile çözülür. */
-.gallery-arrow.prev { left: auto; right: 8px; transform: translateY(-50%) scaleX(-1); }
-.gallery-arrow.next { right: auto; left: 8px; transform: translateY(-50%) scaleX(-1); }
+.gallery-arrow.prev { left: auto; right: 10px; transform: translateY(-50%) scaleX(-1); }
+.gallery-arrow.next { right: auto; left: 10px; transform: translateY(-50%) scaleX(-1); }
 .hero-arrow.prev { left: auto; right: 16px; transform: translateY(-50%) scaleX(-1); }
 .hero-arrow.next { right: auto; left: 16px; transform: translateY(-50%) scaleX(-1); }
 
