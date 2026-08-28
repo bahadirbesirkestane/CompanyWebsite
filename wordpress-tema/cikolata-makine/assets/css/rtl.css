@@ -39,6 +39,8 @@ ul.megamenu-flyout { left: auto; right: 100%; margin-left: 0; margin-right: 2px;
 .cat-sidebar-children { padding-left: 0; padding-right: 31px; }
 .cat-sidebar-children a { border-left: none; border-right: 3px solid transparent; }
 .cat-sidebar-children a.active { border-left-color: transparent; border-right-color: var(--accent); }
+.cat-sidebar-children li.has-children > a { padding-right: 6px; padding-left: 26px; }
+.cat-sidebar-children li.has-children > .cat-sidebar-toggle { right: auto; left: 0; }
 
 /* ---- istatistik satırı (ana sayfa) ---- */
 .stat { border-left: none; border-right: 1px solid var(--line); }

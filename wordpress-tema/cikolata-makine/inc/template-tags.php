@@ -298,16 +298,20 @@ function cm_grid_toggle() {
 
 /**
  * Kategori/alt kategori sayfalarında (taxonomy-makine_kategori.php) solda gösterilen
- * sabit kategori ağacı. Sadece geçerli sayfanın ait olduğu ÜST kategorinin alt
- * kategorileri açık gösterilir, diğer üst kategoriler hiç alt liste basmaz — JS/accordion
- * yok, tamamen $current_term'e göre sunucu tarafında hesaplanır.
+ * kategori ağacı. Herhangi bir derinlikte çalışır (üst kategori altında sınırsız
+ * seviye olabilir, bkz. cm_category_sidebar_children()) — o an görüntülenen terimin
+ * KÖKTEN kendisine kadar olan tüm ebeveynleri "open" (accordion açık) olarak
+ * işaretlenir, terimin KENDİSİ "active" (vurgulu) olur; diğer dallar kapalı başlar
+ * ama .cat-sidebar-toggle okuyla istenildiğinde açılabilir (bkz. main.js). 1 ve
+ * 2 seviyeli (mevcut) kategorilerde ürettiği HTML, bu genelleştirmeden ÖNCEKİYLE
+ * birebir aynıdır — sadece 3+ seviye eklendiğinde devreye giren bir davranış eklendi.
  */
 function cm_category_sidebar( $current_term = null ) {
-	$active_top_id = 0;
-	$active_sub_id = 0;
+	$active_chain = array();
 	if ( $current_term ) {
-		$active_top_id = $current_term->parent ? $current_term->parent : $current_term->term_id;
-		$active_sub_id = $current_term->parent ? $current_term->term_id : 0;
+		$ancestors    = get_ancestors( $current_term->term_id, 'makine_kategori', 'taxonomy' ); // en yakın ebeveyn önce
+		$active_chain = array_reverse( $ancestors ); // kökten aşağıya sıraya çevir
+		$active_chain[] = $current_term->term_id; // en sona kendisini ekle
 	}
 	$top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false ) );
 	if ( is_wp_error( $top_cats ) ) return;
@@ -315,38 +319,78 @@ function cm_category_sidebar( $current_term = null ) {
 	<nav class="cat-sidebar" aria-label="<?php echo esc_attr( cm__( 'sidebar_aria' ) ); ?>">
 		<a class="cat-sidebar-all<?php echo ! $current_term ? ' active' : ''; ?>" href="<?php echo esc_url( cm_translated_page_url( 'urunler', '/urunler/' ) ); ?>"><?php echo esc_html( cm__( 'sidebar_tum_urunler' ) ); ?></a>
 		<ul>
-			<?php foreach ( $top_cats as $top ) :
-				$is_active_top = $top->term_id === $active_top_id;
-				$icon = function_exists( 'get_field' ) ? get_field( 'kategori_ikon', $top ) : false;
-				// Sayım için alt kategoriler HER ZAMAN çekilir (aktif olmasa bile) —
-				// aksi halde bir üst kategorinin tüm ürünleri sadece alt kategorilerinde
-				// olduğunda, o kategori aktif olmadan (0) gösterip tıklanınca doğru sayıya
-				// "zıplardı". Alt liste sadece aktifken basılır, sayım her zaman doğru olur.
-				$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false ) );
-				if ( is_wp_error( $children ) ) $children = array();
-				$count = cm_category_total_count( $top, $children );
-				$has_children = ! is_wp_error( $children ) && $children;
-			?>
-				<li class="cat-sidebar-item<?php echo $has_children ? ' has-children' : ''; ?><?php echo $is_active_top ? ' open' : ''; ?>">
-					<a class="cat-sidebar-icon-row<?php echo $is_active_top ? ' active' : ''; ?>" href="<?php echo esc_url( get_term_link( $top ) ); ?>">
-						<span class="cat-sidebar-icon"><?php if ( $icon && ! empty( $icon['url'] ) ) : ?><img src="<?php echo esc_url( $icon['url'] ); ?>" alt="" width="18" height="18"><?php else : ?><?php cm_generic_icon( 18 ); ?><?php endif; ?></span>
-						<span class="cat-sidebar-name"><?php echo esc_html( $top->name ); ?></span>
-						<span class="cat-sidebar-count">(<?php echo (int) $count; ?>)</span>
-					</a>
-					<?php if ( $has_children ) : ?>
-						<button type="button" class="cat-sidebar-toggle" aria-expanded="<?php echo $is_active_top ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( cm__( 'sidebar_alt_kategori_aria' ), $top->name ) ); ?>">
-							<svg viewBox="0 0 12 8" width="10" height="7" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-						</button>
-						<ul class="cat-sidebar-children">
-							<?php foreach ( $children as $child ) : ?>
-								<li><a class="<?php echo $child->term_id === $active_sub_id ? 'active' : ''; ?>" href="<?php echo esc_url( get_term_link( $child ) ); ?>"><?php echo esc_html( $child->name ); ?> (<?php echo (int) $child->count; ?>)</a></li>
-							<?php endforeach; ?>
-						</ul>
-					<?php endif; ?>
-				</li>
-			<?php endforeach; ?>
+			<?php foreach ( $top_cats as $top ) : cm_category_sidebar_row( $top, $active_chain ); endforeach; ?>
 		</ul>
 	</nav>
+	<?php
+}
+
+/**
+ * Sidebar'da TEK bir ÜST kategori satırını (ikon + isim + toplam sayı, .cat-sidebar-icon-row)
+ * ve varsa alt kategori listesini basar. $active_chain: cm_category_sidebar()'da hesaplanan,
+ * o an görüntülenen terimin kökten kendisine kadar olan ebeveyn zinciri (dahil).
+ */
+function cm_category_sidebar_row( $top, $active_chain ) {
+	$in_chain   = in_array( $top->term_id, $active_chain, true );
+	$is_current = $active_chain && end( $active_chain ) === $top->term_id;
+	$icon = function_exists( 'get_field' ) ? get_field( 'kategori_ikon', $top ) : false;
+	// Doğrudan çocuklar HER ZAMAN çekilir (aktif olmasa bile) — aksi halde bir üst
+	// kategorinin "has-children" durumu bilinmeden ok hiç basılmazdı.
+	$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false ) );
+	if ( is_wp_error( $children ) ) $children = array();
+	$has_children = ! empty( $children );
+	// get_term_children() TÜM alt ağacı (kaç seviye olursa olsun) özyinelemeli döndürür —
+	// bu yüzden 3. (veya daha derin) bir seviye eklense bile toplam sayı doğru hesaplanır.
+	$count = cm_category_total_count( $top, get_term_children( $top->term_id, 'makine_kategori' ) );
+	?>
+	<li class="cat-sidebar-item<?php echo $has_children ? ' has-children' : ''; ?><?php echo $in_chain ? ' open' : ''; ?>">
+		<a class="cat-sidebar-icon-row<?php echo $is_current ? ' active' : ''; ?>" href="<?php echo esc_url( get_term_link( $top ) ); ?>">
+			<span class="cat-sidebar-icon"><?php if ( $icon && ! empty( $icon['url'] ) ) : ?><img src="<?php echo esc_url( $icon['url'] ); ?>" alt="" width="18" height="18"><?php else : ?><?php cm_generic_icon( 18 ); ?><?php endif; ?></span>
+			<span class="cat-sidebar-name"><?php echo esc_html( $top->name ); ?></span>
+			<span class="cat-sidebar-count">(<?php echo (int) $count; ?>)</span>
+		</a>
+		<?php if ( $has_children ) : ?>
+			<button type="button" class="cat-sidebar-toggle" aria-expanded="<?php echo $in_chain ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( cm__( 'sidebar_alt_kategori_aria' ), $top->name ) ); ?>">
+				<svg viewBox="0 0 12 8" width="10" height="7" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+			</button>
+			<ul class="cat-sidebar-children">
+				<?php foreach ( $children as $child ) : cm_category_sidebar_children( $child, $active_chain ); endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</li>
+	<?php
+}
+
+/**
+ * `.cat-sidebar-children` listesindeki TEK bir satırı basar — cm_category_sidebar_row()'un
+ * ikonsuz/daha küçük yazılı sürümü. Kendi alt kategorileri varsa (3. seviye), kendini
+ * YİNELEYEREK aynı şekilde bir ok butonu + iç içe `<ul class="cat-sidebar-children">`
+ * basar — derinlik sınırı yok. Alt kategorisi OLMAYAN (yaprak) bir terim için ürettiği
+ * HTML, bu özellik eklenmeden ÖNCEKİYLE birebir aynıdır (regresyon yok).
+ */
+function cm_category_sidebar_children( $term, $active_chain ) {
+	$in_chain   = in_array( $term->term_id, $active_chain, true );
+	$is_current = $active_chain && end( $active_chain ) === $term->term_id;
+	$children   = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $term->term_id, 'hide_empty' => false ) );
+	if ( is_wp_error( $children ) ) $children = array();
+	$has_children = ! empty( $children );
+	$count = $has_children ? cm_category_total_count( $term, get_term_children( $term->term_id, 'makine_kategori' ) ) : (int) $term->count;
+
+	$li_classes = array();
+	if ( $has_children ) $li_classes[] = 'has-children';
+	if ( $in_chain ) $li_classes[] = 'open';
+	?>
+	<li<?php echo $li_classes ? ' class="' . esc_attr( implode( ' ', $li_classes ) ) . '"' : ''; ?>>
+		<a class="<?php echo $is_current ? 'active' : ''; ?>" href="<?php echo esc_url( get_term_link( $term ) ); ?>"><?php echo esc_html( $term->name ); ?> (<?php echo (int) $count; ?>)</a>
+		<?php if ( $has_children ) : ?>
+			<button type="button" class="cat-sidebar-toggle" aria-expanded="<?php echo $in_chain ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( sprintf( cm__( 'sidebar_alt_kategori_aria' ), $term->name ) ); ?>">
+				<svg viewBox="0 0 12 8" width="10" height="7" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+			</button>
+			<ul class="cat-sidebar-children">
+				<?php foreach ( $children as $child ) : cm_category_sidebar_children( $child, $active_chain ); endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	</li>
 	<?php
 }
 

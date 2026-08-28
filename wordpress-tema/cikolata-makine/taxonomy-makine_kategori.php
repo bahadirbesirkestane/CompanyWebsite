@@ -3,14 +3,20 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 get_header();
 
 $cm_term = get_queried_object();
-$cm_is_sub = (int) $cm_term->parent !== 0;
-$cm_parent = $cm_is_sub ? get_term( $cm_term->parent, 'makine_kategori' ) : null;
 ?>
 
 <div class="wrap section-tight">
 	<?php
 	$cm_crumbs = array( array( 'label' => cm__( 'breadcrumb_anasayfa' ), 'url' => home_url( '/' ) ), array( 'label' => cm_urunler_label(), 'url' => cm_translated_page_url( 'urunler', '/urunler/' ) ) );
-	if ( $cm_is_sub ) $cm_crumbs[] = array( 'label' => $cm_parent->name, 'url' => get_term_link( $cm_parent ) );
+	// get_ancestors() TÜM ebeveyn zincirini (kaç seviye olursa olsun) döndürür, en yakın
+	// ebeveyn ÖNCE — array_reverse ile kökten aşağıya sıraya çevrilir. 1 ve 2 seviyeli
+	// (mevcut) kategorilerde ürettiği breadcrumb, sabit tek-üst-ebeveyn koduyla AYNIdır;
+	// 3+ seviyede ise tüm zinciri (Anasayfa/Ürünler/A/B/C) doğru şekilde gösterir.
+	$cm_ancestor_ids = array_reverse( get_ancestors( $cm_term->term_id, 'makine_kategori', 'taxonomy' ) );
+	foreach ( $cm_ancestor_ids as $cm_ancestor_id ) {
+		$cm_ancestor = get_term( $cm_ancestor_id, 'makine_kategori' );
+		if ( $cm_ancestor && ! is_wp_error( $cm_ancestor ) ) $cm_crumbs[] = array( 'label' => $cm_ancestor->name, 'url' => get_term_link( $cm_ancestor ) );
+	}
 	$cm_crumbs[] = array( 'label' => $cm_term->name );
 	cm_breadcrumb( $cm_crumbs );
 	?>

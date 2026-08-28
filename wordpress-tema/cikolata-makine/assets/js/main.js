@@ -141,12 +141,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   })();
 
-  // ---- ürün listesi kategori sidebar'ı: alt kategorisi olan üst kategorinin ok
-  // butonuyla alt listesini aç/kapat (satırın geri kalanı hâlâ kategori sayfasına
-  // gider — bkz. cm_category_sidebar(), inc/template-tags.php) ----
+  // ---- ürün listesi kategori sidebar'ı: alt kategorisi olan HER SEVİYEDEKİ kategorinin
+  // ok butonuyla kendi alt listesini aç/kapat (satırın geri kalanı hâlâ kategori sayfasına
+  // gider — bkz. cm_category_sidebar_row()/cm_category_sidebar_children(), inc/template-tags.php).
+  // "btn.parentElement" kasıtlı: buton PHP tarafında her zaman kontrol ettiği <li>'nin
+  // DOĞRUDAN çocuğu olarak basılıyor — closest('.cat-sidebar-item') 2./3. seviyede
+  // (o class'ı taşımayan iç içe <li>'lerde) yanlış (en dıştaki) öğeyi bulurdu. ----
   (function () {
     document.querySelectorAll('.cat-sidebar-toggle').forEach(function (btn) {
-      var item = btn.closest('.cat-sidebar-item');
+      var item = btn.parentElement;
       if (!item) return;
       btn.addEventListener('click', function (e) {
         e.preventDefault();
