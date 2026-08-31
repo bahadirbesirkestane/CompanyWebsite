@@ -2,6 +2,10 @@
 # kaynağın kendisiyle çakışıp eskir. Gerekirse `zip -r` ile yeniden üretilir.
 wordpress-tema/cikolata-makine-tema.zip
 
+# Canlı yayına alma paketi — tema zip'i + db export + uploads arşivi, üretim
+# verisinden türetilir, kaynak kontrolüne ait değil (büyük + tekrar üretilebilir).
+deployment-package/
+
 # Docker named volume'ları (wp_data, db_data) bu dizine hiç yazılmıyor ama
 # ileride biri yanlışlıkla bind-mount'a çevirirse diye önlem
 local-dev/wp-data/
