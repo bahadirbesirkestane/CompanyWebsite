@@ -85,5 +85,37 @@ function cm_customize_register( $wp_customize ) {
 		'section' => 'cm_iletisim',
 		'type'    => 'url',
 	) );
+
+	// ---- Analitik & Arama Motoru Doğrulama ---------------------------------
+	// cm_option() ile okunur, çıktısı inc/seo.php'de basılır — hiçbiri doldurulmazsa
+	// (varsayılan durum) sitede hiçbir izleme kodu/etiket eklenmez.
+	$wp_customize->add_section( 'cm_analitik', array(
+		'title'    => 'Analitik & Arama Motoru Doğrulama',
+		'priority' => 35,
+	) );
+
+	$wp_customize->add_setting( 'google_analytics_id', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	$wp_customize->add_control( 'google_analytics_id', array(
+		'label'       => 'Google Analytics (GA4) Ölçüm Kimliği',
+		'description' => 'analytics.google.com üzerinden alacağınız "G-" ile başlayan ölçüm kimliği (örn. G-ABC1234XYZ). Boş bırakılırsa hiçbir izleme kodu eklenmez.',
+		'section'     => 'cm_analitik',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'google_tag_manager_id', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	$wp_customize->add_control( 'google_tag_manager_id', array(
+		'label'       => 'Google Tag Manager Kapsayıcı Kimliği',
+		'description' => '"GTM-" ile başlayan kapsayıcı kimliği. Genelde YALNIZCA bunu veya yukarıdaki GA4 kimliğini kullanın — Tag Manager kullanıyorsanız GA4\'ü de oradan ekleyin, ikisini birden buraya girmeyin (aksi halde ziyaretçi çift sayılabilir).',
+		'section'     => 'cm_analitik',
+		'type'        => 'text',
+	) );
+
+	$wp_customize->add_setting( 'google_site_verification', array( 'sanitize_callback' => 'sanitize_text_field' ) );
+	$wp_customize->add_control( 'google_site_verification', array(
+		'label'       => 'Google Search Console Doğrulama Kodu',
+		'description' => 'search.google.com/search-console → Mülk Ekle → "HTML etiketi" yöntemi → content="..." içindeki kodu (tırnak işaretleri olmadan) buraya yapıştırın. Boş bırakılırsa hiçbir şey eklenmez.',
+		'section'     => 'cm_analitik',
+		'type'        => 'text',
+	) );
 }
 add_action( 'customize_register', 'cm_customize_register' );
