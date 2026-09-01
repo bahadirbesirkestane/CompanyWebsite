@@ -5,11 +5,7 @@
 		<div class="footer-grid">
 			<div>
 				<div class="logo-mark" style="color:var(--footer-text);margin-bottom:14px;"><?php bloginfo( 'name' ); ?></div>
-				<?php
-				$cm_footer_aciklama = cm_option( 'footer_aciklama' ) ?: get_bloginfo( 'description' );
-				if ( $cm_footer_aciklama ) : ?>
-					<p style="max-width:32ch;"><?php echo esc_html( $cm_footer_aciklama ); ?></p>
-				<?php endif; ?>
+				<p style="max-width:32ch;"><?php echo esc_html( cm__( 'footer_slogan' ) ); ?></p>
 				<?php cm_social_links( array( 'facebook', 'instagram', 'linkedin', 'youtube', 'twitter' ), 'footer-social' ); ?>
 			</div>
 

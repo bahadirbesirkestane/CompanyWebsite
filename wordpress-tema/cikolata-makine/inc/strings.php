@@ -34,6 +34,7 @@ function cm_strings() {
 			'footer_kategoriler'        => 'Kategoriler',
 			'footer_iletisim'           => 'İletişim',
 			'footer_haklar'             => 'Tüm hakları saklıdır.',
+			'footer_slogan'             => "27 yıllık mühendislik tecrübesiyle, 40'tan fazla ülkede anahtar teslim üretim hatları kuruyoruz.",
 
 			'hero_eyebrow_default'      => 'Endüstriyel Çikolata Üretim Sistemleri',
 			'hero_aciklama_default'     => 'Temperlemeden ambalaja, komple çikolata üretim hatları tasarlıyor ve kuruyoruz.',
