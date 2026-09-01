@@ -349,15 +349,22 @@ ul.megamenu-flyout {
    tanıtımının karşılığı — solda büyük fotoğraf, sağda başlık+açıklama, tam genişlikte
    alt alta sıralanan satırlar (3'lü ızgara değil). `.cat-grid`/`.cat-card`'tan (bkz.
    cm_urun_ailesi_card(), "Ne üretmek istiyorsunuz?" bloğu) KASITLI olarak ayrı class'lar
-   — o basit ikonlu ikinci ızgara bu değişiklikten etkilenmesin diye. Fotoğraf alanı
-   .ph'i (ürün kartlarıyla AYNI yer-tutucu/köşe/etiket deseni, bkz. cm_render_thumb())
-   miras alır, sadece boyut/oran burada eklenir. */
+   — o basit ikonlu ikinci ızgara bu değişiklikten etkilenmesin diye.
+   Fotoğraf alanı BİLEREK .ph'i (ürün kartlarındaki çapraz-çizgili/köşe-süslü "buraya
+   foto eklenecek" deseni) MİRAS ALMIYOR — gerçek bir fotoğraf konduğunda bile o slot
+   havası kalıyordu (kullanıcı geri bildirimi). object-fit de "cover" değil "contain":
+   burada beklenen görseller stüdyo ürün fotoğrafından çok illüstrasyon/render
+   ağırlıklı olabilir, cover kırpması öngörülemeyen/çirkin kesimlere yol açıyordu —
+   contain hiçbir zaman kırpmaz, oranı tutmayan fotoğraf sadece beyaz zeminde ortalanır. */
 .cat-photo-grid { display: flex; flex-direction: column; gap: 18px; margin-top: 32px; }
 .cat-photo-card { display: flex; align-items: stretch; background: var(--paper); border: 1px solid var(--line); text-decoration: none; color: inherit; overflow: hidden; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
 .cat-photo-card:hover { border-color: var(--line-strong); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); }
-.cat-photo-media { flex: 0 0 38%; aspect-ratio: 16/10; border: none; border-right: 1px solid var(--line); border-radius: 0; }
-.cat-photo-card:hover .cat-photo-media img { transform: scale(1.035); }
-.cat-photo-media img { transition: transform .35s ease; }
+.cat-photo-media { flex: 0 0 38%; aspect-ratio: 16/10; background: var(--paper); border-right: 1px solid var(--line); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.cat-photo-media img { max-width: 86%; max-height: 86%; width: auto; height: auto; object-fit: contain; transition: transform .35s ease; }
+.cat-photo-card:hover .cat-photo-media img { transform: scale(1.04); }
+/* Fotoğraf yokken: sade beyaz zemin + soluk genel ikon, "buraya foto eklenecek" hissi
+   veren desen/köşe/etiket YOK — sadece görsel eksik olduğunu sessizce belirtir. */
+.cat-photo-media-empty svg { stroke: var(--line-strong); opacity: .6; }
 .cat-photo-body { flex: 1; min-width: 0; padding: 30px 36px; display: flex; flex-direction: column; justify-content: center; }
 .cat-photo-body h3 { font-size: 19px; margin-bottom: 10px; }
 .cat-photo-body .sub { font-size: 13.5px; color: var(--steel); line-height: 1.65; }

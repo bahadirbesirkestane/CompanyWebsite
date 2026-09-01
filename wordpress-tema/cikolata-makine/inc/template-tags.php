@@ -249,13 +249,18 @@ function cm_category_total_count( $term, $children = null ) {
  * Kategori kartı — get_terms() sonucundaki bir WP_Term nesnesini kart olarak basar.
  * Anasayfadaki üst kategori vitrini için: solda büyük fotoğraf (ACF `kategori_gorsel`),
  * sağda başlık+açıklama — eski sistemdeki büyük görselli kategori tanıtımının yeni
- * temadaki karşılığı. Fotoğraf yüklenmemişse cm_render_thumb() ile AYNI yer-tutucu
- * deseni (çapraz çizgili kutu + genel ikon + "Görsel" etiketi) kullanılır, hiç
- * basılmadan geçilmez — kart yapısı sabit iki-yarı olduğu için "boşsa gizle" burada
- * "boşsa yer tutucu göster" olarak uygulanıyor. `.cat-grid`/`.cat-card` (bkz.
- * cm_urun_ailesi_card()) ile KASITLI olarak ayrı class'lar (`.cat-photo-grid`/
- * `.cat-photo-card`) kullanılıyor ki bu değişiklik o basit ikonlu ikinci ızgarayı
- * bozmasın.
+ * temadaki karşılığı. Fotoğraf YOK-VAR iki durumda da `.ph`/cm_render_thumb() deseni
+ * (çapraz çizgili yer tutucu + köşe süsleri + "Görsel" etiketi) KASITLI olarak
+ * KULLANILMIYOR — o desen ürün fotoğrafı SLOTU hissi veriyor (kullanıcı geri
+ * bildirimi: gerçek bir fotoğraf konduğunda bile "buraya foto eklenecek" havası
+ * kalıyor, üstelik object-fit:cover ile geniş 16:10 kutuya sığdırma ürün fotoğrafı
+ * DIŞINDA (illüstrasyon/ikon tarzı) görseller kırpılınca kötü kesiliyor). Bunun
+ * yerine: fotoğraf VARSA object-fit:contain ile TAMAMI (kırpılmadan) beyaz zemin
+ * üzerinde gösterilir; YOKSA sade beyaz zemin + soluk/silik genel ikon (etiket/köşe
+ * YOK) — "boşsa gizle" ilkesinin bu sabit-iki-yarı kart için "boşsa sakin bir
+ * yer tutucu göster" karşılığı. `.cat-grid`/`.cat-card` (bkz. cm_urun_ailesi_card())
+ * ile KASITLI olarak ayrı class'lar (`.cat-photo-grid`/`.cat-photo-card`) kullanılıyor
+ * ki bu değişiklik o basit ikonlu ikinci ızgarayı bozmasın.
  */
 function cm_category_card( $term ) {
 	$photo    = function_exists( 'get_field' ) ? get_field( 'kategori_gorsel', $term ) : false;
@@ -270,14 +275,12 @@ function cm_category_card( $term ) {
 	}
 	?>
 	<a class="cat-photo-card reveal" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
-		<div class="ph cat-photo-media">
+		<div class="cat-photo-media<?php echo ( ! $photo || empty( $photo['url'] ) ) ? ' cat-photo-media-empty' : ''; ?>">
 			<?php if ( $photo && ! empty( $photo['url'] ) ) : ?>
 				<img src="<?php echo esc_url( $photo['url'] ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
 			<?php else : ?>
-				<?php cm_generic_icon( 48 ); ?>
+				<?php cm_generic_icon( 44 ); ?>
 			<?php endif; ?>
-			<span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
-			<?php if ( ! $photo || empty( $photo['url'] ) ) : ?><span class="tag"><?php echo esc_html( cm__( 'gorsel_etiket' ) ); ?></span><?php endif; ?>
 		</div>
 		<div class="cat-photo-body">
 			<h3><?php echo esc_html( $term->name ); ?></h3>

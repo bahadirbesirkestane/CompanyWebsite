@@ -247,7 +247,7 @@ add_action( 'acf/init', function () {
 				'name'  => 'kategori_gorsel',
 				'type'  => 'image',
 				'return_format' => 'array',
-				'instructions'  => 'Anasayfadaki "Kategoriye göre keşfedin" kartında solda büyük gösterilecek fotoğraf (gerçek makine/üretim fotoğrafı önerilir). Boş bırakılırsa yer tutucu bir görsel kullanılır.',
+				'instructions'  => 'Anasayfadaki "Kategoriye göre keşfedin" kartında solda büyük gösterilecek fotoğraf (gerçek makine/üretim fotoğrafı önerilir). Fotoğraf HİÇBİR ZAMAN kırpılmaz (kutuya sığdırılır) — bu yüzden en iyi sonuç için: yatay (manzara) yönlü, en az 1000×620px ve 16:10 en-boy oranına yakın bir görsel yükleyin; zemini beyaz/açık renkli olursa kartın kendi beyaz zeminiyle kaynaşır. Farklı oranlı bir fotoğraf yüklerseniz sadece ortalanır, üstte/altta veya yanlarda boşluk kalır — hatalı görünmez. Boş bırakılırsa sade bir yer tutucu ikon gösterilir.',
 			),
 		),
 		'location' => array(
