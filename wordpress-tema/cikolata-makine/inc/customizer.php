@@ -24,6 +24,25 @@ if ( class_exists( 'WP_Customize_Control' ) && ! class_exists( 'CM_Customize_Tex
 }
 
 function cm_customize_register( $wp_customize ) {
+	// ---- Footer ---------------------------------------------------------
+	// "Hızlı Linkler" ve "Kategoriler" sütunları zaten Görünüm → Menüler'deki
+	// "Footer — Hızlı Linkler" / "Footer — Kategoriler" konumlarına menü atanarak
+	// düzenlenebilir (bkz. functions.php → register_nav_menus()); burada sadece
+	// logonun altındaki açıklama metni için ayrı bir alan ekleniyor — WordPress'in
+	// genel "Slogan" alanıyla (Ayarlar → Genel) KARIŞTIRILMASIN diye kasıtlı olarak
+	// ayrı: o alan başka yerlerde de kullanılabilir, bu ise SADECE footer'a özel.
+	$wp_customize->add_section( 'cm_footer', array(
+		'title'    => 'Footer',
+		'priority' => 25,
+	) );
+
+	$wp_customize->add_setting( 'footer_aciklama', array( 'sanitize_callback' => 'sanitize_textarea_field' ) );
+	$wp_customize->add_control( new CM_Customize_Textarea_Control( $wp_customize, 'footer_aciklama', array(
+		'label'       => 'Footer Açıklaması',
+		'description' => 'Footer\'da logonun altında görünen kısa açıklama. Boş bırakılırsa (Ayarlar → Genel → Slogan doluysa) o kullanılır, o da boşsa hiçbir açıklama gösterilmez.',
+		'section'     => 'cm_footer',
+	) ) );
+
 	$wp_customize->add_section( 'cm_iletisim', array(
 		'title'    => 'İletişim & WhatsApp',
 		'priority' => 30,
