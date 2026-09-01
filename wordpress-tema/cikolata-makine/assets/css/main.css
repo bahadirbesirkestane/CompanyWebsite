@@ -68,6 +68,15 @@ img, svg { display: block; max-width: 100%; }
 .lede { font-size: 17px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
 .body-p { font-size: 15.5px; line-height: 1.85; color: var(--ink-soft); max-width: 66ch; }
 .body-p p { margin: 0 0 1em; }
+/* Haber/Sayfa gövdesine blok düzenleyiciyle eklenen fotoğraf/galeri/video —
+   .body-p'nin kendi 66ch okuma genişliğinden taşmasın, köşeleri sitenin diğer
+   fotoğraf çerçeveleriyle (.ph vb.) uyumlu hafif yuvarlak olsun. */
+.body-p img { max-width: 100%; height: auto; display: block; border-radius: 3px; }
+.body-p figure { margin: 22px 0; }
+.body-p figcaption { font-size: 12.5px; color: var(--steel); margin-top: 8px; }
+.body-p .wp-block-embed { margin: 22px 0; }
+.body-p .wp-block-embed iframe { max-width: 100%; border-radius: 3px; }
+.body-p .wp-block-gallery { margin: 22px 0; }
 
 /* ---- buttons ---- */
 .btn {
@@ -751,6 +760,12 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
    düşer — aksi halde boş kalan yarı, gereksiz büyük bir boşluk gibi duruyordu. */
 .contact-grid.contact-grid--single { grid-template-columns: 1fr; max-width: 640px; }
 .contact-form-col h2, .contact-map-col h2 { margin-bottom: 18px; }
+/* Form alanları zaten kendi zemini (--paper) olan kutucuklardı ama etraflarında
+   hiçbir kart/çerçeve yoktu — sayfanın kendi (aynı --paper) arka planıyla
+   kaynaşıp "boşlukta duran alanlar" gibi görünüyordu. .cm-map ile AYNI görsel
+   dile (kart: raised zemin + border + radius) kavuşturuldu. */
+.cm-form { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 3px; padding: 28px 26px; }
+@media (max-width: 480px) { .cm-form { padding: 22px 18px; } }
 .cm-form label { display: block; font-family: var(--font-display); font-size: 13px; color: var(--ink); margin-bottom: 16px; }
 .cm-form .wpcf7-form-control-wrap { display: block; margin-top: 6px; }
 .cm-form input[type="text"], .cm-form input[type="email"], .cm-form input[type="tel"], .cm-form textarea {

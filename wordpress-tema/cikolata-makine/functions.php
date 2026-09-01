@@ -64,6 +64,13 @@ function cm_theme_setup() {
 		'flex-width'  => true,
 	) );
 	add_theme_support( 'html5', array( 'search-form', 'gallery', 'caption', 'style', 'script' ) );
+	// Haber (ve sayfa) içeriğine bloklar üzerinden fotoğraf/galeri/video eklenebilsin diye
+	// (haber CPT zaten 'editor' destekliyor + show_in_rest=true, yani blok düzenleyici
+	// zaten aktif — Klasik Editör eklentisi YOK). Bu satır SADECE YouTube/Vimeo gibi
+	// yerleştirilen (embed) videoların en-boy oranını koruyarak mobilde/dar ekranda
+	// düzgün küçülmesini sağlar (aksi halde iframe sağlayıcının sabit piksel
+	// genişliğinde kalıp ya taşar ya da mobilde orantısız görünürdü).
+	add_theme_support( 'responsive-embeds' );
 
 	register_nav_menus( array(
 		'primary' => 'Üst Menü (Header)',
