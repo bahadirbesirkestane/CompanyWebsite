@@ -91,18 +91,46 @@ function cm_customize_register( $wp_customize ) {
 		'type'        => 'url',
 	) );
 
-	$wp_customize->add_setting( 'sosyal_linkedin', array( 'sanitize_callback' => 'esc_url_raw' ) );
-	$wp_customize->add_control( 'sosyal_linkedin', array(
-		'label'   => 'LinkedIn Linki',
+	// Sosyal medya linkleri — footer'daki ikon şeridi (5 platform) VE header'daki
+	// WhatsApp yanındaki 3 ikon (LinkedIn/Instagram/YouTube, bkz. header.php) buradan
+	// beslenir. Her biri boşsa o ikon hiç basılmaz ("boşsa gizle").
+	$wp_customize->add_setting( 'sosyal_facebook', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control( 'sosyal_facebook', array(
+		'label'   => 'Facebook Linki',
 		'section' => 'cm_iletisim',
 		'type'    => 'url',
 	) );
 
 	$wp_customize->add_setting( 'sosyal_instagram', array( 'sanitize_callback' => 'esc_url_raw' ) );
 	$wp_customize->add_control( 'sosyal_instagram', array(
-		'label'   => 'Instagram Linki',
-		'section' => 'cm_iletisim',
-		'type'    => 'url',
+		'label'       => 'Instagram Linki',
+		'description' => 'Header\'da (WhatsApp yanında) ve footer\'da ikon olarak gösterilir.',
+		'section'     => 'cm_iletisim',
+		'type'        => 'url',
+	) );
+
+	$wp_customize->add_setting( 'sosyal_linkedin', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control( 'sosyal_linkedin', array(
+		'label'       => 'LinkedIn Linki',
+		'description' => 'Header\'da (WhatsApp yanında) ve footer\'da ikon olarak gösterilir.',
+		'section'     => 'cm_iletisim',
+		'type'        => 'url',
+	) );
+
+	$wp_customize->add_setting( 'sosyal_youtube', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control( 'sosyal_youtube', array(
+		'label'       => 'YouTube Linki',
+		'description' => 'Header\'da (WhatsApp yanında) ve footer\'da ikon olarak gösterilir.',
+		'section'     => 'cm_iletisim',
+		'type'        => 'url',
+	) );
+
+	$wp_customize->add_setting( 'sosyal_twitter', array( 'sanitize_callback' => 'esc_url_raw' ) );
+	$wp_customize->add_control( 'sosyal_twitter', array(
+		'label'       => 'X (Twitter) Linki',
+		'description' => 'Sadece footer\'da ikon olarak gösterilir.',
+		'section'     => 'cm_iletisim',
+		'type'        => 'url',
 	) );
 
 	// ---- Analitik & Arama Motoru Doğrulama ---------------------------------

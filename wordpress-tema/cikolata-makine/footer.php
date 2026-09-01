@@ -10,6 +10,7 @@
 				if ( $cm_footer_aciklama ) : ?>
 					<p style="max-width:32ch;"><?php echo esc_html( $cm_footer_aciklama ); ?></p>
 				<?php endif; ?>
+				<?php cm_social_links( array( 'facebook', 'instagram', 'linkedin', 'youtube', 'twitter' ), 'footer-social' ); ?>
 			</div>
 
 			<div>
@@ -49,16 +50,6 @@
 					<p>
 						<?php if ( $cm_tel ) : ?><?php echo esc_html( $cm_tel ); ?><br><?php endif; ?>
 						<?php if ( $cm_eposta ) : ?><a href="mailto:<?php echo esc_attr( $cm_eposta ); ?>"><?php echo esc_html( $cm_eposta ); ?></a><?php endif; ?>
-					</p>
-				<?php endif; ?>
-				<?php
-				$cm_linkedin  = get_theme_mod( 'sosyal_linkedin' );
-				$cm_instagram = get_theme_mod( 'sosyal_instagram' );
-				if ( $cm_linkedin || $cm_instagram ) : ?>
-					<p class="footer-social">
-						<?php if ( $cm_linkedin ) : ?><a href="<?php echo esc_url( $cm_linkedin ); ?>" target="_blank" rel="noopener">LinkedIn</a><?php endif; ?>
-						<?php if ( $cm_linkedin && $cm_instagram ) : ?> · <?php endif; ?>
-						<?php if ( $cm_instagram ) : ?><a href="<?php echo esc_url( $cm_instagram ); ?>" target="_blank" rel="noopener">Instagram</a><?php endif; ?>
 					</p>
 				<?php endif; ?>
 			</div>

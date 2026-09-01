@@ -78,6 +78,56 @@ function cm_contact_icon( $type ) {
 }
 
 /**
+ * Sosyal medya ikonları — header (WhatsApp yanında) VE footer'da AYNI çizgisel
+ * stil (stroke, currentColor, cm_contact_icon() ile aynı 18x18/1.3 ölçüsü)
+ * kullanılır. Kullanıcı isteği: markanın kendi (çok renkli/dolu) uygulama
+ * ikonu DEĞİL, sitenin genel ikon diliyle tutarlı, tek tip çizgisel simgeler.
+ */
+function cm_social_icon( $type ) {
+	$icons = array(
+		'facebook'  => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="14" height="14" rx="3"/><path d="M10.6 6.6H9.4c-.7 0-1.1.4-1.1 1.2v1.4h2.2l-.3 1.9H8.3V15" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+		'instagram' => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="14" height="14" rx="3"/><circle cx="9" cy="9" r="3.1"/><circle cx="12.6" cy="5.4" r="0.55" fill="currentColor" stroke="none"/></svg>',
+		'linkedin'  => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="14" height="14" rx="3"/><line x1="5.6" y1="7.6" x2="5.6" y2="12.6" stroke-linecap="round"/><circle cx="5.6" cy="5.4" r="0.15" stroke-width="1.7" stroke-linecap="round"/><path d="M8.4 12.6V7.6M8.4 9.7c0-1.2.9-2.1 1.9-2.1s1.9.8 1.9 2.1v2.9" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+		'youtube'   => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="1.5" y="4.5" width="15" height="9" rx="3"/><path d="M7.3 7.2l4 1.8-4 1.8z" fill="currentColor" stroke="currentColor" stroke-linejoin="round"/></svg>',
+		'twitter'   => '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="14" height="14" rx="3"/><path d="M5.5 5.5l7 7M12.5 5.5l-7 7" stroke-linecap="round"/></svg>',
+	);
+	echo $icons[ $type ] ?? '';
+}
+
+/**
+ * Sosyal medya ikon şeridi — $types hangi platformların (ve hangi sırada)
+ * basılacağını belirler (header'da 3'ü: linkedin/instagram/youtube; footer'da
+ * 5'i). Her platformun Customizer linki (inc/customizer.php → cm_iletisim
+ * bölümü) boşsa o ikon hiç basılmaz; HİÇBİRİ doluysa şerit tamamen basılmaz
+ * ("boşsa gizle").
+ */
+function cm_social_links( $types, $extra_class = '' ) {
+	$urls = array(
+		'facebook'  => cm_option( 'sosyal_facebook' ),
+		'instagram' => cm_option( 'sosyal_instagram' ),
+		'linkedin'  => cm_option( 'sosyal_linkedin' ),
+		'youtube'   => cm_option( 'sosyal_youtube' ),
+		'twitter'   => cm_option( 'sosyal_twitter' ),
+	);
+	$labels = array(
+		'facebook'  => 'Facebook',
+		'instagram' => 'Instagram',
+		'linkedin'  => 'LinkedIn',
+		'youtube'   => 'YouTube',
+		'twitter'   => 'X (Twitter)',
+	);
+	$active = array_filter( $types, function ( $t ) use ( $urls ) { return ! empty( $urls[ $t ] ); } );
+	if ( ! $active ) return;
+	echo '<div class="social-links' . ( $extra_class ? ' ' . esc_attr( $extra_class ) : '' ) . '">';
+	foreach ( $active as $t ) {
+		echo '<a href="' . esc_url( $urls[ $t ] ) . '" target="_blank" rel="noopener" aria-label="' . esc_attr( $labels[ $t ] ) . '">';
+		cm_social_icon( $t );
+		echo '</a>';
+	}
+	echo '</div>';
+}
+
+/**
  * Bir PDF ekinin İLK SAYFASINI JPG önizleme olarak döndürür (bkz. Kalite Belgeleri
  * kartları, front-page.php) — bulunamazsa/oluşturulamazsa boş döner, çağıran taraf
  * bu durumda cm_document_icon() gibi genel bir ikona düşer ("boşsa gizle" ilkesi).
