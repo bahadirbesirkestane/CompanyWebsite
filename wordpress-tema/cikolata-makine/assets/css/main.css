@@ -294,12 +294,12 @@ ul.megamenu-flyout {
 .reveal.is-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 /* Kart ızgaralarında kademeli (staggered) beliriş — 6'ya kadar, sonrası ek gecikme almadan aynı anda belirir. */
-.cat-grid > .reveal:nth-child(1), .prod-grid > .reveal:nth-child(1), .corp-grid > .reveal:nth-child(1) { transition-delay: 0ms; }
-.cat-grid > .reveal:nth-child(2), .prod-grid > .reveal:nth-child(2), .corp-grid > .reveal:nth-child(2) { transition-delay: 70ms; }
-.cat-grid > .reveal:nth-child(3), .prod-grid > .reveal:nth-child(3), .corp-grid > .reveal:nth-child(3) { transition-delay: 140ms; }
-.cat-grid > .reveal:nth-child(4), .prod-grid > .reveal:nth-child(4), .corp-grid > .reveal:nth-child(4) { transition-delay: 210ms; }
-.cat-grid > .reveal:nth-child(5), .prod-grid > .reveal:nth-child(5), .corp-grid > .reveal:nth-child(5) { transition-delay: 280ms; }
-.cat-grid > .reveal:nth-child(6), .prod-grid > .reveal:nth-child(6), .corp-grid > .reveal:nth-child(6) { transition-delay: 350ms; }
+.cat-grid > .reveal:nth-child(1), .cat-photo-grid > .reveal:nth-child(1), .prod-grid > .reveal:nth-child(1), .corp-grid > .reveal:nth-child(1) { transition-delay: 0ms; }
+.cat-grid > .reveal:nth-child(2), .cat-photo-grid > .reveal:nth-child(2), .prod-grid > .reveal:nth-child(2), .corp-grid > .reveal:nth-child(2) { transition-delay: 70ms; }
+.cat-grid > .reveal:nth-child(3), .cat-photo-grid > .reveal:nth-child(3), .prod-grid > .reveal:nth-child(3), .corp-grid > .reveal:nth-child(3) { transition-delay: 140ms; }
+.cat-grid > .reveal:nth-child(4), .cat-photo-grid > .reveal:nth-child(4), .prod-grid > .reveal:nth-child(4), .corp-grid > .reveal:nth-child(4) { transition-delay: 210ms; }
+.cat-grid > .reveal:nth-child(5), .cat-photo-grid > .reveal:nth-child(5), .prod-grid > .reveal:nth-child(5), .corp-grid > .reveal:nth-child(5) { transition-delay: 280ms; }
+.cat-grid > .reveal:nth-child(6), .cat-photo-grid > .reveal:nth-child(6), .prod-grid > .reveal:nth-child(6), .corp-grid > .reveal:nth-child(6) { transition-delay: 350ms; }
 
 /* ---- placeholder art (used until real photos are uploaded) ---- */
 .ph {
@@ -343,6 +343,30 @@ ul.megamenu-flyout {
 .cat-card .count { font-size: 11px; color: var(--accent); margin-top: 14px; font-family: var(--font-display); letter-spacing: .04em; }
 @media (max-width: 900px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .cat-grid { grid-template-columns: 1fr; } }
+
+/* ---- category grid (fotoğraflı varyant) ----
+   Anasayfadaki üst kategori vitrini için: eski sistemdeki büyük görselli kategori
+   tanıtımının karşılığı — solda büyük fotoğraf, sağda başlık+açıklama, tam genişlikte
+   alt alta sıralanan satırlar (3'lü ızgara değil). `.cat-grid`/`.cat-card`'tan (bkz.
+   cm_urun_ailesi_card(), "Ne üretmek istiyorsunuz?" bloğu) KASITLI olarak ayrı class'lar
+   — o basit ikonlu ikinci ızgara bu değişiklikten etkilenmesin diye. Fotoğraf alanı
+   .ph'i (ürün kartlarıyla AYNI yer-tutucu/köşe/etiket deseni, bkz. cm_render_thumb())
+   miras alır, sadece boyut/oran burada eklenir. */
+.cat-photo-grid { display: flex; flex-direction: column; gap: 18px; margin-top: 32px; }
+.cat-photo-card { display: flex; align-items: stretch; background: var(--paper); border: 1px solid var(--line); text-decoration: none; color: inherit; overflow: hidden; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+.cat-photo-card:hover { border-color: var(--line-strong); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(31,27,23,.10); }
+.cat-photo-media { flex: 0 0 38%; aspect-ratio: 16/10; border: none; border-right: 1px solid var(--line); border-radius: 0; }
+.cat-photo-card:hover .cat-photo-media img { transform: scale(1.035); }
+.cat-photo-media img { transition: transform .35s ease; }
+.cat-photo-body { flex: 1; min-width: 0; padding: 30px 36px; display: flex; flex-direction: column; justify-content: center; }
+.cat-photo-body h3 { font-size: 19px; margin-bottom: 10px; }
+.cat-photo-body .sub { font-size: 13.5px; color: var(--steel); line-height: 1.65; }
+.cat-photo-body .count { font-size: 11px; color: var(--accent); margin-top: 16px; font-family: var(--font-display); letter-spacing: .04em; }
+@media (max-width: 700px) {
+  .cat-photo-card { flex-direction: column; }
+  .cat-photo-media { flex-basis: auto; width: 100%; aspect-ratio: 16/9; border-right: none; border-bottom: 1px solid var(--line); }
+  .cat-photo-body { padding: 22px 24px; }
+}
 
 /* ---- product grid ---- */
 .prod-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 32px; }

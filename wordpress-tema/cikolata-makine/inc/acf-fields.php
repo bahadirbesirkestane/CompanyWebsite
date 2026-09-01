@@ -241,6 +241,14 @@ add_action( 'acf/init', function () {
 				'return_format' => 'array',
 				'instructions'  => 'Kategori kartlarında gösterilecek küçük ikon (SVG/PNG, tercihen kare ve tek renk). Boş bırakılırsa genel bir ikon kullanılır.',
 			),
+			array(
+				'key'   => 'field_cm_kategori_gorsel',
+				'label' => 'Kategori Fotoğrafı',
+				'name'  => 'kategori_gorsel',
+				'type'  => 'image',
+				'return_format' => 'array',
+				'instructions'  => 'Anasayfadaki "Kategoriye göre keşfedin" kartında solda büyük gösterilecek fotoğraf (gerçek makine/üretim fotoğrafı önerilir). Boş bırakılırsa yer tutucu bir görsel kullanılır.',
+			),
 		),
 		'location' => array(
 			array(

@@ -42,6 +42,10 @@ ul.megamenu-flyout { left: auto; right: 100%; margin-left: 0; margin-right: 2px;
 .cat-sidebar-children li.has-children > a { padding-right: 6px; padding-left: 26px; }
 .cat-sidebar-children li.has-children > .cat-sidebar-toggle { right: auto; left: 0; }
 
+/* ---- anasayfa kategori vitrini: fotoğraf/yazı bölücü çizgi ---- */
+.cat-photo-media { border-right: none; border-left: 1px solid var(--line); }
+@media (max-width: 700px) { .cat-photo-media { border-left: none; border-bottom: 1px solid var(--line); } }
+
 /* ---- istatistik satırı (ana sayfa) ---- */
 .stat { border-left: none; border-right: 1px solid var(--line); }
 .stat:first-child { border-right: none; }

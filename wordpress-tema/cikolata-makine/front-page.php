@@ -84,7 +84,7 @@ if ( ! is_wp_error( $cm_top_cats ) && $cm_top_cats ) :
 <div class="wrap section">
 	<div class="eyebrow reveal"><?php echo esc_html( cm_urunler_label() ); ?></div>
 	<h2 class="h-lg reveal"><?php echo esc_html( cm__( 'urunler_kesfet_baslik' ) ); ?></h2>
-	<div class="cat-grid">
+	<div class="cat-photo-grid">
 		<?php foreach ( $cm_top_cats as $term ) cm_category_card( $term ); ?>
 	</div>
 </div>

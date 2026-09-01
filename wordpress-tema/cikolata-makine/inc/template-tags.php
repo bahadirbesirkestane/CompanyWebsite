@@ -247,9 +247,18 @@ function cm_category_total_count( $term, $children = null ) {
 
 /**
  * Kategori kartı — get_terms() sonucundaki bir WP_Term nesnesini kart olarak basar.
+ * Anasayfadaki üst kategori vitrini için: solda büyük fotoğraf (ACF `kategori_gorsel`),
+ * sağda başlık+açıklama — eski sistemdeki büyük görselli kategori tanıtımının yeni
+ * temadaki karşılığı. Fotoğraf yüklenmemişse cm_render_thumb() ile AYNI yer-tutucu
+ * deseni (çapraz çizgili kutu + genel ikon + "Görsel" etiketi) kullanılır, hiç
+ * basılmadan geçilmez — kart yapısı sabit iki-yarı olduğu için "boşsa gizle" burada
+ * "boşsa yer tutucu göster" olarak uygulanıyor. `.cat-grid`/`.cat-card` (bkz.
+ * cm_urun_ailesi_card()) ile KASITLI olarak ayrı class'lar (`.cat-photo-grid`/
+ * `.cat-photo-card`) kullanılıyor ki bu değişiklik o basit ikonlu ikinci ızgarayı
+ * bozmasın.
  */
 function cm_category_card( $term ) {
-	$icon     = function_exists( 'get_field' ) ? get_field( 'kategori_ikon', $term ) : false;
+	$photo    = function_exists( 'get_field' ) ? get_field( 'kategori_gorsel', $term ) : false;
 	$children = get_term_children( $term->term_id, 'makine_kategori' );
 	$count    = cm_category_total_count( $term, $children );
 	$sub_names = array();
@@ -260,17 +269,21 @@ function cm_category_card( $term ) {
 		}
 	}
 	?>
-	<a class="cat-card reveal" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
-		<div class="cat-icon">
-			<?php if ( $icon && ! empty( $icon['url'] ) ) : ?>
-				<img src="<?php echo esc_url( $icon['url'] ); ?>" alt="" width="34" height="34" style="filter:none;">
+	<a class="cat-photo-card reveal" href="<?php echo esc_url( get_term_link( $term ) ); ?>">
+		<div class="ph cat-photo-media">
+			<?php if ( $photo && ! empty( $photo['url'] ) ) : ?>
+				<img src="<?php echo esc_url( $photo['url'] ); ?>" alt="<?php echo esc_attr( $term->name ); ?>">
 			<?php else : ?>
-				<?php cm_generic_icon( 34 ); ?>
+				<?php cm_generic_icon( 48 ); ?>
 			<?php endif; ?>
+			<span class="corner c-tl"></span><span class="corner c-tr"></span><span class="corner c-bl"></span><span class="corner c-br"></span>
+			<?php if ( ! $photo || empty( $photo['url'] ) ) : ?><span class="tag"><?php echo esc_html( cm__( 'gorsel_etiket' ) ); ?></span><?php endif; ?>
 		</div>
-		<h3><?php echo esc_html( $term->name ); ?></h3>
-		<div class="sub"><?php echo $sub_names ? esc_html( implode( ' · ', $sub_names ) ) : esc_html( wp_trim_words( $term->description, 10, '…' ) ); ?></div>
-		<?php if ( $count ) : ?><div class="count"><?php echo esc_html( $count . ' ' . cm__( 'urun_etiketi' ) ); ?></div><?php endif; ?>
+		<div class="cat-photo-body">
+			<h3><?php echo esc_html( $term->name ); ?></h3>
+			<div class="sub"><?php echo $sub_names ? esc_html( implode( ' · ', $sub_names ) ) : esc_html( wp_trim_words( $term->description, 26, '…' ) ); ?></div>
+			<?php if ( $count ) : ?><div class="count"><?php echo esc_html( $count . ' ' . cm__( 'urun_etiketi' ) ); ?></div><?php endif; ?>
+		</div>
 	</a>
 	<?php
 }
