@@ -38,8 +38,17 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 	$cm_kurumsal_ids = array( 7, 277, 278, 279, 786 );
 	$cm_is_kurumsal  = in_array( get_the_ID(), $cm_kurumsal_ids, true );
 
+	// "İletişim" ailesi de aynı ikonlu kart görünümünü (corp-grid) kullanır — Gizlilik
+	// Politikası/Çerez Politikası gibi fotoğrafsız, salt metin sayfaları İletişim'in
+	// altına da taşınabilsin diye (bkz. inc/acf-fields.php group_cm_iletisim_kartlar
+	// konum kuralındaki AYNI ID listesi). Bu, SADECE alt sayfa kart stilini belirler —
+	// aşağıdaki $cm_is_kurumsal'a bağlı Uluslararası İletişim çağrısını ETKİLEMEZ,
+	// İletişim'in kendi intl-contact bloğu dosyanın altında ayrıca var.
+	$cm_iletisim_ids     = array( 6, 102, 134, 141, 785 );
+	$cm_use_icon_cards   = $cm_is_kurumsal || in_array( get_the_ID(), $cm_iletisim_ids, true );
+
 	$cm_children = get_pages( array( 'child_of' => get_the_ID(), 'sort_column' => 'menu_order', 'parent' => get_the_ID() ) );
-	if ( $cm_children && $cm_is_kurumsal ) : ?>
+	if ( $cm_children && $cm_use_icon_cards ) : ?>
 		<div class="corp-grid" style="margin-top:40px;">
 			<?php foreach ( $cm_children as $cm_child ) :
 				$cm_child_id  = $cm_child->ID;
