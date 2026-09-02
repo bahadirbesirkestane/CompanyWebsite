@@ -306,10 +306,11 @@ ul.megamenu-flyout {
 /* ---- footer sosyal medya ikon şeridi (bkz. cm_social_links()) ----
    Logonun/açıklamanın altında, sol sütunda — sol sütun daha önce boş kalıyordu,
    bu ikonlar hem gerçek bir içerik hem marka varlığı ekliyor. Header'daki
-   .nav-social ile AYNI çizgisel ikon setini kullanır, sadece footer'ın koyu
-   zeminine göre renklendirilir. */
+   .nav-social ile AYNI resmi marka ikonlarını (bkz. cm_social_icon()) kullanır,
+   sadece renk farklı: footer'ın koyu zemininde SAF BEYAZ (kullanıcı isteği),
+   header'ın açık zemininde ise --ink-soft (beyaz orada okunmaz). */
 .footer-social { display: flex; align-items: center; gap: 8px; margin-top: 20px; }
-.footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #F1ECE433; border-radius: 50%; color: #F1ECE4ad; transition: color .15s, border-color .15s, background .15s; }
+.footer-social a { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #F1ECE433; border-radius: 50%; color: #fff; transition: color .15s, border-color .15s, background .15s; }
 .footer-social a:hover { color: var(--accent); border-color: var(--accent); background: #F1ECE40d; }
 
 /* ---- breadcrumb ---- */

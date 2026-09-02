@@ -438,6 +438,14 @@ add_action( 'acf/init', function () {
 			array( 'key' => 'field_cm_ilk_adres_deger', 'label' => 'Adres', 'name' => 'iletisim_adres_deger', 'type' => 'textarea', 'rows' => 3, 'instructions' => 'Boş bırakılırsa Özelleştir\'deki adres kullanılır.' ),
 			array( 'key' => 'field_cm_ilk_saatler_baslik', 'label' => 'Çalışma Saatleri Kartı Başlığı', 'name' => 'iletisim_saatler_baslik', 'type' => 'text', 'default_value' => 'Çalışma Saatleri' ),
 			array( 'key' => 'field_cm_ilk_saatler_deger', 'label' => 'Çalışma Saatleri', 'name' => 'iletisim_saatler_deger', 'type' => 'textarea', 'rows' => 3, 'instructions' => 'Boş bırakılırsa Özelleştir\'deki çalışma saatleri kullanılır; o da boşsa bu kart hiç görünmez.' ),
+			array(
+				'key'   => 'field_cm_iletisim_form_gizle',
+				'label' => 'İletişim Formunu Gizle',
+				'name'  => 'iletisim_form_gizle',
+				'type'  => 'true_false',
+				'ui'    => 1,
+				'instructions' => 'İşaretlerseniz, "Bize Ulaşın" formu bu sayfada hiç görünmez (harita hâlâ varsa tek başına, tam genişlikte kalır). Form gerekirse daha sonra bu işareti kaldırarak tekrar açılabilir.',
+			),
 		),
 		'location' => array(
 			array( array( 'param' => 'page', 'operator' => '==', 'value' => 6 ) ),   // İletişim (TR)

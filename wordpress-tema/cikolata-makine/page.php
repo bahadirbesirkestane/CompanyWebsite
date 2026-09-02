@@ -64,7 +64,7 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 	// İletişim sayfasına özel: form + harita (Görünüm → Özelleştir → İletişim & WhatsApp
 	// üzerinden yönetilir — bkz. functions.php cm_contact_form_id() / cm_harita_embed_url()).
 	if ( $cm_is_iletisim ) :
-		$cm_form_id = cm_contact_form_id();
+		$cm_form_id = get_field( 'iletisim_form_gizle' ) ? 0 : cm_contact_form_id();
 		$cm_map_url = cm_harita_embed_url();
 
 		// Telefon/WhatsApp/e-posta/adres/çalışma saatleri kartları artık İletişim sayfasının
