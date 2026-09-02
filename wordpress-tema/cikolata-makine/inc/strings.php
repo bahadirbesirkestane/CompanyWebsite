@@ -127,8 +127,8 @@ function cm_strings() {
 			'devamini_oku'        => 'Devamını Oku →',
 			'tum_haberler'        => 'Tüm Haberler',
 
-			// ---- Çerez bandı (bkz. inc/cookie-consent.php) — Özelleştir → Çerez & KVKK'daki
-			// tek anahtar/kapat düğmesi doğruysa gösterilir, aksi halde hiçbiri basılmaz.
+			// ---- Çerez bandı (bkz. inc/cookie-consent.php) — Sayfalar → Çerez Politikası
+			// yayınlanmışsa gösterilir, taslaksa (varsayılan) hiçbiri basılmaz.
 			'cerez_baslik'            => 'Çerezleri Kullanıyoruz',
 			'cerez_aciklama'          => 'Sitemizin düzgün çalışması için gerekli çerezlerin yanı sıra, izniniz olursa siteyi nasıl kullandığınızı anlamamıza yardımcı olacak analiz çerezleri de kullanmak istiyoruz. Tercihinizi dilediğiniz zaman aşağıdaki "Çerez Ayarları" bağlantısından değiştirebilirsiniz.',
 			'cerez_tumunu_kabul'     => 'Tümünü Kabul Et',
