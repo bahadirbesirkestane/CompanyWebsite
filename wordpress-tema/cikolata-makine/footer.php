@@ -25,7 +25,7 @@
 				<?php if ( has_nav_menu( 'footer_2' ) ) : ?>
 					<?php wp_nav_menu( array( 'theme_location' => 'footer_2', 'container' => false, 'items_wrap' => '%3$s', 'depth' => 1 ) ); ?>
 				<?php else :
-					$cm_footer_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false, 'number' => 5 ) );
+					$cm_footer_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false, 'number' => 5, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 					if ( ! is_wp_error( $cm_footer_cats ) ) :
 						foreach ( $cm_footer_cats as $cm_cat ) : ?>
 							<a href="<?php echo esc_url( get_term_link( $cm_cat ) ); ?>"><?php echo esc_html( $cm_cat->name ); ?></a>

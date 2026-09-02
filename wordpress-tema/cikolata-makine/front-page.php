@@ -78,7 +78,7 @@ if ( function_exists( 'get_field' ) ) {
 <?php endif; ?>
 
 <?php
-$cm_top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false ) );
+$cm_top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 if ( ! is_wp_error( $cm_top_cats ) && $cm_top_cats ) :
 ?>
 <div class="wrap section">

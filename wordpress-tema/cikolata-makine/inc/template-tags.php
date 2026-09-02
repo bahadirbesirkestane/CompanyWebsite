@@ -379,7 +379,7 @@ function cm_category_sidebar( $current_term = null ) {
 		$active_chain = array_reverse( $ancestors ); // kökten aşağıya sıraya çevir
 		$active_chain[] = $current_term->term_id; // en sona kendisini ekle
 	}
-	$top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false ) );
+	$top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 	if ( is_wp_error( $top_cats ) ) return;
 	?>
 	<nav class="cat-sidebar" aria-label="<?php echo esc_attr( cm__( 'sidebar_aria' ) ); ?>">
@@ -402,7 +402,7 @@ function cm_category_sidebar_row( $top, $active_chain ) {
 	$icon = function_exists( 'get_field' ) ? get_field( 'kategori_ikon', $top ) : false;
 	// Doğrudan çocuklar HER ZAMAN çekilir (aktif olmasa bile) — aksi halde bir üst
 	// kategorinin "has-children" durumu bilinmeden ok hiç basılmazdı.
-	$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false ) );
+	$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 	if ( is_wp_error( $children ) ) $children = array();
 	$has_children = ! empty( $children );
 	// get_term_children() TÜM alt ağacı (kaç seviye olursa olsun) özyinelemeli döndürür —
@@ -437,7 +437,7 @@ function cm_category_sidebar_row( $top, $active_chain ) {
 function cm_category_sidebar_children( $term, $active_chain ) {
 	$in_chain   = in_array( $term->term_id, $active_chain, true );
 	$is_current = $active_chain && end( $active_chain ) === $term->term_id;
-	$children   = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $term->term_id, 'hide_empty' => false ) );
+	$children   = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $term->term_id, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 	if ( is_wp_error( $children ) ) $children = array();
 	$has_children = ! empty( $children );
 	$count = $has_children ? cm_category_total_count( $term, get_term_children( $term->term_id, 'makine_kategori' ) ) : (int) $term->count;
@@ -538,14 +538,14 @@ function cm_pdf_row( $file, $label = null ) {
  * bkz. inc/nav-walker.php (bu fonksiyonu "Ürünler" menü öğesinin içine ekler).
  */
 function cm_products_megamenu() {
-	$top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false ) );
+	$top_cats = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => 0, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 	if ( is_wp_error( $top_cats ) || ! $top_cats ) return;
 	?>
 	<div class="megamenu">
 		<ul class="megamenu-list">
 			<?php foreach ( $top_cats as $top ) :
 				$icon = function_exists( 'get_field' ) ? get_field( 'kategori_ikon', $top ) : false;
-				$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false ) );
+				$children = get_terms( array( 'taxonomy' => 'makine_kategori', 'parent' => $top->term_id, 'hide_empty' => false, 'orderby' => 'meta_value_num', 'meta_key' => CM_KATEGORI_SIRA_META, 'order' => 'ASC' ) );
 				if ( is_wp_error( $children ) ) $children = array();
 			?>
 				<li class="megamenu-item<?php echo $children ? ' has-children' : ''; ?>">
