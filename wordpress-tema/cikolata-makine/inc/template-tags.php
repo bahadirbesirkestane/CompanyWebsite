@@ -586,6 +586,10 @@ function cm_kurumsal_child_icon( $tr_id ) {
 		155 => '<circle cx="17" cy="17" r="11"/><circle cx="17" cy="17" r="6"/><circle cx="17" cy="17" r="1.5" fill="currentColor" stroke="none"/>',
 		156 => '<rect x="6" y="18" width="22" height="11" rx="1"/><path d="M6 18l6-6 6 6 6-6 4 4"/><line x1="10" y1="12" x2="10" y2="7"/>',
 		157 => '<circle cx="17" cy="13" r="8"/><path d="M12 19l-3 8 5-2.5 3 2.5v-6M22 19l3 8-5-2.5-3 2.5v-6"/>',
+		// Gizlilik Politikası (kalkan+onay) ve Çerez Politikası (kurabiye deseni) —
+		// bkz. inc/cookie-consent.php kurulum notu, Kurumsal'ın alt sayfaları.
+		916 => '<path d="M17 5l10 4v8c0 7-4.5 11-10 12-5.5-1-10-5-10-12V9z"/><path d="M12.5 17.5l3 3 6-6.5"/>',
+		921 => '<circle cx="17" cy="17" r="11"/><circle cx="13" cy="13" r="1.4" fill="currentColor" stroke="none"/><circle cx="21.5" cy="14" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="21.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="21" cy="21" r="1.4" fill="currentColor" stroke="none"/>',
 	);
 	$path = $icons[ $tr_id ] ?? '';
 	if ( ! $path ) { cm_generic_icon( 34 ); return; }

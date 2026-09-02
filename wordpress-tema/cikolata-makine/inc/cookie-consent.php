@@ -2,12 +2,18 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Çerez onay bandı — Özelleştir → Çerez & KVKK → "Çerez Onay Bandını Yayında
- * Göster" AÇIK DEĞİLSE (varsayılan durum) bu dosyadaki HİÇBİR ŞEY basılmaz —
- * ne banner, ne footer'daki "Çerez Ayarları"/"Gizlilik Politikası" linkleri,
- * ne de inc/seo.php'deki Analitik (GA/GTM) script gating'i devreye girer.
+ * Çerez onay bandı — AYRI bir Özelleştir anahtarı YOK, kasıtlı olarak: aktiflik
+ * doğrudan "Çerez Politikası" sayfasının kendi Taslak/Yayınla durumuna bağlı
+ * (bkz. cm_cerez_banner_aktif()). Sayfa taslakken (varsayılan durum) bu
+ * dosyadaki HİÇBİR ŞEY basılmaz — ne banner, ne footer'daki "Çerez Ayarları"/
+ * "Gizlilik Politikası" linkleri, ne de inc/seo.php'deki Analitik (GA/GTM)
+ * script gating'i devreye girer. Admin Sayfalar → Çerez Politikası → Yayınla
+ * dediği AN her şey otomatik etkinleşir — Gizlilik Politikası (KVKK
+ * Aydınlatma Metni) ise TAMAMEN AYRI, kendi Taslak/Yayınla durumuyla
+ * yönetilir (sadece kendi linkinin görünüp görünmediğini belirler, banner'ı
+ * etkilemez).
  *
- * Açıldığında: birçok kurumsal sitede görülen 3 katmanlı desen (bkz. Bosch
+ * Aktifken: birçok kurumsal sitede görülen 3 katmanlı desen (bkz. Bosch
  * Rexroth Türkiye referansı) — "Tümünü Kabul Et" / "Sadece Zorunlu Olanlar" /
  * "Ayarlar" (kategori bazlı aç-kapa: Zorunlu her zaman açık/kilitli, Analitik
  * ziyaretçi seçer). Metinler (başlık/açıklama/buton/kategori) cm__() üzerinden
@@ -16,14 +22,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
 
 function cm_cerez_banner_aktif() {
-	return (bool) get_theme_mod( 'cerez_banner_aktif', false );
+	return (bool) cm_cerez_legal_page_url( 'cerez-politikasi' );
 }
 
 /**
  * Gizlilik Politikası / Çerez Politikası sayfa URL'si — sayfa YAYINLANMAMIŞSA
  * (taslaksa) boş döner, çağıran taraf o durumda linki hiç basmaz. Slug'lar
- * sabit: gizlilik-politikasi / cerez-politikasi (bkz. bu dosyanın altındaki
- * kurulum notu — ilk oluşturmada TR sayfaların slug'ı bu olmalı).
+ * sabit: gizlilik-politikasi / cerez-politikasi (Kurumsal sayfasının altında
+ * alt sayfa olarak oluşturulmuşlardır, bkz. bu dosyanın altındaki kurulum
+ * notu — TR sayfaların post_name'i bu olmalı, üst-alt ilişkisi cm_translated_
+ * page()'in "name" ile aramasını ETKİLEMEZ).
  */
 function cm_cerez_legal_page_url( $slug ) {
 	$page = cm_translated_page( $slug );

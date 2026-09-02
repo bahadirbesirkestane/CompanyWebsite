@@ -214,7 +214,8 @@ add_action( 'wp_head', function () {
 }, 1 );
 
 /**
- * Analitik <script> etiketinin type'ı — çerez bandı (Özelleştir → Çerez & KVKK)
+ * Analitik <script> etiketinin type'ı — çerez bandı (Sayfalar → Çerez Politikası
+ * → Yayınla/Taslak, bkz. inc/cookie-consent.php → cm_cerez_banner_aktif())
  * KAPALIYKEN "text/javascript" (doğrudan çalışır, ÖNCEKİ davranışla birebir
  * aynı), AÇIKKEN "text/plain" + data-cookie-category="analytics" (tarayıcı
  * bunu ÇALIŞTIRMAZ — assets/js/cookie-consent.js ziyaretçi Analitik'e izin

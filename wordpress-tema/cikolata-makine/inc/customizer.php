@@ -158,34 +158,12 @@ function cm_customize_register( $wp_customize ) {
 		'type'        => 'text',
 	) );
 
-	// ---- Çerez & KVKK -------------------------------------------------------
-	// TEK anahtar: bu kapalıyken (varsayılan) çerez bandı hiç basılmaz, Analitik
-	// (GA/GTM) script'leri de üstteki bölümdeki gibi DOĞRUDAN çalışır (banner
-	// yokken "izin bekliyor" gibi davranıp script'i hiç çalıştırmamak yanlış
-	// olurdu). Açıldığında: bant görünür VE Analitik script'leri ziyaretçi
-	// onay verene kadar ÇALIŞMAZ (bkz. inc/cookie-consent.php). Banner'ın
-	// kendi metni (başlık/açıklama/buton) Customizer'da DEĞİL — dile göre
-	// değişmesi gerektiği için cm__() + Dize Çevirisi'nde (inc/strings.php,
-	// "cerez_..." anahtarları) — theme_mod'ların dile göre AYRI değer
-	// TUTMADIĞI bu projede daha önce footer sloganında yaşanıp düzeltilmişti.
-	$wp_customize->add_section( 'cm_cerez', array(
-		'title'    => 'Çerez & KVKK',
-		'priority' => 36,
-	) );
-
-	$wp_customize->add_setting( 'cerez_banner_aktif', array(
-		'default'           => false,
-		'sanitize_callback' => 'cm_sanitize_checkbox',
-	) );
-	$wp_customize->add_control( 'cerez_banner_aktif', array(
-		'label'       => 'Çerez Onay Bandını Yayında Göster',
-		'description' => 'Açıldığında: (1) sitede çerez onay bandı görünür, (2) yukarıdaki Google Analytics/Tag Manager ziyaretçi "Analitik" çerezlerine izin verene kadar ÇALIŞMAZ, (3) footer\'da Gizlilik Politikası/Çerez Politikası sayfalarına link çıkar (bu sayfalar da ayrıca Yayınla durumuna alınmalı — Sayfalar → Gizlilik Politikası / Çerez Politikası). Kapalıyken (varsayılan) hiçbiri görünmez, Analitik kodu (doluysa) doğrudan çalışır.',
-		'section'     => 'cm_cerez',
-		'type'        => 'checkbox',
-	) );
+	// Çerez bandının aç/kapa kontrolü BİLEREK burada (Customizer'da) DEĞİL —
+	// Çerez Politikası sayfasının kendi Taslak/Yayınla durumunda (bkz.
+	// inc/cookie-consent.php → cm_cerez_banner_aktif()). Sayfalar → Çerez
+	// Politikası → Yayınla, tek başına hem sayfayı hem banner'ı hem de
+	// Analitik script gating'ini etkinleştirir; ayrı bir anahtar tutmak
+	// (iki farklı yerden aynı şeyi yönetme riski) kasıtlı olarak tercih
+	// edilmedi.
 }
 add_action( 'customize_register', 'cm_customize_register' );
-
-function cm_sanitize_checkbox( $checked ) {
-	return (bool) $checked;
-}
