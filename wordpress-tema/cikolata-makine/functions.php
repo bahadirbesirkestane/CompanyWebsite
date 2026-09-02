@@ -17,6 +17,7 @@ require_once CM_THEME_DIR . '/inc/query.php';
 require_once CM_THEME_DIR . '/inc/admin-makine-list.php';
 require_once CM_THEME_DIR . '/inc/admin-product-order.php';
 require_once CM_THEME_DIR . '/inc/admin-category-order.php';
+require_once CM_THEME_DIR . '/inc/admin-guide.php';
 
 /**
  * Sayfalar (post_type=page) Klasik Düzenleyici ile açılır. Sebep: bu temadaki tüm
