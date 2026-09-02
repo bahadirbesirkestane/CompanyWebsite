@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 function cm_register_taxonomies() {
 	register_taxonomy( 'makine_kategori', array( 'makine', 'katalog' ), array(
 		'labels' => array(
-			'name'              => 'Makine Kategorileri',
-			'singular_name'     => 'Makine Kategorisi',
+			'name'              => 'Ürün Kategorileri',
+			'singular_name'     => 'Ürün Kategorisi',
 			'search_items'      => 'Kategori Ara',
 			'all_items'         => 'Tüm Kategoriler',
 			'parent_item'       => 'Üst Kategori',
@@ -56,15 +56,15 @@ function cm_register_post_types() {
 	register_post_type( 'makine', array(
 		'labels' => array(
 			'name'               => 'Ürünler',
-			'singular_name'      => 'Makine',
-			'add_new'            => 'Yeni Makine Ekle',
-			'add_new_item'       => 'Yeni Makine Ekle',
-			'edit_item'          => 'Makineyi Düzenle',
-			'new_item'           => 'Yeni Makine',
-			'view_item'          => 'Makineyi Görüntüle',
-			'search_items'       => 'Makine Ara',
-			'not_found'          => 'Makine bulunamadı',
-			'not_found_in_trash' => 'Çöp kutusunda makine yok',
+			'singular_name'      => 'Ürün',
+			'add_new'            => 'Yeni Ürün Ekle',
+			'add_new_item'       => 'Yeni Ürün Ekle',
+			'edit_item'          => 'Ürünü Düzenle',
+			'new_item'           => 'Yeni Ürün',
+			'view_item'          => 'Ürünü Görüntüle',
+			'search_items'       => 'Ürün Ara',
+			'not_found'          => 'Ürün bulunamadı',
+			'not_found_in_trash' => 'Çöp kutusunda ürün yok',
 			'menu_name'          => 'Ürünler',
 		),
 		'public'       => true,

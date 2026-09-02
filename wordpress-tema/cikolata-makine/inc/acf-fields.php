@@ -66,7 +66,7 @@ add_action( 'acf/init', function () {
 	$cm_makine_fields = array(
 		array(
 			'key'   => 'field_cm_one_cikan',
-			'label' => 'Öne Çıkan Makine',
+			'label' => 'Öne Çıkan Ürün',
 			'name'  => 'one_cikan',
 			'type'  => 'true_false',
 			'ui'    => 1,
@@ -158,7 +158,7 @@ add_action( 'acf/init', function () {
 
 	acf_add_local_field_group( array(
 		'key'      => 'group_cm_makine',
-		'title'    => 'Makine Detayları',
+		'title'    => 'Ürün Detayları',
 		'fields'   => $cm_makine_fields,
 		'location' => array(
 			array(

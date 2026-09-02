@@ -36,7 +36,7 @@ function cm_admin_guide_default_content() {
 <li><strong>PDF Katalog</strong>: bu makineye özel teknik broşür. Yüklenince ürün sayfasında "Dokümanlar" sekmesi otomatik belirir.</li>
 <li><strong>YouTube Video Linki</strong> (opsiyonel): girilirse ürün sayfasında ayrı bir "Video" sekmesi otomatik oluşur.</li>
 <li><strong>CTA Butonu Metni / Linki</strong> (opsiyonel): "Bu Makine İçin Teklif İste" gibi özel bir buton eklemek isterseniz kullanın. Metin boşsa buton hiç görünmez; link boşsa buton otomatik olarak sitenin WhatsApp numarasına (o da yoksa İletişim sayfasına) yönlendirir.</li>
-<li><strong>Öne Çıkan Makine</strong>: işaretlenirse bu ürün anasayfadaki "Öne Çıkan Makineler" bölümünde gösterilir.</li>
+<li><strong>Öne Çıkan Ürün</strong>: işaretlenirse bu ürün anasayfadaki "Öne Çıkan Makineler" bölümünde gösterilir.</li>
 <li>Sağ sütundaki <strong>Kategoriler</strong> kutusundan ürünün ait olduğu kategoriyi/alt kategoriyi işaretleyin.</li>
 </ul>
 
