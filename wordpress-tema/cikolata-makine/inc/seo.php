@@ -213,17 +213,37 @@ add_action( 'wp_head', function () {
 	}
 }, 1 );
 
+/**
+ * Analitik <script> etiketinin type'ı — çerez bandı (Özelleştir → Çerez & KVKK)
+ * KAPALIYKEN "text/javascript" (doğrudan çalışır, ÖNCEKİ davranışla birebir
+ * aynı), AÇIKKEN "text/plain" + data-cookie-category="analytics" (tarayıcı
+ * bunu ÇALIŞTIRMAZ — assets/js/cookie-consent.js ziyaretçi Analitik'e izin
+ * verince gerçek <script>'e çevirip yeniden ekliyor). Banner kapalıyken eski
+ * davranış korunuyor ki bu özelliği hiç kullanmak istemeyen biri için hiçbir
+ * şey değişmesin.
+ */
+function cm_seo_analytics_script_open_tag( $extra_attrs = '' ) {
+	if ( function_exists( 'cm_cerez_banner_aktif' ) && cm_cerez_banner_aktif() ) {
+		return '<script type="text/plain" data-cookie-category="analytics"' . $extra_attrs . '>';
+	}
+	return '<script' . $extra_attrs . '>';
+}
+
 // ---- Google Tag Manager (kapsayıcı kimliği girilmişse) ---------------------
 add_action( 'wp_head', function () {
 	$gtm_id = cm_option( 'google_tag_manager_id' );
 	if ( ! $gtm_id ) return;
-	?>
-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<?php echo esc_js( $gtm_id ); ?>');</script>
+	echo cm_seo_analytics_script_open_tag(); // phpcs:ignore -- sabit, escape'e gerek yok
+	?>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','<?php echo esc_js( $gtm_id ); ?>');</script>
 	<?php
 }, 2 );
 add_action( 'wp_body_open', function () {
 	$gtm_id = cm_option( 'google_tag_manager_id' );
 	if ( ! $gtm_id ) return;
+	// Çerez bandı AÇIKKEN noscript fallback'i basmıyoruz: JS kapalı bir ziyaretçi
+	// banner'la hiç etkileşemez, onaysız bir izleme pikselini kayıtsız şartsız
+	// ateşlemek doğru olmaz — JS açıksa zaten yukarıdaki gated <script> yeterli.
+	if ( function_exists( 'cm_cerez_banner_aktif' ) && cm_cerez_banner_aktif() ) return;
 	?>
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?php echo esc_attr( $gtm_id ); ?>" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 	<?php
@@ -233,8 +253,13 @@ add_action( 'wp_body_open', function () {
 add_action( 'wp_head', function () {
 	$ga_id = cm_option( 'google_analytics_id' );
 	if ( ! $ga_id ) return;
-	?>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo esc_attr( $ga_id ); ?>"></script>
-	<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?php echo esc_js( $ga_id ); ?>');</script>
+	$gated = function_exists( 'cm_cerez_banner_aktif' ) && cm_cerez_banner_aktif();
+	if ( $gated ) {
+		printf( '<script type="text/plain" data-cookie-category="analytics" data-src="%s"></script>' . "\n", esc_url( 'https://www.googletagmanager.com/gtag/js?id=' . $ga_id ) );
+	} else {
+		printf( '<script async src="%s"></script>' . "\n", esc_url( 'https://www.googletagmanager.com/gtag/js?id=' . $ga_id ) );
+	}
+	echo cm_seo_analytics_script_open_tag(); // phpcs:ignore
+	?>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?php echo esc_js( $ga_id ); ?>');</script>
 	<?php
 }, 3 );

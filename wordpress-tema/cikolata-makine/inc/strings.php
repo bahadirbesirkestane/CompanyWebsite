@@ -126,6 +126,26 @@ function cm_strings() {
 			'haberler_bos'        => 'Henüz haber eklenmedi.',
 			'devamini_oku'        => 'Devamını Oku →',
 			'tum_haberler'        => 'Tüm Haberler',
+
+			// ---- Çerez bandı (bkz. inc/cookie-consent.php) — Özelleştir → Çerez & KVKK'daki
+			// tek anahtar/kapat düğmesi doğruysa gösterilir, aksi halde hiçbiri basılmaz.
+			'cerez_baslik'            => 'Çerezleri Kullanıyoruz',
+			'cerez_aciklama'          => 'Sitemizin düzgün çalışması için gerekli çerezlerin yanı sıra, izniniz olursa siteyi nasıl kullandığınızı anlamamıza yardımcı olacak analiz çerezleri de kullanmak istiyoruz. Tercihinizi dilediğiniz zaman aşağıdaki "Çerez Ayarları" bağlantısından değiştirebilirsiniz.',
+			'cerez_tumunu_kabul'     => 'Tümünü Kabul Et',
+			'cerez_sadece_zorunlu'   => 'Sadece Zorunlu Olanlar',
+			'cerez_ayarlar'          => 'Ayarlar',
+			'cerez_ayarlar_baslik'   => 'Çerez Tercihleri',
+			'cerez_ayarlar_aciklama' => 'Aşağıdaki kategorilerden hangilerine izin vereceğinizi seçebilirsiniz. Zorunlu çerezler sitenin çalışması için gereklidir ve kapatılamaz.',
+			'cerez_zorunlu_baslik'    => 'Zorunlu Çerezler',
+			'cerez_zorunlu_aciklama'  => 'Dil tercihiniz gibi sitenin temel işlevleri için gereklidir, kapatılamaz.',
+			'cerez_analitik_baslik'   => 'Analitik Çerezler',
+			'cerez_analitik_aciklama' => 'Siteyi nasıl kullandığınızı anlamamıza yardımcı olur (ör. Google Analytics). Bu izni istediğiniz zaman geri çekebilirsiniz.',
+			'cerez_her_zaman_acik'   => 'Her zaman açık',
+			'cerez_kaydet'           => 'Kaydet',
+			'cerez_geri'             => '← Geri',
+			'cerez_ayarlarini_degistir' => 'Çerez Ayarları',
+			'gizlilik_politikasi_baglanti' => 'Gizlilik Politikası',
+			'cerez_politikasi_baglanti'    => 'Çerez Politikası',
 		);
 	}
 	return $s;

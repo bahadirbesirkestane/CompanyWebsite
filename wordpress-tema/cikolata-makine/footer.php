@@ -53,6 +53,20 @@
 
 		<div class="footer-bottom">
 			<span>© <?php echo esc_html( date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> — <?php echo esc_html( cm__( 'footer_haklar' ) ); ?></span>
+			<?php if ( function_exists( 'cm_cerez_banner_aktif' ) && cm_cerez_banner_aktif() ) : ?>
+				<span class="footer-legal-links">
+					<?php
+					$cm_gizlilik_url = cm_cerez_legal_page_url( 'gizlilik-politikasi' );
+					$cm_cerez_url    = cm_cerez_legal_page_url( 'cerez-politikasi' );
+					if ( $cm_gizlilik_url ) : ?>
+						<a href="<?php echo esc_url( $cm_gizlilik_url ); ?>"><?php echo esc_html( cm__( 'gizlilik_politikasi_baglanti' ) ); ?></a>
+					<?php endif;
+					if ( $cm_cerez_url ) : ?>
+						<a href="<?php echo esc_url( $cm_cerez_url ); ?>"><?php echo esc_html( cm__( 'cerez_politikasi_baglanti' ) ); ?></a>
+					<?php endif; ?>
+					<a href="#" data-cerez-reopen><?php echo esc_html( cm__( 'cerez_ayarlarini_degistir' ) ); ?></a>
+				</span>
+			<?php endif; ?>
 		</div>
 	</div>
 </footer>

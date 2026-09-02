@@ -77,6 +77,11 @@ img, svg { display: block; max-width: 100%; }
 .body-p .wp-block-embed { margin: 22px 0; }
 .body-p .wp-block-embed iframe { max-width: 100%; border-radius: 3px; }
 .body-p .wp-block-gallery { margin: 22px 0; }
+/* Taslak/örnek KVKK-Çerez sayfalarının en üstündeki uyarı kutusu (bkz.
+   inc/cookie-consent.php kurulum notu) — sayfa içeriğinin kendisi bu class'ı
+   kullanıyor, admin gerçek metni yazınca bu kutuyu silmesi yeterli. */
+.cm-draft-notice { background: var(--accent-tint); border-left: 3px solid var(--accent); padding: 14px 18px; margin: 0 0 24px; font-size: 13.5px; color: var(--ink); border-radius: 0 3px 3px 0; }
+.cm-draft-notice strong { color: var(--accent-deep); }
 
 /* ---- buttons ---- */
 .btn {
@@ -293,6 +298,9 @@ ul.megamenu-flyout {
 .footer-grid h4 { font-family: var(--font-display); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
 .footer-grid p, .footer-grid a { font-size: 13.5px; color: #F1ECE4ad; line-height: 1.9; text-decoration: none; display: block; }
 .footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid #F1ECE424; display: flex; justify-content: space-between; font-size: 12px; color: #F1ECE480; flex-wrap: wrap; gap: 8px; }
+.footer-legal-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.footer-legal-links a { color: #F1ECE480; text-decoration: none; }
+.footer-legal-links a:hover { color: var(--accent); }
 @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 
 /* ---- footer sosyal medya ikon şeridi (bkz. cm_social_links()) ----
@@ -788,3 +796,50 @@ table.spec tr:nth-child(odd) { background: var(--paper-raised); }
 .cm-map { aspect-ratio: 4/3; border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
 .cm-map iframe { width: 100%; height: 100%; border: 0; display: block; }
 @media (max-width: 900px) { .contact-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+/* ---- çerez onay bandı (bkz. inc/cookie-consent.php) ----
+   Özelleştir → Çerez & KVKK kapalıyken bu elemanlar hiç basılmadığı için bu
+   kurallar da ölü kod olmaz ama zararsızdır. Bosch Rexroth Türkiye referans
+   alınarak: alt sabit bant + "Ayarlar" ile açılan kategori bazlı ikinci
+   görünüm (aynı kutu içinde, ana görünüm gizlenip ayarlar görünümü açılır). */
+.cerez-banner { position: fixed; left: 0; right: 0; bottom: 0; z-index: 200; background: var(--paper); border-top: 1px solid var(--line); box-shadow: 0 -10px 28px rgba(31,27,23,.14); max-height: 92vh; overflow-y: auto; }
+.cerez-banner[hidden] { display: none; }
+.cerez-banner-inner { max-width: 1160px; margin: 0 auto; padding: 22px 24px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.cerez-banner-inner[hidden] { display: none; }
+.cerez-banner-text { flex: 1 1 380px; }
+.cerez-banner-text strong { display: block; font-family: var(--font-display); font-size: 15px; margin-bottom: 6px; }
+.cerez-banner-text p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.65; margin: 0; }
+.cerez-banner-links { margin-top: 8px !important; font-size: 12.5px; }
+.cerez-banner-links a { color: var(--accent); text-decoration: underline; }
+.cerez-banner-actions { display: flex; gap: 10px; flex-wrap: wrap; flex: 0 0 auto; }
+.cerez-banner-actions .btn { white-space: nowrap; padding: 11px 18px; }
+
+.cerez-settings { max-width: 1160px; margin: 0 auto; padding: 22px 24px; }
+.cerez-settings[hidden] { display: none; }
+.cerez-settings h3 { margin-bottom: 8px; }
+.cerez-settings > p { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 18px; }
+.cerez-category { border-top: 1px solid var(--line); padding: 16px 0; }
+.cerez-category:first-of-type { border-top: none; padding-top: 0; }
+.cerez-category-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.cerez-category-title { font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--ink); }
+.cerez-category p { font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin: 6px 0 0; }
+.cerez-toggle-locked { font-size: 11px; color: var(--steel); font-family: var(--font-display); letter-spacing: .04em; text-transform: uppercase; flex: 0 0 auto; }
+
+.cerez-switch { position: relative; display: inline-block; width: 38px; height: 22px; flex: 0 0 auto; }
+.cerez-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.cerez-switch span { position: absolute; inset: 0; background: var(--line-strong); border-radius: 999px; transition: background .15s; pointer-events: none; }
+.cerez-switch span::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .15s; }
+.cerez-switch input:checked + span { background: var(--accent); }
+.cerez-switch input:checked + span::before { transform: translateX(16px); }
+.cerez-switch input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.cerez-settings-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.cerez-settings-actions .btn { padding: 11px 18px; }
+
+@media (max-width: 680px) {
+  .cerez-banner-inner { flex-direction: column; align-items: stretch; gap: 16px; }
+  .cerez-banner-actions { flex-direction: column; }
+  .cerez-banner-actions .btn { width: 100%; justify-content: center; }
+  .cerez-settings-actions { flex-direction: column-reverse; }
+  .cerez-settings-actions .btn { width: 100%; justify-content: center; }
+}

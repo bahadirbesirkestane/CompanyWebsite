@@ -8,6 +8,7 @@ define( 'CM_THEME_URI', get_template_directory_uri() );
 require_once CM_THEME_DIR . '/inc/cpt-taxonomies.php';
 require_once CM_THEME_DIR . '/inc/acf-fields.php';
 require_once CM_THEME_DIR . '/inc/seo.php';
+require_once CM_THEME_DIR . '/inc/cookie-consent.php';
 require_once CM_THEME_DIR . '/inc/template-tags.php';
 require_once CM_THEME_DIR . '/inc/nav-walker.php';
 require_once CM_THEME_DIR . '/inc/customizer.php';
