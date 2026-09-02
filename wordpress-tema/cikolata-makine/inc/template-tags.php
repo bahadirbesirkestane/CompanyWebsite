@@ -575,6 +575,46 @@ function cm_products_megamenu() {
 }
 
 /**
+ * Bir sayfanın alt sayfalarını kart olarak basar — page.php iki AYRI yerden
+ * çağırır: Kurumsal (ve genelde) içeriğin HEMEN ALTINDA, İletişim'de ise
+ * Uluslararası İletişim bloğunun ALTINDA (kullanıcı isteği: İletişim'e
+ * eklenen Gizlilik/Çerez Politikası kartları sayfanın en altında dursun).
+ * $use_icon_cards true'ysa ikonlu "corp-grid" (Kurumsal/İletişim ailesi),
+ * false'sa fotoğraflı "prod-grid" (diğer sayfalar) kullanılır.
+ */
+function cm_render_page_children_grid( $children, $use_icon_cards ) {
+	if ( ! $children ) return;
+	if ( $use_icon_cards ) : ?>
+		<div class="corp-grid" style="margin-top:40px;">
+			<?php foreach ( $children as $cm_child ) :
+				$cm_child_id  = $cm_child->ID;
+				$cm_tr_child  = function_exists( 'pll_get_post' ) ? pll_get_post( $cm_child_id, 'tr' ) : $cm_child_id;
+				$cm_teaser    = has_excerpt( $cm_child_id ) ? get_the_excerpt( $cm_child_id ) : wp_trim_words( wp_strip_all_tags( $cm_child->post_content ), 18, '…' );
+			?>
+				<a class="corp-card reveal" href="<?php echo esc_url( get_permalink( $cm_child_id ) ); ?>">
+					<div class="corp-card-icon"><?php cm_kurumsal_child_icon( (int) $cm_tr_child ); ?></div>
+					<h3><?php echo esc_html( get_the_title( $cm_child_id ) ); ?></h3>
+					<p><?php echo esc_html( $cm_teaser ); ?></p>
+					<div class="go"><?php echo esc_html( cm__( 'detaylari_gor' ) ); ?></div>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	<?php else : ?>
+		<div class="prod-grid" style="margin-top:40px;">
+			<?php foreach ( $children as $cm_child ) : ?>
+				<a class="prod-card reveal" href="<?php echo esc_url( get_permalink( $cm_child ) ); ?>">
+					<?php if ( has_post_thumbnail( $cm_child ) ) : ?>
+						<div class="ph"><?php echo get_the_post_thumbnail( $cm_child, 'cm-card' ); ?></div>
+					<?php endif; ?>
+					<h3><?php echo esc_html( get_the_title( $cm_child ) ); ?></h3>
+					<div class="go"><?php echo esc_html( cm__( 'detaylari_gor' ) ); ?></div>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	<?php endif;
+}
+
+/**
  * Kurumsal sayfasının 4 alt sayfası (Hakkımızda/Misyon/Üretim Tesisi/Kalite) için
  * konuya uygun küçük çizgi ikonlar — çeviri hangi dilde olursa olsun aynı ikon
  * gösterilsin diye ID eşleştirmesi HER ZAMAN Türkçe (varsayılan dil) karşılığı

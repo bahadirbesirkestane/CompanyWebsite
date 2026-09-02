@@ -38,52 +38,31 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 	$cm_kurumsal_ids = array( 7, 277, 278, 279, 786 );
 	$cm_is_kurumsal  = in_array( get_the_ID(), $cm_kurumsal_ids, true );
 
+	// İletişim sayfası mı? (form + harita + Uluslararası İletişim bloğu aşağıda buna göre
+	// çalışır). Kurumsal'ın altındakiyle AYNI desen, ama sabit ID yerine slug üzerinden.
+	$cm_iletisim_page = cm_translated_page( 'iletisim' );
+	$cm_is_iletisim   = $cm_iletisim_page && (int) $cm_iletisim_page->ID === get_the_ID();
+
 	// "İletişim" ailesi de aynı ikonlu kart görünümünü (corp-grid) kullanır — Gizlilik
 	// Politikası/Çerez Politikası gibi fotoğrafsız, salt metin sayfaları İletişim'in
 	// altına da taşınabilsin diye (bkz. inc/acf-fields.php group_cm_iletisim_kartlar
 	// konum kuralındaki AYNI ID listesi). Bu, SADECE alt sayfa kart stilini belirler —
-	// aşağıdaki $cm_is_kurumsal'a bağlı Uluslararası İletişim çağrısını ETKİLEMEZ,
-	// İletişim'in kendi intl-contact bloğu dosyanın altında ayrıca var.
-	$cm_iletisim_ids     = array( 6, 102, 134, 141, 785 );
-	$cm_use_icon_cards   = $cm_is_kurumsal || in_array( get_the_ID(), $cm_iletisim_ids, true );
+	// $cm_is_kurumsal'a bağlı Uluslararası İletişim çağrısını ETKİLEMEZ.
+	$cm_iletisim_ids   = array( 6, 102, 134, 141, 785 );
+	$cm_use_icon_cards = $cm_is_kurumsal || in_array( get_the_ID(), $cm_iletisim_ids, true );
 
 	$cm_children = get_pages( array( 'child_of' => get_the_ID(), 'sort_column' => 'menu_order', 'parent' => get_the_ID() ) );
-	if ( $cm_children && $cm_use_icon_cards ) : ?>
-		<div class="corp-grid" style="margin-top:40px;">
-			<?php foreach ( $cm_children as $cm_child ) :
-				$cm_child_id  = $cm_child->ID;
-				$cm_tr_child  = function_exists( 'pll_get_post' ) ? pll_get_post( $cm_child_id, 'tr' ) : $cm_child_id;
-				$cm_teaser    = has_excerpt( $cm_child_id ) ? get_the_excerpt( $cm_child_id ) : wp_trim_words( wp_strip_all_tags( $cm_child->post_content ), 18, '…' );
-			?>
-				<a class="corp-card reveal" href="<?php echo esc_url( get_permalink( $cm_child_id ) ); ?>">
-					<div class="corp-card-icon"><?php cm_kurumsal_child_icon( (int) $cm_tr_child ); ?></div>
-					<h3><?php echo esc_html( get_the_title( $cm_child_id ) ); ?></h3>
-					<p><?php echo esc_html( $cm_teaser ); ?></p>
-					<div class="go"><?php echo esc_html( cm__( 'detaylari_gor' ) ); ?></div>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	<?php elseif ( $cm_children ) : ?>
-		<div class="prod-grid" style="margin-top:40px;">
-			<?php foreach ( $cm_children as $cm_child ) : ?>
-				<a class="prod-card reveal" href="<?php echo esc_url( get_permalink( $cm_child ) ); ?>">
-					<?php if ( has_post_thumbnail( $cm_child ) ) : ?>
-						<div class="ph"><?php echo get_the_post_thumbnail( $cm_child, 'cm-card' ); ?></div>
-					<?php endif; ?>
-					<h3><?php echo esc_html( get_the_title( $cm_child ) ); ?></h3>
-					<div class="go"><?php echo esc_html( cm__( 'detaylari_gor' ) ); ?></div>
-				</a>
-			<?php endforeach; ?>
-		</div>
-	<?php endif; ?>
+	// İletişim'de alt sayfa kartları (bkz. cm_render_page_children_grid()) BURADA DEĞİL,
+	// sayfanın en altında (Uluslararası İletişim'in altında) basılır — aşağıya bkz.
+	// "kullanıcı isteği: Gizlilik/Çerez Politikası kartları en altta dursun".
+	if ( ! $cm_is_iletisim ) cm_render_page_children_grid( $cm_children, $cm_use_icon_cards );
+	?>
 
 	<?php if ( $cm_is_kurumsal ) cm_render_intl_contact_section( get_the_ID() ); ?>
 
 	<?php
 	// İletişim sayfasına özel: form + harita (Görünüm → Özelleştir → İletişim & WhatsApp
 	// üzerinden yönetilir — bkz. functions.php cm_contact_form_id() / cm_harita_embed_url()).
-	$cm_iletisim_page = cm_translated_page( 'iletisim' );
-	$cm_is_iletisim = $cm_iletisim_page && (int) $cm_iletisim_page->ID === get_the_ID();
 	if ( $cm_is_iletisim ) :
 		$cm_form_id = cm_contact_form_id();
 		$cm_map_url = cm_harita_embed_url();
@@ -191,6 +170,10 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 			$cm_kurumsal_id_for_lang = function_exists( 'pll_get_post' ) ? pll_get_post( 7, function_exists( 'pll_current_language' ) ? pll_current_language() : 'tr' ) : 7;
 			cm_render_intl_contact_section( $cm_kurumsal_id_for_lang ?: 7 );
 		}
+
+		// Gizlilik Politikası/Çerez Politikası gibi İletişim'in alt sayfaları — kullanıcı
+		// isteği: sayfanın en altında, Uluslararası İletişim'in altında dursun.
+		cm_render_page_children_grid( $cm_children, $cm_use_icon_cards );
 	endif; ?>
 </div>
 
