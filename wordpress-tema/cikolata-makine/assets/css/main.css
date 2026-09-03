@@ -302,6 +302,9 @@ ul.megamenu-flyout {
 .footer-legal-links a { color: #F1ECE480; text-decoration: none; }
 .footer-legal-links a:hover { color: var(--accent); }
 @media (max-width: 760px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+/* Dar telefon ekranlarında 2 sütun da sıkışıp taşıyordu (özellikle İletişim
+   sütunundaki adres/e-posta metni) — tek sütun, alt alta çok daha rahat okunuyor. */
+@media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
 
 /* ---- footer sosyal medya ikon şeridi (bkz. cm_social_links()) ----
    Logonun/açıklamanın altında, sol sütunda — sol sütun daha önce boş kalıyordu,
