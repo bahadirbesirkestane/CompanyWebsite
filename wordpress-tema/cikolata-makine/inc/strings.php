@@ -34,7 +34,7 @@ function cm_strings() {
 			'footer_kategoriler'        => 'Kategoriler',
 			'footer_iletisim'           => 'İletişim',
 			'footer_haklar'             => 'Tüm hakları saklıdır.',
-			'footer_slogan'             => "27 yıllık mühendislik tecrübesiyle, 40'tan fazla ülkede anahtar teslim üretim hatları kuruyoruz.",
+			'footer_slogan'             => "2019'dan beri Sakarya'da tasarlayıp ürettiğimiz çikolata üretim hatlarını, Türkiye'nin yanı sıra birçok ülkeye gönderiyoruz.",
 
 			'hero_eyebrow_default'      => 'Endüstriyel Çikolata Üretim Sistemleri',
 			'hero_aciklama_default'     => 'Temperlemeden ambalaja, komple çikolata üretim hatları tasarlıyor ve kuruyoruz.',
