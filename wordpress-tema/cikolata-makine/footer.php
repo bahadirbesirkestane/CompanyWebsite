@@ -52,7 +52,7 @@
 		</div>
 
 		<div class="footer-bottom">
-			<span>© <?php echo esc_html( date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> — <?php echo esc_html( cm__( 'footer_haklar' ) ); ?></span>
+			<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php bloginfo( 'name' ); ?> — <?php echo esc_html( cm__( 'footer_haklar' ) ); ?></span>
 			<?php if ( function_exists( 'cm_cerez_banner_aktif' ) && cm_cerez_banner_aktif() ) : ?>
 				<span class="footer-legal-links">
 					<?php

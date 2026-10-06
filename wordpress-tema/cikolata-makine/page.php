@@ -98,7 +98,14 @@ $cm_has_banner = cm_page_banner( get_field( 'sayfa_banner_gorseli' ), get_the_ti
 					<div class="intl-contact-card">
 						<div class="intl-contact-icon"><?php cm_contact_icon( 'tel' ); ?></div>
 						<div class="intl-contact-country"><?php echo esc_html( $cm_tel_baslik ); ?></div>
-						<div class="intl-contact-details"><a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $cm_tel ) ); ?>"><?php echo esc_html( $cm_tel ); ?></a></div>
+						<div class="intl-contact-details"><?php
+							// Birden fazla numara ("·", "/", ",", ";" veya "|" ile ayrılmış) için her numara ayrı tel: bağlantısı olur.
+							$cm_tel_links = array();
+							foreach ( array_filter( array_map( 'trim', preg_split( '/[·\/,;|]+/u', $cm_tel ) ) ) as $cm_tel_part ) {
+								$cm_tel_links[] = '<a href="tel:' . esc_attr( preg_replace( '/[^+0-9]/', '', $cm_tel_part ) ) . '">' . esc_html( $cm_tel_part ) . '</a>';
+							}
+							echo implode( ' · ', $cm_tel_links ); // Her parça yukarıda kaçışlandı.
+						?></div>
 					</div>
 				<?php endif; ?>
 				<?php if ( $cm_wa ) : ?>
